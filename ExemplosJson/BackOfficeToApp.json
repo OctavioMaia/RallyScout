@@ -1,0 +1,18 @@
+{
+  "idAtividade" : 1,
+  "mapa": {
+    "nomeProva":"matapatos",
+    "nomeEquipa":"grupo7",
+    "percurso":[
+      {"lat":1, "log": 2},
+      {"lat":1, "log": 2}
+    ],
+    "veiculos":[
+      { "chassi":"123sd12aassd131qd","marca":"opel", "modelo":"corsa",
+      "caracteristicas":[
+          "tem 4 rodas",
+          "volante"
+        ]}
+    ]
+  }
+}
