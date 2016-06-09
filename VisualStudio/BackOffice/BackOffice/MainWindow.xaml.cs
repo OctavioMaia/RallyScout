@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using BackOffice.Business;
 
 namespace BackOffice
 {
@@ -22,6 +23,20 @@ namespace BackOffice
     {
         public MainWindow()
         {
+
+            BackOfficeAPP b = new BackOfficeAPP("C:\\Users\\Joao\\Documents\\GitHub\\RallyScout\\ExemplosJson\\config.json");
+            MessageBox.Show(b.email);
+            MessageBox.Show(b.passMail);
+
+            Dictionary<string, string> d = b.simbolos;
+
+            foreach (string chave in d.Keys)
+            {
+                MessageBox.Show(chave + " --> " + d[chave]);
+            }
+            //MessageBox.Show();
+            
+
             InitializeComponent();
         }
     }

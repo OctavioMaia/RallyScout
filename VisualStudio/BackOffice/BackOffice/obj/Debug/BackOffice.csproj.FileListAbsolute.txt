@@ -12,3 +12,5 @@ C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj
 C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\BackOffice.csproj.GenerateResource.Cache
 C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\BackOffice.exe
 C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\BackOffice.pdb
+C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\bin\Debug\Newtonsoft.Json.xml
