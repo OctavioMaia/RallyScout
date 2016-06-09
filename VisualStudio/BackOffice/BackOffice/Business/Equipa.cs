@@ -14,6 +14,7 @@ namespace BackOffice.Business
         {
             this.nome = name;
             this.email = mail;
+
         }
     }
 }
