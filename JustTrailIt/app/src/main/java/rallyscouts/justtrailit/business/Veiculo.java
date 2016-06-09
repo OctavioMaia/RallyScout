@@ -12,7 +12,7 @@ public class Veiculo {
     private String marca;
     private ArrayList<String> caracteristicas;
 
-    public Veiculo(ArrayList<String> caracteristicas, String chassi, String marca, String modelo) {
+    public Veiculo(String chassi, String marca, String modelo , ArrayList<String> caracteristicas) {
         this.caracteristicas = caracteristicas;
         this.chassi = chassi;
         this.marca = marca;
