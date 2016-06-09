@@ -120,7 +120,7 @@ namespace BackOffice.Business
         }
 
 
-        public void gerarRelatorios(string path)
+        public void gerarRelatorios(string path, int atividade_id)
         {
 
         }

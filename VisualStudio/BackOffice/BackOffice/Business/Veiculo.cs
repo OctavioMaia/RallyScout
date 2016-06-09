@@ -35,5 +35,19 @@ namespace BackOffice.Business
             this.caracteristicas.Add(carcteristica);
         }
 
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
+            Veiculo v = obj as Veiculo;
+            if ((System.Object)v == null)
+            {
+                return false;
+            }
+            return this.chassi.Equals(v.chassi);
+        }
+
     }
 }

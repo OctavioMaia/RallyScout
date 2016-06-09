@@ -41,7 +41,22 @@ namespace BackOffice.Business
         {
             return this.notasVoz.texto;
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
+            Nota n = obj as Nota;
+            if ((System.Object)n == null)
+            {
+                return false;
+            }
+            return this.idNota == n.idNota;
+        }
+
     }
 
-    
+
 }
