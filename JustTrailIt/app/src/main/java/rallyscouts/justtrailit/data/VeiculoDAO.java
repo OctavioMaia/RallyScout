@@ -63,7 +63,7 @@ public class VeiculoDAO extends SQLiteOpenHelper{
         contentValues.put(VEICULO_COLUMN_MARCA, marca);
         contentValues.put(VEICULO_COLUMN_MODELO, modelo);
         contentValues.put(VEICULO_COLUMN_ATIVIDADE, atividade);
-        db.insert(VEICULO_TABLE_NAME, null, contentValues);
+        if( db.insert(VEICULO_TABLE_NAME, null, contentValues) == -1 ) return false;
         return true;
     }
 
@@ -72,7 +72,7 @@ public class VeiculoDAO extends SQLiteOpenHelper{
         ContentValues contentValues = new ContentValues();
         contentValues.put(VEICULO_CARACTERISTICAS_COLUMN_CHASSI, chassi);
         contentValues.put(VEICULO_CARACTERISTICAS_COLUMN_CARACTERISTICA, caracteritica);
-        db.insert(VEICULO_CARACTERISTICAS_TABLE_NAME, null, contentValues);
+        if( db.insert(VEICULO_CARACTERISTICAS_TABLE_NAME, null, contentValues) == -1 ) return false;
         return true;
     }
 

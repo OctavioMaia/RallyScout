@@ -53,7 +53,7 @@ public class BatedorDAO extends SQLiteOpenHelper{
         contentValues.put(BATEDOR_COLUMN_EMAIL, email);
         contentValues.put(BATEDOR_COLUMN_PASSWORD, pass);
         contentValues.put(BATEDOR_COLUMN_NOME, nome);
-        db.insert(BATEDOR_TABLE_NAME, null, contentValues);
+        if( db.insert(BATEDOR_TABLE_NAME, null, contentValues) == -1 ) return false;
         return true;
     }
 
