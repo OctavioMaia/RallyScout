@@ -67,8 +67,7 @@ public class VeiculoDAO extends SQLiteOpenHelper{
         return true;
     }
 
-    public boolean insertVeiculoCaracteristica  (String chassi, String caracteritica)
-    {
+    public boolean insertVeiculoCaracteristica  (String chassi, String caracteritica) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(VEICULO_CARACTERISTICAS_COLUMN_CHASSI, chassi);
@@ -87,8 +86,7 @@ public class VeiculoDAO extends SQLiteOpenHelper{
      *  Method getAllVeiculos que retira da base de dados todos os veiculos nela presente
      * @return
      */
-    public ArrayList<Veiculo> getAllVeiculos()
-    {
+    public ArrayList<Veiculo> getAllVeiculos() {
         ArrayList<Veiculo> veiculos = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor resVeiculos =  db.rawQuery("select * from " + VEICULO_TABLE_NAME, null);
@@ -130,22 +128,21 @@ public class VeiculoDAO extends SQLiteOpenHelper{
      * @param atividade
      * @return
      */
-    public ArrayList<Veiculo> getAllVeiculos(int atividade)
-    {
+    public ArrayList<Veiculo> getAllVeiculos(int atividade) {
         ArrayList<Veiculo> veiculos = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        String[] argsVeiculos = { ""+atividade };
 
-        Cursor resVeiculos =  db.rawQuery("select * from " + VEICULO_TABLE_NAME + " where " + VEICULO_COLUMN_ATIVIDADE + " = ? ", argsVeiculos );
+
+        Cursor resVeiculos =  db.rawQuery("select * from " + VEICULO_TABLE_NAME + " where " + VEICULO_COLUMN_ATIVIDADE + " = ? ", new String[]{ ""+atividade } );
         resVeiculos.moveToFirst();
 
         while(resVeiculos.isAfterLast() == false){
             ArrayList<String> caracteristicas = new ArrayList<>();
             String chassi = resVeiculos.getString(resVeiculos.getColumnIndex(VEICULO_COLUMN_CHASSI));
-            String[] argsCaracteristicas = { chassi };
+
 
             Cursor resCaracteristicas =  db.rawQuery( "select " + VEICULO_CARACTERISTICAS_COLUMN_CARACTERISTICA + " from " + VEICULO_CARACTERISTICAS_TABLE_NAME +
-                    " where " + VEICULO_CARACTERISTICAS_COLUMN_CHASSI + " = ? ", argsCaracteristicas  );
+                    " where " + VEICULO_CARACTERISTICAS_COLUMN_CHASSI + " = ? ", new String[]{ chassi }  );
 
             resCaracteristicas.moveToFirst();
 
@@ -163,6 +160,8 @@ public class VeiculoDAO extends SQLiteOpenHelper{
 
             veiculos.add(v);
             resVeiculos.moveToNext();
+
+
         }
 
         return veiculos;
