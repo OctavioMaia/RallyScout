@@ -16,5 +16,18 @@ namespace BackOffice.Business
             this.email = mail;
 
         }
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
+            Equipa e = obj as Equipa;
+            if ((System.Object)e == null)
+            {
+                return false;
+            }
+            return this.email.Equals(e.email);
+        }
     }
 }

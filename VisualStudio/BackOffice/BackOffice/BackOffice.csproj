@@ -74,10 +74,13 @@
     <Compile Include="Business\BackOfficeAPP.cs" />
     <Compile Include="Business\Batedor.cs" />
     <Compile Include="Business\Equipa.cs" />
+    <Compile Include="Business\Exceptions\AtividadeJaIniciadaException.cs" />
     <Compile Include="Business\FichaBatedor.cs" />
     <Compile Include="Business\Mapa.cs" />
     <Compile Include="Business\Nota.cs" />
+    <Compile Include="Business\Exceptions\NotaRepetidaException.cs" />
     <Compile Include="Business\Veiculo.cs" />
+    <Compile Include="Business\Exceptions\VeiculoRepetidoException.cs" />
     <Compile Include="Business\Voz.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
