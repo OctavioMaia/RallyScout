@@ -14,9 +14,10 @@ import rallyscouts.justtrailit.business.Veiculo;
 /**
  * Created by rjaf on 09/06/16.
  */
-public class VeiculoDAO extends SQLiteOpenHelper{
+public class VeiculoDAO {
 
-    public static final String DATABASE_NAME = "JustTrailIt.db";
+
+
     public static final String VEICULO_TABLE_NAME = "Veiculo";
     public static final String VEICULO_COLUMN_CHASSI = "Chassi";
     public static final String VEICULO_COLUMN_MARCA = "Marca";
@@ -27,43 +28,19 @@ public class VeiculoDAO extends SQLiteOpenHelper{
     public static final String VEICULO_CARACTERISTICAS_COLUMN_CARACTERISTICA = "Caracteristicas";
     public static final String VEICULO_CARACTERISTICAS_COLUMN_CHASSI = "Chassi";
 
-    public VeiculoDAO(Context context, String name, SQLiteDatabase.CursorFactory factory) {
-        super(context, DATABASE_NAME, factory, 1);
-    }
 
-
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        db.execSQL(" CREATE TABLE " + VEICULO_TABLE_NAME + " ( " +
-                        VEICULO_COLUMN_CHASSI + " varchar(50) primary key, " +
-                        VEICULO_COLUMN_MARCA + " varchar(50), " +
-                        VEICULO_COLUMN_MODELO + " varchar(50), " +
-                        VEICULO_COLUMN_ATIVIDADE + " integer, " +
-                        " foreign key( " + VEICULO_COLUMN_CHASSI + " ) references " + AtividadeDAO.ATIVIDADE_TABLE_NAME + "( " + AtividadeDAO.ATIVIDADE_COLUMN_ID + " ))"
-        );
-
-        db.execSQL(" CREATE TABLE " + VEICULO_CARACTERISTICAS_TABLE_NAME + " ( " +
-                        VEICULO_CARACTERISTICAS_COLUMN_CARACTERISTICA + " varchar(400), " +
-                        VEICULO_CARACTERISTICAS_COLUMN_CHASSI + " varchar(50), " +
-                        " primary key ( " + VEICULO_CARACTERISTICAS_COLUMN_CHASSI + " , " + VEICULO_CARACTERISTICAS_COLUMN_CARACTERISTICA + " ), " +
-                        " foreign key( " + VEICULO_CARACTERISTICAS_COLUMN_CHASSI + " ) references " + VEICULO_TABLE_NAME + "( " + VEICULO_COLUMN_CHASSI + " ))"
-        );
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    public VeiculoDAO() {
 
     }
 
     public boolean insertVeiculo  (String chassi, String marca, String modelo, int atividade)
     {
-        SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(VEICULO_COLUMN_CHASSI, chassi);
         contentValues.put(VEICULO_COLUMN_MARCA, marca);
         contentValues.put(VEICULO_COLUMN_MODELO, modelo);
         contentValues.put(VEICULO_COLUMN_ATIVIDADE, atividade);
-        if( db.insert(VEICULO_TABLE_NAME, null, contentValues) == -1 ) return false;
+        if( .insert(VEICULO_TABLE_NAME, null, contentValues) == -1 ) return false;
         return true;
     }
 

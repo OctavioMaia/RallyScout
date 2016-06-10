@@ -1,5 +1,7 @@
 package rallyscouts.justtrailit.business;
 
+import android.content.Context;
+
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -14,19 +16,16 @@ public class Atividade {
 
     private int idAtividade;
     private String nomeEquipa;
-    private boolean inProgress;
+    private String emailEquipa;
     private MapaDAO percurso;
     private NotaDAO notas;
     private VeiculoDAO veiculos;
 
-
-    public Atividade(Date fimReconhecimento, int idAtividade, Date inicioReconhecimento, boolean inProgress, String nomeEquipa, NotaDAO notas, Mapa percurso, VeiculoDAO veiculos) {
+    public Atividade(int idAtividade, String nomeEquipa, String emailEquipa) {
         this.idAtividade = idAtividade;
-        thi
         this.nomeEquipa = nomeEquipa;
-        this.notas = notas;
-        veiculos.
-        this.percurso = percurso;
-        this.veiculos = veiculos;
+        this.percurso = new MapaDAO();
+        this.notas = new NotaDAO();
+        this.veiculos = new VeiculoDAO();
     }
 }

@@ -1,31 +1,106 @@
 package rallyscouts.justtrailit.data;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
+import android.location.Location;
+import android.util.Log;
+
+import junit.runner.Version;
+
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+
+import rallyscouts.justtrailit.business.Mapa;
 
 /**
  * Created by rjaf on 09/06/16.
  */
-public class MapaDAO extends SQLiteOpenHelper{
-    public static final String DATABASE_NAME = "JustTrailIt.db";
+public class MapaDAO {
+
+    private Context mContext;
+    private SQLiteDatabase mDatabase;
+    private DBAdapter myDBadapter;
+
+    public static final String TAG = "MapaDAO";
+
     public static final String MAPA_TABLE_NAME = "Mapa";
-    public static final String MAPA_COLUMN_ATIVIDADE = "Atividade";
-    public static final String MAPA_COLUMN_ = "Marca";
-    public static final String MAPA_COLUMN_MODELO = "Modelo";
-    public static final String VEICULO_COLUMN_ATIVIDADE = "Atividade";
+    public static final String MAPA_COLUMN_ATIVIDADE_ID = "Atividade";
+    public static final String MAPA_COLUMN_NOME_PROVA = "NomeProva";
 
-    public MapaDAO(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, DATABASE_NAME, factory, version);
+    public static final String MAPA_COORDENADAS_TABLE_NAME = "CoordenadasMapa";
+    public static final String MAPA_COORDENADAS_COLUMN_MAPA = "Mapa";
+    public static final String MAPA_COORDENADAS_COLUMN_NR_COORDENADA = "NrCoordenada";
+    public static final String MAPA_COORDENADAS_COLUMN_LONGITUDE = "Longitude";
+    public static final String MAPA_COORDENADAS_COLUMN_LATITUDE = "Latitude";
+
+
+    public MapaDAO(Context mContext) {
+        this.mContext = mContext;
+        this.mContext = mContext;
+        this.myDBadapter = new DBAdapter( this.mContext );
+        // open the database
+        try {
+            open();
+        } catch (SQLException e) {
+            Log.e(TAG, "SQLException on openning database " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE ");
+    public void open() throws SQLException {
+        mDatabase = myDBadapter.getWritableDatabase();
     }
 
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    public void close() {
+        myDBadapter.close();
+    }
 
+    public boolean insertMapa(int idMapa, String nomeProva) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MAPA_COLUMN_ATIVIDADE_ID, idMapa);
+        contentValues.put(MAPA_COLUMN_NOME_PROVA, nomeProva);
+        if( mDatabase.insert(MAPA_TABLE_NAME, null, contentValues) == -1 ) return false;
+        return true;
+    }
+
+    public boolean insertMapaCoordenada(int idMapa, int nrOrdem, float lng, float lat) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MAPA_COORDENADAS_COLUMN_MAPA, idMapa );
+        contentValues.put(MAPA_COORDENADAS_COLUMN_NR_COORDENADA, nrOrdem );
+        contentValues.put(MAPA_COORDENADAS_COLUMN_LONGITUDE, lng );
+        contentValues.put(MAPA_COORDENADAS_COLUMN_LATITUDE, lat);
+        if( mDatabase.insert(MAPA_COORDENADAS_TABLE_NAME, null, contentValues) == -1 ) return false;
+        return true;
+    }
+
+    public Mapa getMapa(int idMapa){
+        Mapa map = null;
+        Cursor res = mDatabase.rawQuery("SELECT * FROM " + MAPA_TABLE_NAME + " WHERE " + MAPA_COLUMN_ATIVIDADE_ID + " = ?" , new String[]{ ""+idMapa });
+        if(res.getCount()>0){
+            map = new Mapa(getCoordenadas(idMapa), Integer.parseInt(res.getString(res.getColumnIndex(MAPA_COLUMN_ATIVIDADE_ID))), res.getString(res.getColumnIndex(MAPA_COLUMN_NOME_PROVA)));
+
+
+        }
+        return map;
+    }
+
+    public Map<Integer,Location> getCoordenadas(int idMapa){
+        Map<Integer,Location> coord = new HashMap<>();
+        Cursor res = mDatabase.rawQuery("SELECT * FROM " + MAPA_COORDENADAS_TABLE_NAME + " WHERE " + MAPA_COORDENADAS_COLUMN_MAPA + " = ?" , new String[]{ ""+idMapa } );
+        if(res.getCount()>0){
+            res.moveToFirst();
+            while(res.isAfterLast() == false){
+                Location loc = new Location("");
+                loc.setLatitude(Float.parseFloat(res.getString(res.getColumnIndex(MAPA_COORDENADAS_COLUMN_LATITUDE))));
+                loc.setLongitude(Float.parseFloat(res.getString(res.getColumnIndex(MAPA_COORDENADAS_COLUMN_LONGITUDE))));
+                coord.put(Integer.parseInt(res.getString(res.getColumnIndex(MAPA_COORDENADAS_COLUMN_NR_COORDENADA))), loc);
+                res.moveToNext();
+            }
+            res.close();
+        }
+        return coord;
     }
 }

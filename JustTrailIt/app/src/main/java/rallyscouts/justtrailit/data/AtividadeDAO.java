@@ -3,59 +3,81 @@ package rallyscouts.justtrailit.data;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+import java.sql.SQLException;
 
 import rallyscouts.justtrailit.business.Atividade;
 
 /**
  * Created by rjaf on 09/06/16.
  */
-public class AtividadeDAO extends SQLiteOpenHelper {
+public class AtividadeDAO {
 
-    public static final String DATABASE_NAME = "JustTrailIt.db";
+    public static final String TAG = "AtividadeDAO";
+
+    private Context mContext;
+    private SQLiteDatabase mDatabase;
+    private DBAdapter myDBadapter;
+
     public static final String ATIVIDADE_TABLE_NAME = "Atividade";
     public static final String ATIVIDADE_COLUMN_ID = "id_Atividade";
     public static final String ATIVIDADE_COLUMN_EQUIPA_EMAIL = "Equipa_Email";
     public static final String ATIVIDADE_COLUMN_EQUIPA_NOME = "Equipa_Nome";
 
 
-    public AtividadeDAO(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, DATABASE_NAME, factory, 1);
+    public AtividadeDAO(Context mContext) {
+        this.mContext = mContext;
+        this.myDBadapter = new DBAdapter( mContext );
+        // open the database
+        try {
+            open();
+        } catch (SQLException e) {
+            Log.e(TAG, "SQLException on openning database " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        db.execSQL(
-        );
+    public void open() throws SQLException {
+        mDatabase = myDBadapter.getWritableDatabase();
     }
 
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + ATIVIDADE_TABLE_NAME);
-        onCreate(db);
+    public void close() {
+        myDBadapter.close();
     }
 
+    /**
+     * insertAtividade metodo que insere uma atividade na base de dados
+     * @param idAtividade
+     * @param equipaEmail
+     * @param equipaNome
+     * @return
+     */
     public boolean insertAtividade(int idAtividade, String equipaEmail, String equipaNome) {
-        SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(ATIVIDADE_COLUMN_ID, idAtividade);
         contentValues.put(ATIVIDADE_COLUMN_EQUIPA_EMAIL, equipaEmail);
         contentValues.put(ATIVIDADE_COLUMN_EQUIPA_NOME, equipaNome);
-        if( db.insert(ATIVIDADE_TABLE_NAME, null, contentValues) == -1) return false ;
+        if( mDatabase.insert(ATIVIDADE_TABLE_NAME, null, contentValues) == -1) return false ;
         return true;
     }
 
-    public Atividade getData(int idAtividade){
+    /**
+     * getAtividade metodo que procura por uma atividade pelo seu id
+     * @param idAtividade
+     * @return
+     */
+    public Atividade getAtividade(int idAtividade){
         Atividade resAtiv = null;
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res =  db.rawQuery( "SELECT * FROM " +  ATIVIDADE_TABLE_NAME  + " WHERE " + ATIVIDADE_COLUMN_ID + " = ? " , new String[]{ ""+idAtividade } );
-
+        Cursor res =  mDatabase.rawQuery( "SELECT * FROM " +  ATIVIDADE_TABLE_NAME  + " WHERE " + ATIVIDADE_COLUMN_ID + " = ? " , new String[]{ ""+idAtividade } );
         if(res.getCount()>0){
-            resAtiv = new Atividade();
+            resAtiv = new Atividade(
+                    Integer.parseInt(res.getString(res.getColumnIndex(ATIVIDADE_COLUMN_ID))),
+                    res.getString(res.getColumnIndex(ATIVIDADE_COLUMN_EQUIPA_NOME)),
+                    res.getString(res.getColumnIndex(ATIVIDADE_COLUMN_EQUIPA_EMAIL))
+            );
         }
-
         return resAtiv;
     }
 }
