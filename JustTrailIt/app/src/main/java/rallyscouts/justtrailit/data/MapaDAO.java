@@ -80,7 +80,7 @@ public class MapaDAO {
         Mapa map = null;
         Cursor res = mDatabase.rawQuery("SELECT * FROM " + MAPA_TABLE_NAME + " WHERE " + MAPA_COLUMN_ATIVIDADE_ID + " = ?" , new String[]{ ""+idMapa });
         if(res.getCount()>0){
-            map = new Mapa(getCoordenadas(idMapa), Integer.parseInt(res.getString(res.getColumnIndex(MAPA_COLUMN_ATIVIDADE_ID))), res.getString(res.getColumnIndex(MAPA_COLUMN_NOME_PROVA)));
+            map = new Mapa(getCoordenadas(idMapa), res.getInt(res.getColumnIndex(MAPA_COLUMN_ATIVIDADE_ID)), res.getString(res.getColumnIndex(MAPA_COLUMN_NOME_PROVA)));
 
 
         }
@@ -94,9 +94,9 @@ public class MapaDAO {
             res.moveToFirst();
             while(res.isAfterLast() == false){
                 Location loc = new Location("");
-                loc.setLatitude(Float.parseFloat(res.getString(res.getColumnIndex(MAPA_COORDENADAS_COLUMN_LATITUDE))));
-                loc.setLongitude(Float.parseFloat(res.getString(res.getColumnIndex(MAPA_COORDENADAS_COLUMN_LONGITUDE))));
-                coord.put(Integer.parseInt(res.getString(res.getColumnIndex(MAPA_COORDENADAS_COLUMN_NR_COORDENADA))), loc);
+                loc.setLatitude(res.getFloat(res.getColumnIndex(MAPA_COORDENADAS_COLUMN_LATITUDE)));
+                loc.setLongitude(res.getFloat(res.getColumnIndex(MAPA_COORDENADAS_COLUMN_LONGITUDE)));
+                coord.put(res.getInt(res.getColumnIndex(MAPA_COORDENADAS_COLUMN_NR_COORDENADA)), loc);
                 res.moveToNext();
             }
             res.close();
