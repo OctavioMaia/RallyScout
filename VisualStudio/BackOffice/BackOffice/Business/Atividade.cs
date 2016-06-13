@@ -119,17 +119,26 @@ namespace BackOffice.Business
             PdfWriter wri = PdfWriter.GetInstance(doc, new FileStream(path, FileMode.Create));
             doc.Open();
             Paragraph p = new Paragraph("Reprot from " + percurso.nomeProva + " to Team " + equipa.nome + ".\n\n\n\n", TitleFont);
-           
+            p.Alignment = Element.ALIGN_CENTER;
             doc.Add(p);
 
             PdfPTable t = new PdfPTable(2);
             foreach(Nota n in notas){
                 if (n.asVoice())
                 {
+                    
                     String nota = n.getToPiloto();
-                    String dist = "Coluna 1 Linha1\n\nColuna 1 Linha2";
-                    t.AddCell(new PdfPCell(new Phrase(dist, distFont)));
-                    t.AddCell(new PdfPCell(new Phrase(nota, NotaFont)));
+                    double startDist = n.getDistanceToBegin(this.percurso);
+                    double endDist = n.getDistanceToFinish(this.percurso);
+                    String dist = startDist + "\n\n("+ endDist+")";
+                    var c1 = new PdfPCell(new Phrase(dist, distFont));
+                    var c2 = new PdfPCell(new Phrase(nota, NotaFont));
+                    c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                    c1.VerticalAlignment = Element.ALIGN_CENTER;
+                    c2.HorizontalAlignment = Element.ALIGN_CENTER;
+                    c2.VerticalAlignment = Element.ALIGN_CENTER;
+                    t.AddCell(c1);
+                    t.AddCell(c2);
                 }
             }
 
