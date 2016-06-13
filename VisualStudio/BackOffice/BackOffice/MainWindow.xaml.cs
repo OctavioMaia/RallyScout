@@ -31,9 +31,18 @@ namespace BackOffice
             Dictionary<string, string> d = BackOfficeAPP.simbolos;
 
             Atividade a = new Atividade(1, "jms", "Teste", "C:\\Users\\Joao\\Desktop\\map.gpx", new List<Veiculo>(), new Equipa("jmsEquipa", "jms@a"), new Batedor("jms","jms","123"));
+            b.atividadeFE.Add(a.idAtividade, a);
 
-            
-            for(int i=0; i < 100; i++)
+            /*
+            MessageBox.Show("Vou gerar Json");
+            b.enviarAtividade(a.idAtividade);
+            MessageBox.Show("gerado Json");
+            */
+            MessageBox.Show("ler Json");
+            string json = System.IO.File.ReadAllText("C:\\Users\\Joao\\Desktop\\test.json");
+            b.formJson(json);
+            MessageBox.Show("li Json");
+            for (int i=0; i < 100; i++)
             {
                 Voz v = new Voz(null);
                 v.texto = "Texto Voz " + i;
@@ -41,16 +50,18 @@ namespace BackOffice
                 n.notasVoz = v;
                 a.addNota(n);
             }
-            a.generateReportCopiloto("C:\\Users\\Joao\\Desktop\\Teste.pdf");
-            MessageBox.Show("PDF Gerado");
+            //gerar pdf
+            //a.generateReportCopiloto("C:\\Users\\Joao\\Desktop\\Teste.pdf");
+           
 
-            List<String> at = new List<string>();
+            /*teste enviar mail
+             * List<String> at = new List<string>();
             at.Add("C:\\Users\\Joao\\Desktop\\Teste.pdf");
             at.Add("C:\\Users\\Joao\\Desktop\\map.gpx");
 
             MessageBox.Show("Vou mandar");
             b.email_send(b.email, "Subject test", "body Teste", at);
-            MessageBox.Show("Mandei");
+            MessageBox.Show("Mandei");*/
             /*foreach (string chave in d.Keys)
             {
                 MessageBox.Show(chave + " --> " + d[chave]);
