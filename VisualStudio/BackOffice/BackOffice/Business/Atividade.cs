@@ -25,12 +25,28 @@ namespace BackOffice.Business
         public DateTime fimReconhecimento { get; set; }
         public string nomeEquipa { get; set; }
         public Boolean inprogress { get; set; }
+        public Boolean done { get; set; }
         ///
         public List<Nota> notas { get; set; }
         public Mapa percurso { get; set; }
         public List<Veiculo> veiculos { get; set; }
         public Equipa equipa { get; set; }
         public Batedor batedor { get; set; }
+
+        public Atividade(int id) //so para a leitura a partir do json
+        {
+            this.idAtividade = id;
+            this.inicioReconhecimento = new DateTime(); //nao deixa meter nulo
+            this.fimReconhecimento = new DateTime(); //nao deixa meter nulo
+            this.nomeEquipa = null;
+            this.inprogress = false;
+            this.done = false;
+            this.notas = new List<Nota>();
+            this.percurso = null;
+            this.veiculos = null;
+            this.equipa = null;
+            this.batedor = null;
+        }
 
         public Atividade(int id, string mailEquipa, string nomeProva
             , string mapPath, List<Veiculo> veicls, Equipa equip,
@@ -41,6 +57,7 @@ namespace BackOffice.Business
             this.fimReconhecimento= new DateTime(); //nao deixa meter nulo
             this.nomeEquipa = equip.nome;
             this.inprogress = false;
+            this.done = false;
             this.notas = null; //quando uma atividade é inserida nao tem notas
             this.percurso = new Mapa(nomeProva, id, mapPath);
             this.veiculos = veicls;
@@ -49,6 +66,8 @@ namespace BackOffice.Business
 
 
         }
+
+
         public void addNota(Nota n)
         {
             if (this.notas == null)
@@ -100,6 +119,7 @@ namespace BackOffice.Business
                 throw new AtividadeNaoIniciadaException("Atividade Não Foi Iniciada");
             }
             this.inprogress = false;
+            this.done = true;
             this.fimReconhecimento = DateTime.Now;
         }
 
