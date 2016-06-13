@@ -91,12 +91,14 @@ public class BatedorDAO {
      */
     public Batedor getBatedor(String email){
         Batedor bat = null;
-        Cursor res = mDatabase.rawQuery("select * from " + BATEDOR_TABLE_NAME + " where " + BATEDOR_COLUMN_EMAIL + " = ?" , new String[]{ email });
+        Cursor res = mDatabase.rawQuery("SELECT * FROM " + BATEDOR_TABLE_NAME + " WHERE " + BATEDOR_COLUMN_EMAIL + " = ?" , new String[]{ email });
+        res.moveToFirst();
         if(res.getCount()>0){
             bat = new Batedor(
                     res.getString(res.getColumnIndex(BATEDOR_COLUMN_EMAIL)),
                     res.getString(res.getColumnIndex(BATEDOR_COLUMN_NOME)),
-                    res.getString(res.getColumnIndex(BATEDOR_COLUMN_PASSWORD))
+                    res.getString(res.getColumnIndex(BATEDOR_COLUMN_PASSWORD)),
+                    res.getInt(res.getColumnIndex(BATEDOR_COLUMN_ATIVIDADE))
             );
         }
         return bat;

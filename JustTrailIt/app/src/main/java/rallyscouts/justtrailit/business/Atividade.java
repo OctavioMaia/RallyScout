@@ -17,15 +17,9 @@ public class Atividade {
     private int idAtividade;
     private String nomeEquipa;
     private String emailEquipa;
-    private MapaDAO percurso;
-    private NotaDAO notas;
-    private VeiculoDAO veiculos;
 
     public Atividade(int idAtividade, String nomeEquipa, String emailEquipa) {
         this.idAtividade = idAtividade;
         this.nomeEquipa = nomeEquipa;
-        this.percurso = new MapaDAO();
-        this.notas = new NotaDAO();
-        this.veiculos = new VeiculoDAO();
     }
 }

@@ -14,8 +14,8 @@ import java.util.Map;
 public class DBAdapter extends SQLiteOpenHelper {
 
     public static final String TAG = "DBAdapter";
-    public static final String DATABASE_NAME = "JustTrailIt.db";
-    public static final int DATABASE_VERSION = 1;
+    public static final String DATABASE_NAME = "JustTrailIt";
+    public static final int DATABASE_VERSION = 4;
 
     private static final String CREATE_TABLE_ATIVIDADE =
             "CREATE TABLE " + AtividadeDAO.ATIVIDADE_TABLE_NAME + " ( " +
@@ -28,14 +28,14 @@ public class DBAdapter extends SQLiteOpenHelper {
                     BatedorDAO.BATEDOR_COLUMN_EMAIL + " VARCHAR(50) PRIMARY KEY, " +
                     BatedorDAO.BATEDOR_COLUMN_PASSWORD + " VARCHAR(50) NOT NULL, " +
                     BatedorDAO.BATEDOR_COLUMN_NOME + " VARCHAR(50) NOT NULL, " +
-                    BatedorDAO.BATEDOR_COLUMN_ATIVIDADE + "INTEGER, " +
+                    BatedorDAO.BATEDOR_COLUMN_ATIVIDADE + " INTEGER, " +
                     "FOREIGN KEY ( " + BatedorDAO.BATEDOR_COLUMN_ATIVIDADE + " ) REFERENCES " + AtividadeDAO.ATIVIDADE_TABLE_NAME + "( " + AtividadeDAO.ATIVIDADE_COLUMN_ID + " ))";
 
     private static final String CREATE_TABLE_MAPA =
             "CREATE TABLE " + MapaDAO.MAPA_TABLE_NAME + " ( " +
                     MapaDAO.MAPA_COLUMN_ATIVIDADE_ID + " INTEGER PRIMARY KEY, " +
                     MapaDAO.MAPA_COLUMN_NOME_PROVA + " VARCHAR(50) NOT NULL," +
-                    "FOREIGN KEY ( " + MapaDAO.MAPA_COLUMN_ATIVIDADE_ID + ") REFERENCES " + AtividadeDAO.ATIVIDADE_TABLE_NAME + "( " + AtividadeDAO.ATIVIDADE_COLUMN_ID + "))";
+                    "FOREIGN KEY ( " + MapaDAO.MAPA_COLUMN_ATIVIDADE_ID + " ) REFERENCES " + AtividadeDAO.ATIVIDADE_TABLE_NAME + "( " + AtividadeDAO.ATIVIDADE_COLUMN_ID + "))";
 
 
     private static final String CREATE_TABLE_MAPA_COORDENADAS =
@@ -45,7 +45,7 @@ public class DBAdapter extends SQLiteOpenHelper {
                     MapaDAO.MAPA_COORDENADAS_COLUMN_LATITUDE + " FLOAT NOT NULL, " +
                     MapaDAO.MAPA_COORDENADAS_COLUMN_LONGITUDE + " FLOAT NOT NULL, " +
                     "PRIMARY KEY ( "+ MapaDAO.MAPA_COORDENADAS_COLUMN_MAPA + " , " + MapaDAO.MAPA_COORDENADAS_COLUMN_NR_COORDENADA + " ), " +
-                    "FOREIGN KEY ( " + MapaDAO.MAPA_COLUMN_ATIVIDADE_ID + ") REFERENCES " + AtividadeDAO.ATIVIDADE_TABLE_NAME + " ( " + AtividadeDAO.ATIVIDADE_COLUMN_ID + "))";
+                    "FOREIGN KEY ( " + MapaDAO.MAPA_COLUMN_ATIVIDADE_ID + " ) REFERENCES " + AtividadeDAO.ATIVIDADE_TABLE_NAME + " ( " + AtividadeDAO.ATIVIDADE_COLUMN_ID + " ))";
 
     private static final String CREATE_TABLE_NOTA =
             "CREATE TABLE " + NotaDAO.NOTA_TABLE_NAME + " ( " +
@@ -60,10 +60,11 @@ public class DBAdapter extends SQLiteOpenHelper {
 
     private static final String CREATE_TABLE_IMAGEM =
             "CREATE TABLE " + NotaDAO.IMAGEM_TABLE_NAME + " ( " +
+                    NotaDAO.IMAGEM_COLUMN_ID + " INTEGER, " +
                     NotaDAO.IMAGEM_COLUMN_IMAGE + " BLOB, " +
                     NotaDAO.IMAGEM_COLUMN_NOTA + " INTEGER, " +
                     NotaDAO.IMAGEM_COLUMN_ATIVIDADE + " INTEGER, " +
-                    "PRIMARY KEY ( " + NotaDAO.IMAGEM_COLUMN_IMAGE + " , " + NotaDAO.IMAGEM_COLUMN_NOTA + " , " + NotaDAO.IMAGEM_COLUMN_ATIVIDADE + " )" +
+                    "PRIMARY KEY ( " + NotaDAO.IMAGEM_COLUMN_ID + " , " + NotaDAO.IMAGEM_COLUMN_NOTA + " , " + NotaDAO.IMAGEM_COLUMN_ATIVIDADE + " )" +
                     "FOREIGN KEY ( " + NotaDAO.IMAGEM_COLUMN_NOTA + ") REFERENCES " + NotaDAO.NOTA_TABLE_NAME + " ( " + NotaDAO.NOTA_COLUMN_ID_NOTA + "), " +
                     "FOREIGN KEY ( " + NotaDAO.IMAGEM_COLUMN_ATIVIDADE + ") REFERENCES " + AtividadeDAO.ATIVIDADE_TABLE_NAME + " ( " + AtividadeDAO.ATIVIDADE_COLUMN_ID + "))";
 
@@ -89,6 +90,7 @@ public class DBAdapter extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        Log.v(TAG,"merda2");
         try {
             db.execSQL(CREATE_TABLE_ATIVIDADE);
         }catch (android.database.SQLException eSQL){

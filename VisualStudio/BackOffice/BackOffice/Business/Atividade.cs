@@ -5,7 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 using BackOffice;
 using BackOffice.Business.Exceptions;
-
+using itextsharp.pdfa;
+using itextsharp;
+using iTextSharp;
+using iTextSharp.text;
+using iTextSharp.awt;
+using iTextSharp.testutils;
+using iTextSharp.xmp;
+using iTextSharp.xtra;
+using iTextSharp.text.pdf;
+using System.IO;
 
 namespace BackOffice.Business
 {
@@ -83,6 +92,60 @@ namespace BackOffice.Business
             this.inprogress = true;
             this.inicioReconhecimento = DateTime.Now;
         }
+
+        public void stopReconhecimento()
+        {
+            if (this.inprogress == false)
+            {
+                throw new AtividadeNaoIniciadaException("Atividade Não Foi Iniciada");
+            }
+            this.inprogress = false;
+            this.fimReconhecimento = DateTime.Now;
+        }
+
+        public void addVeiculo(string mod, string marc, string chassie, List<string> carac)
+        {
+            Veiculo v = new Veiculo(mod, marc, chassie, carac);
+            this.addVeiculo(v);
+        }
+
+        public void generateReportCopiloto(string path)
+        {
+
+            var NotaFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 18, BaseColor.BLACK);
+            var TitleFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 20, BaseColor.BLACK);
+            var distFont = FontFactory.GetFont(FontFactory.HELVETICA, 12, BaseColor.BLACK);
+            Document doc = new Document(iTextSharp.text.PageSize.LETTER, 10, 10, 42, 35);
+            PdfWriter wri = PdfWriter.GetInstance(doc, new FileStream(path, FileMode.Create));
+            doc.Open();
+            Paragraph p = new Paragraph("Reprot from " + percurso.nomeProva + " to Team " + equipa.nome + ".\n\n\n\n", TitleFont);
+            p.Alignment = Element.ALIGN_CENTER;
+            doc.Add(p);
+
+            PdfPTable t = new PdfPTable(2);
+            foreach(Nota n in notas){
+                if (n.asVoice())
+                {
+                    
+                    String nota = n.getToPiloto();
+                    double startDist = n.getDistanceToBegin(this.percurso);
+                    double endDist = n.getDistanceToFinish(this.percurso);
+                    String dist = startDist + "\n\n("+ endDist+")";
+                    var c1 = new PdfPCell(new Phrase(dist, distFont));
+                    var c2 = new PdfPCell(new Phrase(nota, NotaFont));
+                    c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                    c1.VerticalAlignment = Element.ALIGN_CENTER;
+                    c2.HorizontalAlignment = Element.ALIGN_CENTER;
+                    c2.VerticalAlignment = Element.ALIGN_CENTER;
+                    t.AddCell(c1);
+                    t.AddCell(c2);
+                }
+            }
+
+            doc.Add(t);
+            doc.Close();
+        }
+
     }
 
 

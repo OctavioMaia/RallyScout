@@ -22,10 +22,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+<<<<<<< HEAD
         <activity android:name=".activity.Atividade" />
         <activity android:name=".activity.RegistarNota" />
         <activity android:name=".activity.Notas" />
         <activity android:name=".activity.InformacaoNota"></activity>
+=======
+        <activity android:name=".activity.MenuBatedor"></activity>
+>>>>>>> master
     </application>
 
 </manifest>
