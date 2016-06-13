@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Windows;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BackOffice;
-using System.Speech;
 using System.Speech.Recognition;
 using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using BackOffice.Business.Exceptions;
+using System.Net.Mail;
+using BackOffice;
+using BackOffice.Data;
+using BackOffice.Data.Json;
+using System.Windows;
 
 namespace BackOffice.Business
 {
@@ -94,6 +94,8 @@ namespace BackOffice.Business
                 }   
             }
             //esta tudo lido que vem do json falta o resto
+            //TODO
+            this.atividadeFE = new Dictionary<int, Atividade>();
         }
 
         public void registarAtividade()
@@ -114,19 +116,79 @@ namespace BackOffice.Business
         {
 
         }
+
+
         public void enviarAtividade()
         {
 
         }
 
+        public void formJson(string json)
+        {
+            // JustToBack a  = JsonConvert.DeserializeObject(json);
+            using (var sr = new StringReader(json))
+            using (var jr = new JsonTextReader(sr))
+            {
+                var js = new JsonSerializer();
+                var u = js.Deserialize<JustToBack>(jr);
+                //Console.WriteLine(u.user.display_name);
+                MessageBox.Show("ID: " + u.idAtividade);
+            }
+
+        }
+
+        private string jsonFrom(int idAtividade)
+        {
+            Atividade a = this.atividadeFE[idAtividade];
+            BackToJust jsonClass = new BackToJust(a);
+            string json = JsonConvert.SerializeObject(jsonClass, Formatting.Indented);
+            //File.WriteAllText("C:\\Users\\Joao\\Desktop\\gerado.json", json);
+            return json;
+        }
+
 
         public void gerarRelatorios(string path, int atividade_id)
         {
-
+            string pathPiloto = path + "copilot.pdf";
+            Atividade a = this.atividadeTERM[atividade_id];
+            if (!this.atividadeTERM.ContainsKey(atividade_id))
+            {
+                throw new AtividadeNaoIniciadaException("Atividade " + atividade_id + " Nao Terminada");
+            }
+            a.generateReportCopiloto(pathPiloto);
         }
-        public void enviarEmail(string mail)
+
+
+
+        public void email_send(string recipient, string subject, string body, List<string> attachmentFilenames)
         {
+            MailMessage mail = new MailMessage();
+            SmtpClient SmtpServer = new SmtpClient("smtp.gmail.com");
+            mail.From = new MailAddress(this.email);
+            mail.To.Add(recipient);
+            mail.Subject = subject;
+            mail.Body = body;
+
+
+            foreach (string attachmentFilename in attachmentFilenames)
+            {
+                if (attachmentFilename != null)
+                {
+                    System.Net.Mail.Attachment attachment;
+                    attachment = new System.Net.Mail.Attachment(attachmentFilename);
+                    mail.Attachments.Add(attachment);
+                }
+            }
+
+            SmtpServer.Port = 587;
+            SmtpServer.Credentials = new System.Net.NetworkCredential(this.email, this.passMail);
+            SmtpServer.EnableSsl = true;
+
+            SmtpServer.Send(mail);
 
         }
+
+
+     
     }
 }

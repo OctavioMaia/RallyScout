@@ -16,7 +16,7 @@ namespace BackOffice.Business
         private GeoCoordinate localRegisto { get; set; }
         private List<Image> imagens { get; set; }
         private byte[] voice { get; set; }
-        private Voz notasVoz { get; set; }
+        public Voz notasVoz { get; set; }
 
         public Nota(int id, string texto, double lat, double longt, List<Image> imgs, byte[] voz)
         {
@@ -34,7 +34,7 @@ namespace BackOffice.Business
         }
         public bool asVoice()
         {
-            return this.voice != null;
+            return this.notasVoz != null;
         }
 
         public string getToPiloto()
@@ -56,6 +56,55 @@ namespace BackOffice.Business
             return this.idNota == n.idNota;
         }
 
+
+
+        public double getDistanceToBegin(Mapa m) //retorna em KM
+        {
+            double dist = 0;
+           foreach(int key in m.cords.Keys)
+            {
+                if (m.cords[key].Equals(this.localRegisto))
+                {
+                    if (key != 0)
+                    {
+                        dist += m.cords[key - 1].GetDistanceTo(m.cords[key]);
+                    }
+                    break;
+                }
+                if (key != 0)
+                {
+                    dist += m.cords[key - 1].GetDistanceTo(m.cords[key]);
+                }
+            }
+            return Math.Round(dist/1000, 2);
+        }
+
+        public double getDistanceToFinish(Mapa m) //retorna em KM
+        {
+            double dist = 0;
+            bool start = false;
+            int tot = m.cords.Keys.Count;
+            foreach (int key in m.cords.Keys)
+            {
+                if (m.cords[key].Equals(this.localRegisto))
+                {
+                    start = true;
+                    if(key+1!= tot)
+                    {
+                        dist += m.cords[key].GetDistanceTo(m.cords[key+1]);
+                    }
+                }
+                if (start == true)
+                {
+                    if (key + 1 != tot)
+                    {
+                        dist += m.cords[key].GetDistanceTo(m.cords[key + 1]);
+                    }
+
+                }
+            }
+            return Math.Round(dist/1000, 2);
+        }
     }
 
 
