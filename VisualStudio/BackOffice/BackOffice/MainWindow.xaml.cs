@@ -25,17 +25,31 @@ namespace BackOffice
         {
 
             BackOfficeAPP b = new BackOfficeAPP("C:\\Users\\Joao\\Documents\\GitHub\\RallyScout\\ExemplosJson\\config.json");
-            MessageBox.Show(b.email);
-            MessageBox.Show(b.passMail);
+          //  MessageBox.Show(b.email);
+           // MessageBox.Show(b.passMail);
 
-            Dictionary<string, string> d = b.simbolos;
+            Dictionary<string, string> d = BackOfficeAPP.simbolos;
 
-            foreach (string chave in d.Keys)
+            Atividade a = new Atividade(1, "jms", "Teste", "123", new List<Veiculo>(), new Equipa("jmsEquipa", "jms@a"), new Batedor());
+            
+
+            for(int i=0; i < 100; i++)
+            {
+                Voz v = new Voz(null);
+                v.texto = "Texto Voz " + i;
+                Nota n = new Nota(i, "Nota " + i, 0, 0, new List<System.Drawing.Image>(), null);
+                n.notasVoz = v;
+                a.addNota(n);
+            }
+            a.generateReportCopiloto("C:\\Users\\Joao\\Desktop\\Teste.pdf");
+            MessageBox.Show("PDF Gerado");
+
+            /*foreach (string chave in d.Keys)
             {
                 MessageBox.Show(chave + " --> " + d[chave]);
-            }
+            }*/
             //MessageBox.Show();
-            
+
 
             InitializeComponent();
         }

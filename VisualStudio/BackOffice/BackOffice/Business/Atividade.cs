@@ -5,7 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 using BackOffice;
 using BackOffice.Business.Exceptions;
-
+using itextsharp.pdfa;
+using itextsharp;
+using iTextSharp;
+using iTextSharp.text;
+using iTextSharp.awt;
+using iTextSharp.testutils;
+using iTextSharp.xmp;
+using iTextSharp.xtra;
+using iTextSharp.text.pdf;
+using System.IO;
 
 namespace BackOffice.Business
 {
@@ -83,6 +92,51 @@ namespace BackOffice.Business
             this.inprogress = true;
             this.inicioReconhecimento = DateTime.Now;
         }
+
+        public void stopReconhecimento()
+        {
+            if (this.inprogress == false)
+            {
+                throw new AtividadeNaoIniciadaException("Atividade Não Foi Iniciada");
+            }
+            this.inprogress = false;
+            this.fimReconhecimento = DateTime.Now;
+        }
+
+        public void addVeiculo(string mod, string marc, string chassie, List<string> carac)
+        {
+            Veiculo v = new Veiculo(mod, marc, chassie, carac);
+            this.addVeiculo(v);
+        }
+
+        public void generateReportCopiloto(string path)
+        {
+
+            var NotaFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 18, BaseColor.BLACK);
+            var TitleFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 20, BaseColor.BLACK);
+            var distFont = FontFactory.GetFont(FontFactory.HELVETICA, 12, BaseColor.BLACK);
+            Document doc = new Document(iTextSharp.text.PageSize.LETTER, 10, 10, 42, 35);
+            PdfWriter wri = PdfWriter.GetInstance(doc, new FileStream(path, FileMode.Create));
+            doc.Open();
+            Paragraph p = new Paragraph("Reprot from " + percurso.nomeProva + " to Team " + equipa.nome + ".\n\n\n\n", TitleFont);
+           
+            doc.Add(p);
+
+            PdfPTable t = new PdfPTable(2);
+            foreach(Nota n in notas){
+                if (n.asVoice())
+                {
+                    String nota = n.getToPiloto();
+                    String dist = "Coluna 1 Linha1\n\nColuna 1 Linha2";
+                    t.AddCell(new PdfPCell(new Phrase(dist, distFont)));
+                    t.AddCell(new PdfPCell(new Phrase(nota, NotaFont)));
+                }
+            }
+
+            doc.Add(t);
+            doc.Close();
+        }
+
     }
 
 

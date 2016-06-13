@@ -16,7 +16,7 @@ namespace BackOffice.Business
         private GeoCoordinate localRegisto { get; set; }
         private List<Image> imagens { get; set; }
         private byte[] voice { get; set; }
-        private Voz notasVoz { get; set; }
+        public Voz notasVoz { get; set; }
 
         public Nota(int id, string texto, double lat, double longt, List<Image> imgs, byte[] voz)
         {
@@ -34,7 +34,7 @@ namespace BackOffice.Business
         }
         public bool asVoice()
         {
-            return this.voice != null;
+            return this.notasVoz != null;
         }
 
         public string getToPiloto()
