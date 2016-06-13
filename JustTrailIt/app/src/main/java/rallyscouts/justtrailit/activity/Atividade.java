@@ -20,46 +20,29 @@ public class Atividade extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_atividade);
 
-        TextView atividade = findViewById(R.id.nAtividade);
-        atividade.setText("Atividade " +  );
+        TextView atividade = (TextView) findViewById(R.id.nAtividade);
+        atividade.setText("Atividade " + "4" );
 
-        TextView equipa = findViewById(R.id.id_Equipa);
-        equipa.setText("Equipa: " + );
+        TextView equipa = (TextView) findViewById(R.id.id_Equipa);
+        equipa.setText("Equipa: " + "1");
 
-        TextView veiculo = findViewById(R.id.id_Veiculo);
-        veiculo.setText("Veiculo: " + );
+        TextView veiculo = (TextView) findViewById(R.id.id_Veiculo);
+        veiculo.setText("Veiculo: " + "ola");
 
         registarNota();
         verNotas();
     }
 
-    private void registarNota()
-    {
-        Button registarnota = findViewById(R.id.button_RegistarNota);
-        registarnota.setOnClickListener( new View.OnClickListener())
-        {
-            @Override
-            public void onClick(View v)
-            {
-                startActivity(new Intent(Atividade.this, RegistarNota.class));
-            }
-        }
 
+    private void registarNota() {
+        startActivity(new Intent(Atividade.this, RegistarNota.class));
     }
 
-    private void verNotas()
-    {
-        Button vernota = findViewById(R.id.button_VerNotas);
-        vernota.setOnClickListener( new View.OnClickListener())
-        {
-            @Override
-            public void onClick(View v)
-            {
-                startActivity(new Intent(Atividade.this, Notas.class));
-            }
-        }
 
+    private void verNotas() {
+        startActivity(new Intent(Atividade.this, Notas.class));
     }
+
 /*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
