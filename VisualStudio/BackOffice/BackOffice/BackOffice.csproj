@@ -85,6 +85,7 @@
     <Compile Include="Business\Equipa.cs" />
     <Compile Include="Business\Exceptions\AtividadeJaIniciadaException.cs" />
     <Compile Include="Business\Exceptions\AtividadeNaoIniciadaException.cs" />
+    <Compile Include="Business\Exceptions\CaracteristicaExistenteException.cs" />
     <Compile Include="Business\FichaBatedor.cs" />
     <Compile Include="Business\Mapa.cs" />
     <Compile Include="Business\Nota.cs" />

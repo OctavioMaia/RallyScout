@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BackOffice.Business.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -32,6 +33,10 @@ namespace BackOffice.Business
 
         public void addCaract(string carcteristica)
         {
+            if (this.caracteristicas.Contains(carcteristica))
+            {
+                throw new CaracteristicaExistenteException("Caracteristica Repetida");
+            }
             this.caracteristicas.Add(carcteristica);
         }
 
