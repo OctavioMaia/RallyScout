@@ -10,6 +10,8 @@ using BackOffice;
 using BackOffice.Data;
 using BackOffice.Data.Json;
 using System.Windows;
+using System.Text;
+using System.Drawing;
 
 namespace BackOffice.Business
 {
@@ -98,18 +100,77 @@ namespace BackOffice.Business
             this.atividadeFE = new Dictionary<int, Atividade>();
         }
 
-        public void registarAtividade()
+
+        private Batedor getBatedor(string mail)
         {
-            //TODO
+            //TODO ir a BD
+            return this.batedores[mail];
         }
-        public Atividade consultarAtividade(int id)
+
+        private void guardaNovaAtividade(Atividade a)
         {
+            this.atividadeFE.Add(a.idAtividade, a);
+            //TODO ir a BD
+        }
+
+        private int getNextAtividadeID()
+        {
+            //TODO ir a BD
+            return 0;
+        }
+
+        public void registarAtividade(string mailBatedor, string mapPath, string nomeprova,
+            string nomeEquipa, string mailEquipa, List<Veiculo> lv)
+        {
+            int idAtividade = this.getNextAtividadeID();
+            this.registarAtividade(idAtividade, mailBatedor, mapPath, nomeprova,
+             nomeEquipa, mailEquipa, lv);
+
+        }
+
+        private void registarAtividade(int idAtividade, string mailBatedor,string mapPath, string nomeprova,
+            string nomeEquipa, string mailEquipa, List<Veiculo> lv)
+        {
+            Batedor b = this.getBatedor(mailBatedor);
+            Atividade a = new Atividade(idAtividade, mailEquipa, nomeprova, mapPath, lv, new Equipa(nomeEquipa, mailEquipa), b);
+            this.guardaNovaAtividade(a);
+            
+        }
+
+
+
+        private Atividade getAtividade(int id)
+        {
+            //TODO ir a BD
             return null;
+        }
+
+
+        public Atividade consultarAtividadeTerm(int id)
+        {
+            Atividade a = this.getAtividade(id);
+            if (a == null)
+            {
+                throw new NaoExisteAtividadeExeption("Nao Existe atividade " + id);
+            }
+            if (a.done == false)
+            {
+                throw new AtividadeNaoTerminadaExeption("A atividade " + id + " nao terminada");
+            }
+            return a;
         } 
         
-        public FichaBatedor consultarFichaBatedor(string mail)
+
+        
+
+        public Batedor consultarFichaBatedor(string mail)
         {
-            return null;
+            Batedor b = this.getBatedor(mail);
+            if (b == null)
+            {
+                throw new NaoExisteBatedorExeption("Batedor com mail " + mail + " Desconehcido");
+            }
+            return b;
         }
 
         public void receberAtividade()
@@ -123,26 +184,57 @@ namespace BackOffice.Business
 
         }
 
-        public void formJson(string json)
+        public JustToBack formJson(string json) //atividade parcial atençap 
         {
-            // JustToBack a  = JsonConvert.DeserializeObject(json);
+            JustToBack u;
             using (var sr = new StringReader(json))
             using (var jr = new JsonTextReader(sr))
             {
                 var js = new JsonSerializer();
-                var u = js.Deserialize<JustToBack>(jr);
-                //Console.WriteLine(u.user.display_name);
-                MessageBox.Show("ID: " + u.idAtividade);
+                u= js.Deserialize<JustToBack>(jr);
+               
             }
+            return u;
+        }
+
+        public Atividade formJson(JustToBack u) //atençao que isto retorna um atividade parcial
+        {
+            Atividade a = new Atividade(u.idAtividade);
+            foreach (Note no in u.notas)
+            {
+                byte[] voice = Encoding.ASCII.GetBytes(no.audio);
+                if (voice.Length == 0)
+                {
+                    voice = null;
+                }
+                List<Image> li = new List<Image>();
+                foreach(String s in no.imagem)
+                {
+                    byte[] ia = Encoding.ASCII.GetBytes(s);
+                    Image i;
+                    using (var ms = new MemoryStream(ia)) 
+                    {
+                        i= Image.FromStream(ms);
+                    }
+                    li.Add(i);
+                    
+                }
+                if (li.Count == 0)
+                {
+                    li = null;
+                }
+                Nota n = new Nota(no.idNota, no.notaTextual, no.local.lat,
+                    no.local.log, li, voice);
+            }
+            return a;
 
         }
 
-        private string jsonFrom(int idAtividade)
+        private string jsonFrom(int idAtividade) //retorna string do json par enviar 
         {
             Atividade a = this.atividadeFE[idAtividade];
             BackToJust jsonClass = new BackToJust(a);
             string json = JsonConvert.SerializeObject(jsonClass, Formatting.Indented);
-            //File.WriteAllText("C:\\Users\\Joao\\Desktop\\gerado.json", json);
             return json;
         }
 
@@ -150,12 +242,13 @@ namespace BackOffice.Business
         public void gerarRelatorios(string path, int atividade_id)
         {
             string pathPiloto = path + "copilot.pdf";
-            Atividade a = this.atividadeTERM[atividade_id];
+            Atividade a = this.getAtividade(atividade_id);
             if (!this.atividadeTERM.ContainsKey(atividade_id))
             {
                 throw new AtividadeNaoIniciadaException("Atividade " + atividade_id + " Nao Terminada");
             }
             a.generateReportCopiloto(pathPiloto);
+            //TODO relatorio geral
         }
 
 
