@@ -135,45 +135,37 @@ namespace BackOffice.Business
             a.generateReportCopiloto(pathPiloto);
         }
 
-        public void enviarEmail(string recipient, string subject, string body, List<string> attachmentFilenames)
+
+
+        public void email_send(string recipient, string subject, string body, List<string> attachmentFilenames)
         {
-            SmtpClient smtpClient = new SmtpClient("smtp.gmail.com", 587);
-            NetworkCredential basicCredential = new NetworkCredential(MailConst.Username, MailConst.Password);
-            MailMessage message = new MailMessage();
-            MailAddress fromAddress = new MailAddress(MailConst.Username);
-
-            // setup up the host, increase the timeout to 5 minutes
-            //smtpClient.Host = MailConst.SmtpServer;
-            smtpClient.UseDefaultCredentials = false;
-            smtpClient.Credentials = basicCredential;
-            smtpClient.Timeout = (60 * 5 * 1000);
-
-            message.From = fromAddress;
-            message.Subject = subject;
-            message.IsBodyHtml = false;
-            message.Body = body;
-            message.To.Add(recipient);
+            MailMessage mail = new MailMessage();
+            SmtpClient SmtpServer = new SmtpClient("smtp.gmail.com");
+            mail.From = new MailAddress(this.email);
+            mail.To.Add(recipient);
+            mail.Subject = subject;
+            mail.Body = body;
 
 
             foreach (string attachmentFilename in attachmentFilenames)
             {
                 if (attachmentFilename != null)
                 {
-                    Attachment attachment = new Attachment(attachmentFilename, MediaTypeNames.Application.Octet);
-                    ContentDisposition disposition = attachment.ContentDisposition;
-                    disposition.CreationDate = File.GetCreationTime(attachmentFilename);
-                    disposition.ModificationDate = File.GetLastWriteTime(attachmentFilename);
-                    disposition.ReadDate = File.GetLastAccessTime(attachmentFilename);
-                    disposition.FileName = Path.GetFileName(attachmentFilename);
-                    disposition.Size = new FileInfo(attachmentFilename).Length;
-                    disposition.DispositionType = DispositionTypeNames.Attachment;
-                    message.Attachments.Add(attachment);
+                    System.Net.Mail.Attachment attachment;
+                    attachment = new System.Net.Mail.Attachment(attachmentFilename);
+                    mail.Attachments.Add(attachment);
                 }
-
             }
-            smtpClient.Send(message);
 
+            SmtpServer.Port = 587;
+            SmtpServer.Credentials = new System.Net.NetworkCredential(this.email, this.passMail);
+            SmtpServer.EnableSsl = true;
+
+            SmtpServer.Send(mail);
 
         }
+
+
+     
     }
 }
