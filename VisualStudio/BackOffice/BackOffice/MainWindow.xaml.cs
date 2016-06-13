@@ -44,7 +44,13 @@ namespace BackOffice
             a.generateReportCopiloto("C:\\Users\\Joao\\Desktop\\Teste.pdf");
             MessageBox.Show("PDF Gerado");
 
-            
+            List<String> at = new List<string>();
+            at.Add("C:\\Users\\Joao\\Desktop\\Teste.pdf");
+            at.Add("C:\\Users\\Joao\\Desktop\\map.gpx");
+
+            MessageBox.Show("Vou mandar");
+            b.email_send(b.email, "Subject test", "body Teste", at);
+            MessageBox.Show("Mandei");
             /*foreach (string chave in d.Keys)
             {
                 MessageBox.Show(chave + " --> " + d[chave]);
