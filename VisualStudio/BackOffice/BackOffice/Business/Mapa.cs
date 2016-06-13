@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Device.Location;
-using System.Xml.Linq;
 using System.Windows;
 
 namespace BackOffice.Business
-{
+{using System.Xml.Linq;
+
     class Mapa
     {
         public string nomeProva { get; set; }

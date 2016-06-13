@@ -1,19 +1,15 @@
 ﻿using System;
-using System.Windows;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BackOffice;
-using System.Speech;
 using System.Speech.Recognition;
 using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using BackOffice.Business.Exceptions;
 using System.Net.Mail;
-using System.Net;
-using System.Net.Mime;
+using BackOffice;
+using BackOffice.Data;
+using BackOffice.Data.Json;
+using System.Windows;
 
 namespace BackOffice.Business
 {
@@ -98,6 +94,8 @@ namespace BackOffice.Business
                 }   
             }
             //esta tudo lido que vem do json falta o resto
+            //TODO
+            this.atividadeFE = new Dictionary<int, Atividade>();
         }
 
         public void registarAtividade()
@@ -118,9 +116,34 @@ namespace BackOffice.Business
         {
 
         }
+
+
         public void enviarAtividade()
         {
 
+        }
+
+        public void formJson(string json)
+        {
+            // JustToBack a  = JsonConvert.DeserializeObject(json);
+            using (var sr = new StringReader(json))
+            using (var jr = new JsonTextReader(sr))
+            {
+                var js = new JsonSerializer();
+                var u = js.Deserialize<JustToBack>(jr);
+                //Console.WriteLine(u.user.display_name);
+                MessageBox.Show("ID: " + u.idAtividade);
+            }
+
+        }
+
+        private string jsonFrom(int idAtividade)
+        {
+            Atividade a = this.atividadeFE[idAtividade];
+            BackToJust jsonClass = new BackToJust(a);
+            string json = JsonConvert.SerializeObject(jsonClass, Formatting.Indented);
+            //File.WriteAllText("C:\\Users\\Joao\\Desktop\\gerado.json", json);
+            return json;
         }
 
 
