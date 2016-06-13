@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v4.widget.TextViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import rallyscouts.justtrailit.R;
@@ -20,6 +21,19 @@ public class MenuBatedor extends AppCompatActivity {
 
     }
 
+
+    public void gerirAtividade(View v){
+        Intent intentGerirAtividade = new Intent(MenuBatedor.this, Atividade.class);
+        MenuBatedor.this.startActivity(intentGerirAtividade);
+    }
+
+    public void downloadAtividade(View v){
+
+    }
+
+    public void uploadAtividade(View v){
+
+    }
 
 
 
