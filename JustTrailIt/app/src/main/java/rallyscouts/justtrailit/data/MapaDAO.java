@@ -79,6 +79,7 @@ public class MapaDAO {
     public Mapa getMapa(int idMapa){
         Mapa map = null;
         Cursor res = mDatabase.rawQuery("SELECT * FROM " + MAPA_TABLE_NAME + " WHERE " + MAPA_COLUMN_ATIVIDADE_ID + " = ?" , new String[]{ ""+idMapa });
+        res.moveToFirst();
         if(res.getCount()>0){
             map = new Mapa(getCoordenadas(idMapa), res.getInt(res.getColumnIndex(MAPA_COLUMN_ATIVIDADE_ID)), res.getString(res.getColumnIndex(MAPA_COLUMN_NOME_PROVA)));
 
@@ -90,8 +91,8 @@ public class MapaDAO {
     public Map<Integer,Location> getCoordenadas(int idMapa){
         Map<Integer,Location> coord = new HashMap<>();
         Cursor res = mDatabase.rawQuery("SELECT * FROM " + MAPA_COORDENADAS_TABLE_NAME + " WHERE " + MAPA_COORDENADAS_COLUMN_MAPA + " = ?" , new String[]{ ""+idMapa } );
+        res.moveToFirst();
         if(res.getCount()>0){
-            res.moveToFirst();
             while(res.isAfterLast() == false){
                 Location loc = new Location("");
                 loc.setLatitude(res.getFloat(res.getColumnIndex(MAPA_COORDENADAS_COLUMN_LATITUDE)));

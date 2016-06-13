@@ -134,13 +134,10 @@ public class VeiculoDAO {
             ArrayList<String> caracteristicas = new ArrayList<>();
             String chassi = resVeiculos.getString(resVeiculos.getColumnIndex(VEICULO_COLUMN_CHASSI));
 
-            String[] args = { chassi };
-
             Cursor resCaracteristicas =  mDatabase.rawQuery( "SELECT " + VEICULO_CARACTERISTICAS_COLUMN_CARACTERISTICA + " FROM " + VEICULO_CARACTERISTICAS_TABLE_NAME +
-                    " WHERE " + VEICULO_CARACTERISTICAS_COLUMN_CHASSI + " = ? ", args  );
+                    " WHERE " + VEICULO_CARACTERISTICAS_COLUMN_CHASSI + " = ? ", new String[] { chassi } );
 
             resCaracteristicas.moveToFirst();
-
             while (resCaracteristicas.isAfterLast() == false){
                 caracteristicas.add(resCaracteristicas.getString(resCaracteristicas.getColumnIndex(VEICULO_CARACTERISTICAS_COLUMN_CARACTERISTICA)));
                 resCaracteristicas.moveToNext();
@@ -156,7 +153,6 @@ public class VeiculoDAO {
             veiculos.add(v);
             resVeiculos.moveToNext();
         }
-
         return veiculos;
     }
 

@@ -71,6 +71,7 @@ public class AtividadeDAO {
     public Atividade getAtividade(int idAtividade){
         Atividade resAtiv = null;
         Cursor res =  mDatabase.rawQuery( "SELECT * FROM " +  ATIVIDADE_TABLE_NAME  + " WHERE " + ATIVIDADE_COLUMN_ID + " = ? " , new String[]{ ""+idAtividade } );
+        res.moveToFirst();
         if(res.getCount()>0){
             resAtiv = new Atividade(
                     res.getInt(res.getColumnIndex(ATIVIDADE_COLUMN_ID)),
