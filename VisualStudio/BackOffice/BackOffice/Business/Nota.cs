@@ -76,7 +76,7 @@ namespace BackOffice.Business
                     dist += m.cords[key - 1].GetDistanceTo(m.cords[key]);
                 }
             }
-            return Math.Round(dist, 2);
+            return Math.Round(dist/1000, 2);
         }
 
         public double getDistanceToFinish(Mapa m) //retorna em KM
@@ -103,7 +103,7 @@ namespace BackOffice.Business
 
                 }
             }
-            return Math.Round(dist, 2);
+            return Math.Round(dist/1000, 2);
         }
     }
 

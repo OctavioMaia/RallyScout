@@ -41,7 +41,7 @@ namespace BackOffice
                 n.notasVoz = v;
                 a.addNota(n);
             }
-            a.generateReportCopiloto("C:\\Users\\Joao\\Desktop\\Teste2.pdf");
+            a.generateReportCopiloto("C:\\Users\\Joao\\Desktop\\Teste.pdf");
             MessageBox.Show("PDF Gerado");
 
             
