@@ -80,4 +80,13 @@ public class AtividadeDAO {
         }
         return resAtiv;
     }
+
+    /**
+     * metodo que remove uma atividade da base de dados
+     * @param idAtividade
+     * @return
+     */
+    public int deleteAtividade(int idAtividade){
+        return mDatabase.delete(ATIVIDADE_TABLE_NAME,ATIVIDADE_COLUMN_ID + " = ?", new String[]{ ""+idAtividade });
+    }
 }

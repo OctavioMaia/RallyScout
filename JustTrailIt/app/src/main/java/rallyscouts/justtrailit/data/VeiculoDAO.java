@@ -56,6 +56,14 @@ public class VeiculoDAO {
         myDBadapter.close();
     }
 
+    /**
+     * metodo que insere um veiculo
+     * @param chassi
+     * @param marca
+     * @param modelo
+     * @param atividade
+     * @return
+     */
     public boolean insertVeiculo  (String chassi, String marca, String modelo, int atividade) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(VEICULO_COLUMN_CHASSI, chassi);
@@ -66,6 +74,12 @@ public class VeiculoDAO {
         return true;
     }
 
+    /**
+     * metodo que insere uma caracteristica para um determinado veiculo
+     * @param chassi
+     * @param caracteritica
+     * @return
+     */
     public boolean insertVeiculoCaracteristica  (String chassi, String caracteritica) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(VEICULO_CARACTERISTICAS_COLUMN_CHASSI, chassi);
@@ -74,24 +88,38 @@ public class VeiculoDAO {
         return true;
     }
 
-
-
+    /**
+     * metodo que remove um veiculo com um determinado chassi
+     * @param chassi
+     * @return
+     */
     public int deleteVeiculo(String chassi){
         deleteAllCaracteristicasVeiculo(chassi);
         return mDatabase.delete(VEICULO_TABLE_NAME,VEICULO_COLUMN_CHASSI + " = ?",new String[]{ chassi });
     }
 
-    public int deleteAllVeiculoAtividade(int idAtividade){
-        Cursor resVeiculos =  mDatabase.rawQuery("SELECT * FROM " + VEICULO_TABLE_NAME + " WHERE " + VEICULO_COLUMN_ATIVIDADE, null);
 
+    /**
+     * metodo que remove todos os veiculos de uma atividade
+     * @param idAtividade
+     */
+    public void deleteAllVeiculoAtividade(int idAtividade){
+        Cursor resVeiculos =  mDatabase.rawQuery("SELECT * FROM " + VEICULO_TABLE_NAME + " WHERE " + VEICULO_COLUMN_ATIVIDADE + " = ?", new String[]{ ""+idAtividade });
+        resVeiculos.moveToFirst();
+        while(resVeiculos.isAfterLast()){
+            deleteVeiculo(resVeiculos.getString(resVeiculos.getColumnIndex(VEICULO_COLUMN_CHASSI)));
+            resVeiculos.moveToNext();
+        }
     }
 
+    /**
+     * metodo que remove todas as caracateristicas de um veiculo
+     * @param chassi
+     * @return
+     */
     public int deleteAllCaracteristicasVeiculo(String chassi){
         return mDatabase.delete(VEICULO_CARACTERISTICAS_TABLE_NAME,VEICULO_CARACTERISTICAS_COLUMN_CHASSI + " = ?", new String[]{ chassi });
     }
-
-
-
 
     /**
      *  Method getAllVeiculos que retira da base de dados todos os veiculos nela presente
@@ -99,7 +127,7 @@ public class VeiculoDAO {
      */
     public ArrayList<Veiculo> getAllVeiculos() {
         ArrayList<Veiculo> veiculos = new ArrayList<>();
-        Cursor resVeiculos =  mDatabase.rawQuery("select * from " + VEICULO_TABLE_NAME, null);
+        Cursor resVeiculos =  mDatabase.rawQuery("SELECT * FROM " + VEICULO_TABLE_NAME, null);
         resVeiculos.moveToFirst();
 
         while(resVeiculos.isAfterLast() == false){
@@ -108,49 +136,8 @@ public class VeiculoDAO {
 
             String[] args = { chassi };
 
-            Cursor resCaracteristicas =  mDatabase.rawQuery( "select " + VEICULO_CARACTERISTICAS_COLUMN_CARACTERISTICA + " from " + VEICULO_CARACTERISTICAS_TABLE_NAME +
-                    " where " + VEICULO_CARACTERISTICAS_COLUMN_CHASSI + " = ? ", args  );
-
-            resCaracteristicas.moveToFirst();
-
-            while (resCaracteristicas.isAfterLast() == false){
-                caracteristicas.add(resCaracteristicas.getString(resCaracteristicas.getColumnIndex(VEICULO_CARACTERISTICAS_COLUMN_CARACTERISTICA)));
-                resCaracteristicas.moveToNext();
-            }
-
-            Veiculo v = new Veiculo(
-                    resVeiculos.getString(resVeiculos.getColumnIndex(VEICULO_COLUMN_CHASSI)),
-                    resVeiculos.getString(resVeiculos.getColumnIndex(VEICULO_COLUMN_MARCA)),
-                    resVeiculos.getString(resVeiculos.getColumnIndex(VEICULO_COLUMN_MODELO)),
-                    caracteristicas
-            );
-
-            veiculos.add(v);
-            resVeiculos.moveToNext();
-        }
-
-        return veiculos;
-    }
-
-
-    /**
-     * Method getAllVeiculos que retira da base de dados todos os veiculos referentes a uma atividade
-     * @param atividade
-     * @return
-     */
-    public ArrayList<Veiculo> getAllVeiculos(int atividade) {
-        ArrayList<Veiculo> veiculos = new ArrayList<>();
-
-        Cursor resVeiculos =  mDatabase.rawQuery("select * from " + VEICULO_TABLE_NAME + " where " + VEICULO_COLUMN_ATIVIDADE + " = ? ", new String[]{ ""+atividade } );
-        resVeiculos.moveToFirst();
-
-        while(resVeiculos.isAfterLast() == false){
-            ArrayList<String> caracteristicas = new ArrayList<>();
-            String chassi = resVeiculos.getString(resVeiculos.getColumnIndex(VEICULO_COLUMN_CHASSI));
-
-
-            Cursor resCaracteristicas =  mDatabase.rawQuery( "select " + VEICULO_CARACTERISTICAS_COLUMN_CARACTERISTICA + " from " + VEICULO_CARACTERISTICAS_TABLE_NAME +
-                    " where " + VEICULO_CARACTERISTICAS_COLUMN_CHASSI + " = ? ", new String[]{ chassi }  );
+            Cursor resCaracteristicas =  mDatabase.rawQuery( "SELECT " + VEICULO_CARACTERISTICAS_COLUMN_CARACTERISTICA + " FROM " + VEICULO_CARACTERISTICAS_TABLE_NAME +
+                    " WHERE " + VEICULO_CARACTERISTICAS_COLUMN_CHASSI + " = ? ", args  );
 
             resCaracteristicas.moveToFirst();
 

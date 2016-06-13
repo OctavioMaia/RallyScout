@@ -96,7 +96,8 @@ public class BatedorDAO {
             bat = new Batedor(
                     res.getString(res.getColumnIndex(BATEDOR_COLUMN_EMAIL)),
                     res.getString(res.getColumnIndex(BATEDOR_COLUMN_NOME)),
-                    res.getString(res.getColumnIndex(BATEDOR_COLUMN_PASSWORD))
+                    res.getString(res.getColumnIndex(BATEDOR_COLUMN_PASSWORD)),
+                    res.getInt(res.getColumnIndex(BATEDOR_COLUMN_ATIVIDADE))
             );
         }
         return bat;

@@ -60,10 +60,11 @@ public class DBAdapter extends SQLiteOpenHelper {
 
     private static final String CREATE_TABLE_IMAGEM =
             "CREATE TABLE " + NotaDAO.IMAGEM_TABLE_NAME + " ( " +
+                    NotaDAO.IMAGEM_COLUMN_ID + " INTEGER, " +
                     NotaDAO.IMAGEM_COLUMN_IMAGE + " BLOB, " +
                     NotaDAO.IMAGEM_COLUMN_NOTA + " INTEGER, " +
                     NotaDAO.IMAGEM_COLUMN_ATIVIDADE + " INTEGER, " +
-                    "PRIMARY KEY ( " + NotaDAO.IMAGEM_COLUMN_IMAGE + " , " + NotaDAO.IMAGEM_COLUMN_NOTA + " , " + NotaDAO.IMAGEM_COLUMN_ATIVIDADE + " )" +
+                    "PRIMARY KEY ( " + NotaDAO.IMAGEM_COLUMN_ID + " , " + NotaDAO.IMAGEM_COLUMN_NOTA + " , " + NotaDAO.IMAGEM_COLUMN_ATIVIDADE + " )" +
                     "FOREIGN KEY ( " + NotaDAO.IMAGEM_COLUMN_NOTA + ") REFERENCES " + NotaDAO.NOTA_TABLE_NAME + " ( " + NotaDAO.NOTA_COLUMN_ID_NOTA + "), " +
                     "FOREIGN KEY ( " + NotaDAO.IMAGEM_COLUMN_ATIVIDADE + ") REFERENCES " + AtividadeDAO.ATIVIDADE_TABLE_NAME + " ( " + AtividadeDAO.ATIVIDADE_COLUMN_ID + "))";
 
