@@ -4,14 +4,13 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.media.Image;
+import android.graphics.Bitmap;
 import android.util.Log;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import rallyscouts.justtrailit.business.Atividade;
 import rallyscouts.justtrailit.business.Nota;
 
 /**
@@ -58,7 +57,7 @@ public class NotaDAO {
         myDBadapter.close();
     }
 
-    public boolean insertNota(int idNota, int idAtividade, String notaTextual, byte[] audio, float lat, float lng, List<byte[]> imagens){
+    public boolean insertNota(int idNota, int idAtividade, String notaTextual, byte[] audio, float lat, float lng, List<Bitmap> imagens){
         ContentValues contentValues = new ContentValues();
         contentValues.put(NOTA_COLUMN_ID_NOTA, idNota);
         contentValues.put(NOTA_COLUMN_ATIVIDADE, idAtividade);
@@ -67,17 +66,17 @@ public class NotaDAO {
         contentValues.put(NOTA_COLUMN_LATITUDE,lat);
         contentValues.put(NOTA_COLUMN_LONGITUDE,lng);
         if( mDatabase.insert(NOTA_TABLE_NAME, null, contentValues) == -1) return false ;
-        for ( byte[] im : imagens ) {
+        for ( Bitmap im : imagens ) {
             insertImagem(idNota,idAtividade,im);
         }
         return true;
     }
 
-    public boolean insertImagem(int idNota, int idAtividade, byte[] imagem){
+    public boolean insertImagem(int idNota, int idAtividade, Bitmap imagem){
         ContentValues contentValues = new ContentValues();
         contentValues.put(IMAGEM_COLUMN_NOTA, idNota);
         contentValues.put(IMAGEM_COLUMN_ATIVIDADE, idAtividade);
-        contentValues.put(IMAGEM_COLUMN_IMAGE, imagem);
+        contentValues.put(IMAGEM_COLUMN_IMAGE, (imagem));
         if( mDatabase.insert(IMAGEM_TABLE_NAME, null, contentValues) == -1) return false ;
         return true;
     }
@@ -97,10 +96,6 @@ public class NotaDAO {
         );
 
         List<Image> imagens = new ArrayList<>();
-
-
-
-
         return not;
     }
 

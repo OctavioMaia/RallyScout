@@ -1,5 +1,6 @@
 package rallyscouts.justtrailit.business;
 
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.media.Image;
 
@@ -14,7 +15,7 @@ public class Nota {
     private int idNota;
     private String notaTextual;
     private Location localRegisto;
-    private ArrayList<Image> imagens;
+    private ArrayList<Bitmap> imagens;
     private byte[] voice;
 
     public Nota(Integer idNota, Location localRegisto) {
@@ -22,7 +23,7 @@ public class Nota {
         this.localRegisto = localRegisto;
     }
 
-    public Nota(Integer idNota, ArrayList<Image> imagens, Location localRegisto, String notaTextual, byte[] voice) {
+    public Nota(Integer idNota, ArrayList<Bitmap> imagens, Location localRegisto, String notaTextual, byte[] voice) {
         this.idNota = idNota;
         this.imagens = imagens;
         this.localRegisto = localRegisto;
@@ -38,13 +39,7 @@ public class Nota {
         this.idNota = idNota;
     }
 
-    public ArrayList<Image> getImagens() {
-        return imagens;
-    }
 
-    public void setImagens(ArrayList<Image> imagens) {
-        this.imagens = imagens;
-    }
 
     public Location getLocalRegisto() {
         return localRegisto;
