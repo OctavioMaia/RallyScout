@@ -91,7 +91,7 @@ public class BatedorDAO {
      */
     public Batedor getBatedor(String email){
         Batedor bat = null;
-        Cursor res = mDatabase.rawQuery("select * from " + BATEDOR_TABLE_NAME + " where " + BATEDOR_COLUMN_EMAIL + " = ?" , new String[]{ email });
+        Cursor res = mDatabase.rawQuery("SELECT * FROM " + BATEDOR_TABLE_NAME + " WHERE " + BATEDOR_COLUMN_EMAIL + " = ?" , new String[]{ email });
         if(res.getCount()>0){
             bat = new Batedor(
                     res.getString(res.getColumnIndex(BATEDOR_COLUMN_EMAIL)),

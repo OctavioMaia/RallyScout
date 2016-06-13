@@ -20,6 +20,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -36,6 +37,7 @@ import java.util.List;
 import rallyscouts.justtrailit.R;
 import rallyscouts.justtrailit.business.Batedor;
 import rallyscouts.justtrailit.data.BatedorDAO;
+import rallyscouts.justtrailit.data.DBAdapter;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -66,15 +68,19 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+
     private BatedorDAO batedores;
+    private DBAdapter dbAdapter;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        Log.d("TESTE","merda");
+        dbAdapter = new DBAdapter(LoginActivity.this);
 
-        this.batedores = new BatedorDAO(LoginActivity.this);
+        batedores = new BatedorDAO(LoginActivity.this);
 
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
@@ -187,10 +193,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             cancel = true;
         }
 
-        Batedor bat = batedores.getBatedor(email);
-
-        if(bat==null){ cancel=true }
-
 
         if (cancel) {
             // There was an error; don't attempt login and focus the first
@@ -204,7 +206,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             //mAuthTask.execute((Void) null);
 
             Intent myIntent = new Intent(LoginActivity.this, MenuBatedor.class);
-
+            LoginActivity.this.startActivity(myIntent);
         }
     }
 
