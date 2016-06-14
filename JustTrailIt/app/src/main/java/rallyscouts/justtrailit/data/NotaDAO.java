@@ -26,9 +26,9 @@ public class NotaDAO {
 
     public static final String TAG = "NotaDAO";
 
-    public static final String NOTA_TABLE_NAME = "Mapa";
+    public static final String NOTA_TABLE_NAME = "Nota";
     public static final String NOTA_COLUMN_ID_NOTA = "id_Nota";
-    public static final String NOTA_COLUMN_ATIVIDADE = "Atividade";
+    public static final String NOTA_COLUMN_ATIVIDADE = "idAtividade";
     public static final String NOTA_COLUMN_NOTA_TEXTUAL = "NotaTextual";
     public static final String NOTA_COLUMN_AUDIO = "Audio";
     public static final String NOTA_COLUMN_LATITUDE = "Latitude";
@@ -38,7 +38,7 @@ public class NotaDAO {
     public static final String IMAGEM_COLUMN_ID = "idImagem";
     public static final String IMAGEM_COLUMN_IMAGE = "Imagem";
     public static final String IMAGEM_COLUMN_NOTA = "Nota";
-    public static final String IMAGEM_COLUMN_ATIVIDADE = "Atividade";
+    public static final String IMAGEM_COLUMN_ATIVIDADE = "idAtividade";
 
     public NotaDAO(Context mContext) {
         this.mContext = mContext;

@@ -67,7 +67,7 @@ public class MenuBatedor extends AppCompatActivity {
             //this.button_download.setEnabled(true);
             //this.button_upload.setEnabled(false);
         }else{
-            textView_AtividadeDisp.setText("Atividade " + (int)getIntent().getExtras().get("atividade") + " não enviada");
+            textView_AtividadeDisp.setText("Atividade " + batedorLogin.getAtividade() + " não enviada");
             this.button_gerirAtividade.setEnabled(true);
             this.button_download.setEnabled(false);
             this.button_upload.setEnabled(true);
@@ -80,6 +80,10 @@ public class MenuBatedor extends AppCompatActivity {
         MenuBatedor.this.startActivity(intentGerirAtividade);
     }
 
+
+    /*
+    Falta colocar aqui toda a interação com a tividade dos buttons
+     */
     public void downloadAtividade(View v){
 
 
@@ -91,6 +95,78 @@ public class MenuBatedor extends AppCompatActivity {
             JSONObject request = JsonRC.downloadAtividade(batedorLogin.getEmail(),batedorLogin.getPassword());
 
             Toast.makeText(getApplicationContext(), request.toString() , Toast.LENGTH_LONG).show();
+
+            String json = "{\n" +
+                    "  \"idAtividade\": 1,\n" +
+                    "  \"email\": \"rui@gmail.com\",\n" +
+                    "  \"nomeEquipa\": \"KTM\",\n" +
+                    "  \"mapa\": {\n" +
+                    "    \"nomeProva\": \"1234\",\n" +
+                    "    \"percurso\": [\n" +
+                    "      {\n" +
+                    "        \"lat\": 41.825178,\n" +
+                    "        \"log\": -7.791377\n" +
+                    "      },\n" +
+                    "      {\n" +
+                    "        \"lat\": 41.825378,\n" +
+                    "        \"log\": -7.790517\n" +
+                    "      },\n" +
+                    "      {\n" +
+                    "        \"lat\": 41.825928,\n" +
+                    "        \"log\": -7.789952\n" +
+                    "      },\n" +
+                    "      {\n" +
+                    "        \"lat\": 41.825724,\n" +
+                    "        \"log\": -7.789437\n" +
+                    "      },\n" +
+                    "      {\n" +
+                    "        \"lat\": 41.825559,\n" +
+                    "        \"log\": -7.788663\n" +
+                    "      },\n" +
+                    "      {\n" +
+                    "        \"lat\": 41.825463,\n" +
+                    "        \"log\": -7.788519\n" +
+                    "      },\n" +
+                    "      {\n" +
+                    "        \"lat\": 41.82561,\n" +
+                    "        \"log\": -7.788276\n" +
+                    "      },\n" +
+                    "      {\n" +
+                    "        \"lat\": 41.825765,\n" +
+                    "        \"log\": -7.788507\n" +
+                    "      },\n" +
+                    "      {\n" +
+                    "        \"lat\": 41.826891,\n" +
+                    "        \"log\": -7.788432\n" +
+                    "      }\n" +
+                    "    ]\n" +
+                    "  },\n" +
+                    "  \"veiculos\": [\n" +
+                    "    {\n" +
+                    "      \"chassi\": \"a\",\n" +
+                    "      \"caracteristicas\": [\n" +
+                    "        \"d\"\n" +
+                    "      ]\n" +
+                    "    },\n" +
+                    "    {\n" +
+                    "      \"chassi\": \"312\",\n" +
+                    "      \"caracteristicas\": [\n" +
+                    "        \"d1\"\n" +
+                    "      ]\n" +
+                    "    },\n" +
+                    "    {\n" +
+                    "      \"chassi\": \"das\",\n" +
+                    "      \"caracteristicas\": [\n" +
+                    "        \"d11231\"\n" +
+                    "      ]\n" +
+                    "    }\n" +
+                    "  ]\n" +
+                    "}";
+
+
+            JsonRC.reciveAtividade(MenuBatedor.this,json,batedorLogin);
+
+
 
         }
         /*    try {
@@ -107,6 +183,9 @@ public class MenuBatedor extends AppCompatActivity {
         */
     }
 
+    /*
+        Falta colocar aqui toda a interação com a tividade dos buttons
+    */
     public void uploadAtividade(View v){
         Toast.makeText(getApplicationContext(), "Comunicação ainda não está a funcionar" + portServer , Toast.LENGTH_LONG).show();
         if(ipServer!=null && portServer!=-1) {
