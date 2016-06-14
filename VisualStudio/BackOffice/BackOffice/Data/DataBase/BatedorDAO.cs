@@ -156,5 +156,67 @@ namespace BackOffice.Data.DataBase
             return b;
         }
 
+
+
+        private Batedor put(Batedor novo, SqlConnection connection)
+        {
+            Batedor b = this.get(novo.email, connection);
+            String queryString;
+            if (b == null) //inserie
+            {
+                queryString = String.Format("INSERT INTO dbo.Batedor " +
+                    "(Email, Nome, Password, HorasDeReconhecimento, N_Atividades) "+
+                    " VALUES " +
+                    " ('{0}', '{1}', '{2}', {3}, {4}); ",
+                          novo.email,novo.nome,novo.password,novo.ficha.horasEmReConhecimento,novo.ficha.nAtividades);
+
+                
+                //INSERT INTO dbo.Batedor
+                // (Email, Nome, Password, HorasDeReconhecimento, N_Atividades)
+                //VALUES
+                //('a@a.pt', 'sandra', '1', 5.5, 1);
+            }
+            else//update
+            {
+                // UPDATE dbo.Batedor
+                // SET Nome = 'ze', Password = 'novo', HorasDeReconhecimento = 10, N_Atividades = 10
+                // WHERE Email = 'a@a.pt';
+                queryString = String.Format("UPDATE dbo.Batedor " +
+                    " SET Nome = '{0}', Password = '{1}', HorasDeReconhecimento = {2}, N_Atividades = {3} " +
+                    " WHERE Email = '{4}' ",
+                          novo.nome, novo.password, novo.ficha.horasEmReConhecimento, novo.ficha.nAtividades,novo.email);
+            }
+            SqlCommand command = new SqlCommand(queryString, connection);
+            command.CommandTimeout = 60;
+            command.ExecuteNonQuery();
+            return b;
+        }
+
+
+        public Batedor put(Batedor novo)
+        {
+            Batedor b = null;
+
+            SqlConnection con = new SqlConnection(this.dbConf);
+            con.Open();
+            //con.BeginTransaction();
+            try
+            {
+                b = this.put(novo, con);
+            }
+            finally
+            {
+                con.Close();
+            }
+            return b;
+
+
+            return b;
+        }
+
+        public int size()
+        {
+            return this.keySet().Count;
+        }
     }
 }
