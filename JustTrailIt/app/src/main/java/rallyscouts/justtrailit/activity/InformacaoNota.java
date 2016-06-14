@@ -10,6 +10,6 @@ public class InformacaoNota extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_atividade);
+        setContentView(R.layout.activity_gerir_atividade);
     }
 }
