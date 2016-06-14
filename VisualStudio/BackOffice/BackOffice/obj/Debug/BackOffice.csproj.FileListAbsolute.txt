@@ -50,3 +50,5 @@ C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj
 C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\Presentation\InserirVeiculo.baml
 C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\Presentation\Login.baml
 C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\Presentation\RegistoAtividade.baml
+C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\Presentation\RegistaBatedor.g.cs
+C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\Presentation\RegistaBatedor.baml
