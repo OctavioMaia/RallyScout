@@ -26,6 +26,7 @@ namespace BackOffice.Business
         public String email { get; set; }
         public String passMail { get; set; }
         public BatedorDAO batedores { get; set; }
+        public AtividadeDAO atividades { get; set; }
         public Dictionary<int,Atividade> atividadeFE { get; set; }
         public Dictionary<int,Atividade> atividadeTERM { get; set; }
 
@@ -188,6 +189,8 @@ namespace BackOffice.Business
 
 
             //TODO BD dos 
+            this.atividades = new AtividadeDAO(this.database);
+            this.batedores = new BatedorDAO(this.database);
             this.atividadeFE = new Dictionary<int, Atividade>();
 
 
@@ -212,26 +215,26 @@ namespace BackOffice.Business
         public List<Batedor> getBatedores()
         {
             return this.batedores.Values();
-           // return null;
         }
 
         private Batedor getBatedor(string mail)
         {
-            //TODO ir a BD
-            //return new Batedor("a","antonio","1",0,0);
             return this.batedores.get(mail);
         }
 
         private void guardaNovaAtividade(Atividade a)
         {
             this.atividadeFE.Add(a.idAtividade, a);
+            //this.atividades.put(a);
             //TODO ir a BD
         }
 
         private int getNextAtividadeID()
         {
-            //TODO ir a BD
-            return 0;
+            List<Int32> l = this.atividades.keySet();
+            if (l.Count == 0) return 0;
+            l.Sort();
+            return l[l.Count - 1];
         }
 
         public void registarAtividade(string mailBatedor, string mapPath, string nomeprova,
@@ -243,7 +246,7 @@ namespace BackOffice.Business
 
         }
 
-        public void registarAtividade(int idAtividade, string mailBatedor,string mapPath, string nomeprova,
+        private void registarAtividade(int idAtividade, string mailBatedor,string mapPath, string nomeprova,
             string nomeEquipa, string mailEquipa, List<Veiculo> lv)
         {
             Batedor b = this.getBatedor(mailBatedor);
@@ -278,7 +281,16 @@ namespace BackOffice.Business
         } 
         
 
-        
+        public Boolean existeBatedor(string mail)
+        {
+            return this.batedores.containsKey(mail);
+        }
+
+        public void registarBatedor(Batedor b)
+        {
+            this.batedores.put(b);
+        }
+
 
         public Batedor consultarFichaBatedor(string mail)
         {
