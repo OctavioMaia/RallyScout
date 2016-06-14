@@ -45,6 +45,11 @@ public class GerirAtividade extends AppCompatActivity {
 
     }
 
+    public void verPercurso(View v){
+        Intent verpercurso = new Intent(GerirAtividade.this, MapaPercurso.class);
+        GerirAtividade.this.startActivity(verpercurso);
+    }
+
     public void registarNota(View v){
 
         Intent registarnota = new Intent(GerirAtividade.this, RegistarNota.class);
@@ -57,6 +62,7 @@ public class GerirAtividade extends AppCompatActivity {
 
         Intent vernotas = new Intent(GerirAtividade.this, Notas.class);
         GerirAtividade.this.startActivity(vernotas);
+
 
     }
 
