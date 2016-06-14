@@ -29,7 +29,7 @@ namespace BackOffice
             //MessageBox.Show("init");
             //Mapa m = new Mapa("teste", 1, "C:\\Users\\Joao\\Desktop\\map.gpx");
             string pathO = "C:\\Users\\Octávio\\Documents\\GitHub\\RallyScout\\ExemplosJson\\config.json";
-            string pathJ = "C:\\Users\\Octávio\\Documents\\GitHub\\RallyScout\\ExemplosJson\\config.json";
+            string pathJ = "C:\\Users\\Joao\\Documents\\GitHub\\RallyScout\\ExemplosJson\\config.json";
 
             BackOfficeAPP b = new BackOfficeAPP(pathO);
            /* BatedorDAO d = new BatedorDAO(b.database);
@@ -108,7 +108,7 @@ namespace BackOffice
             }*/
             //MessageBox.Show();
             this.Visibility = Visibility.Hidden;
-            RegistaBatedor l = new RegistaBatedor(b);
+            Login l = new Login(b);
             l.Visibility = Visibility.Visible;
            
 
