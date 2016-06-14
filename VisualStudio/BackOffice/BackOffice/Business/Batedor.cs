@@ -6,13 +6,19 @@ using System.Threading.Tasks;
 
 namespace BackOffice.Business
 {
-    class Batedor
+    public class Batedor
     {
         public string email { get; set; }
         public string nome { get; set; }
         public string password { get; set; }
         public FichaBatedor ficha { get; set; }
 
+        public override string ToString()
+        {
+            return " (Batedor) Email: " + email + " Nome: " + nome+" pass: " + password + this.ficha.ToString();
+        }
+
+        
         public Batedor(string mail, string name, string pass)
         {
             this.nome = name;

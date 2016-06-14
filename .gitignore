@@ -19,3 +19,4 @@ build
 *.suo
 *.cache
 *.pdb
+/VisualStudio/BackOffice/BackOffice/obj/*

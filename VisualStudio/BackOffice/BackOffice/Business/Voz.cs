@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BackOffice.Business
 {
-    class Voz
+    public class Voz
     {
         public byte[] audio { get; set; }
         public string texto { get; set; }

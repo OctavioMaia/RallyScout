@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BackOffice.Business
 {
-    class Veiculo
+    public class Veiculo
     {
         public string modelo { get; set; }
         public string marca { get; set; }
