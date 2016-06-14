@@ -98,6 +98,7 @@
     <Compile Include="Business\Exceptions\VeiculoRepetidoException.cs" />
     <Compile Include="Business\Voz.cs" />
     <Compile Include="Data\Json\JustToBack.cs" />
+    <Compile Include="Data\Json\StartConfig.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

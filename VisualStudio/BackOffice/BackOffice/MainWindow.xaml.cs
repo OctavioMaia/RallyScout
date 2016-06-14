@@ -24,7 +24,7 @@ namespace BackOffice
         public MainWindow()
         {
             //Mapa m = new Mapa("teste", 1, "C:\\Users\\Joao\\Desktop\\map.gpx");
-            BackOfficeAPP b = new BackOfficeAPP("C:\\Users\\Joao\\Documents\\GitHub\\RallyScout\\ExemplosJson\\config.json");
+            BackOfficeAPP b = new BackOfficeAPP("C:\\Users\\Joao\\Documents\\GitHub\\RallyScout\\ExemplosJson\\config.json",1);
           //  MessageBox.Show(b.email);
            // MessageBox.Show(b.passMail);
 
