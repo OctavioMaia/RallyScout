@@ -29,44 +29,19 @@ public class Atividade extends AppCompatActivity {
         TextView veiculo = (TextView) findViewById(R.id.id_Veiculo);
         veiculo.setText("Veiculo: " + "ola");
 
-        registarNota();
-        verNotas();
+    }
+
+    public void registarNota(View v){
+
+        Intent registarnota = new Intent(Atividade.this, RegistarNota.class);
+        Atividade.this.startActivity(registarnota);
     }
 
 
-    private void registarNota() {
-        startActivity(new Intent(Atividade.this, RegistarNota.class));
+    public void verNotas(View v){
+
+        Intent vernotas = new Intent(Atividade.this, Notas.class);
+        Atividade.this.startActivity(vernotas);
     }
 
-
-    private void verNotas() {
-        startActivity(new Intent(Atividade.this, Notas.class));
-    }
-
-/*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_search, menu);
-
-        MenuItem searchItem = menu.findItem(R.id.searchView);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        searchView.setOnQueryTextListener(this);
-
-        return true;
-    }
-
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        // User pressed the search button
-        return false;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        // User changed the text
-        return false;
-    }
-
-
-*/
 }
