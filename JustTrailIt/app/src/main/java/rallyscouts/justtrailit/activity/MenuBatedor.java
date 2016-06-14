@@ -70,20 +70,24 @@ public class MenuBatedor extends AppCompatActivity {
     public void downloadAtividade(View v){
 
         Toast.makeText(getApplicationContext(), "IP: " + ipServer + " port: " + portServer , Toast.LENGTH_LONG).show();
+        if(ipServer!=null && portServer!=-1){
+            try {
+                Socket socket = new Socket(ipServer,portServer);
 
-        /*
-        try {
-            Socket socket = new Socket(ipServer,portServer);
-            OutputStreamWriter osw = new OutputStreamWriter(socket.getOutputStream());
+                // ler do socket a atividade
 
-            osw.write("");
-            osw.flush();
+                OutputStreamWriter osw = new OutputStreamWriter(socket.getOutputStream());
 
+                osw.write("");
 
-        } catch (IOException e) {
-            Log.e(TAG,"Application can not connect to Server");
+                osw.flush();
+
+            } catch (IOException e) {
+                Log.e(TAG,"Application can not connect to Server");
+            }
         }
-        */
+
+
     }
 
     public void uploadAtividade(View v){
@@ -104,6 +108,5 @@ public class MenuBatedor extends AppCompatActivity {
                 this.portServer = (int) data.getExtras().get("port");
             }
         }
-
     }
 }

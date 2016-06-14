@@ -23,7 +23,6 @@ public class AtividadeDAO {
 
     public static final String ATIVIDADE_TABLE_NAME = "Atividade";
     public static final String ATIVIDADE_COLUMN_ID = "id_Atividade";
-    public static final String ATIVIDADE_COLUMN_EQUIPA_EMAIL = "Equipa_Email";
     public static final String ATIVIDADE_COLUMN_EQUIPA_NOME = "Equipa_Nome";
 
 
@@ -50,15 +49,22 @@ public class AtividadeDAO {
     /**
      * insertAtividade metodo que insere uma atividade na base de dados
      * @param idAtividade
-     * @param equipaEmail
      * @param equipaNome
      * @return
      */
-    public boolean insertAtividade(int idAtividade, String equipaEmail, String equipaNome) {
+    public boolean insertAtividade(int idAtividade, String equipaNome) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ATIVIDADE_COLUMN_ID, idAtividade);
-        contentValues.put(ATIVIDADE_COLUMN_EQUIPA_EMAIL, equipaEmail);
         contentValues.put(ATIVIDADE_COLUMN_EQUIPA_NOME, equipaNome);
+        if( mDatabase.insert(ATIVIDADE_TABLE_NAME, null, contentValues) == -1) return false ;
+        return true;
+    }
+
+
+    public boolean insertAtividade(Atividade act) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ATIVIDADE_COLUMN_ID, act.getIdAtividade());
+        contentValues.put(ATIVIDADE_COLUMN_EQUIPA_NOME, act.getNomeEquipa());
         if( mDatabase.insert(ATIVIDADE_TABLE_NAME, null, contentValues) == -1) return false ;
         return true;
     }
@@ -75,8 +81,7 @@ public class AtividadeDAO {
         if(res.getCount()>0){
             resAtiv = new Atividade(
                     res.getInt(res.getColumnIndex(ATIVIDADE_COLUMN_ID)),
-                    res.getString(res.getColumnIndex(ATIVIDADE_COLUMN_EQUIPA_NOME)),
-                    res.getString(res.getColumnIndex(ATIVIDADE_COLUMN_EQUIPA_EMAIL))
+                    res.getString(res.getColumnIndex(ATIVIDADE_COLUMN_EQUIPA_NOME))
             );
         }
         return resAtiv;

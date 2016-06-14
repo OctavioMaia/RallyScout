@@ -27,6 +27,12 @@ public class Mapa {
         this.coord = new HashMap<>();
     }
 
+    public Mapa(int idMapa) {
+        this.idMapa = idMapa;
+        this.nomeProva=null;
+        this.coord=null;
+    }
+
     public Map<Integer, Location> getCoord() {
         return coord;
     }
