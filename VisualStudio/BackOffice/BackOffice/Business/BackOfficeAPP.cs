@@ -217,6 +217,12 @@ namespace BackOffice.Business
             return this.batedores.Values();
         }
 
+
+        public List<String> getBatedoresMails()
+        {
+            return this.batedores.keySet();
+        }
+
         private Batedor getBatedor(string mail)
         {
             return this.batedores.get(mail);
@@ -253,8 +259,8 @@ namespace BackOffice.Business
             Atividade a = new Atividade(idAtividade, mailEquipa, nomeprova, mapPath, lv, new Equipa(nomeEquipa, mailEquipa), b);
             this.guardaNovaAtividade(a);
             //depois apagar
-            //String s = this.jsonFrom(idAtividade);
-            //System.IO.File.WriteAllText("C:\\Users\\Joao\\Desktop\\novo.json", s);
+            String s = this.jsonFrom(idAtividade);
+            System.IO.File.WriteAllText("C:\\Users\\Octávio\\Desktop\\novo.json", s);
         }
 
 
