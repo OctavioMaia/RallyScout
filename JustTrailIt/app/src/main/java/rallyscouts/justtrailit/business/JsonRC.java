@@ -1,13 +1,16 @@
 package rallyscouts.justtrailit.business;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.location.Location;
+import android.util.Base64;
 import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +33,7 @@ public class JsonRC {
         JSONObject download = new JSONObject();
         try {
             download.put("email",emailBatedor);
+            download.put("password",password);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -89,6 +93,29 @@ public class JsonRC {
             }
         return ret;
     }
+
+
+    public static JSONObject sendAtividade(Batedor batedorLogin, List<Nota> notas){
+        JSONObject send = new JSONObject();
+
+        try {
+            send.put("idAtividade",batedorLogin.getAtividade());
+            send.put("email",batedorLogin.getEmail());
+
+            JSONArray listaNotas = new JSONArray();
+            for ( Nota n : notas) {
+                listaNotas.put(createNota(n));
+            }
+
+            send.put("notas",listaNotas);
+
+        } catch (JSONException e) {
+            Log.e(TAG,"Não foi possivel criar o Json para envio da atividade " + batedorLogin.getAtividade());
+            send = null;
+        }
+        return send;
+    }
+
 
     private static Mapa readMapa(int idAtividade, JSONObject mapaJson){
         Mapa map = new Mapa(idAtividade);
@@ -170,7 +197,48 @@ public class JsonRC {
         return veiculos;
     }
 
+    private static JSONObject createNota(Nota nota){
+        JSONObject notaJson = new JSONObject();
 
+
+        try {
+            notaJson.put("idNota",nota.getIdNota());
+            notaJson.put("notaTextual",nota.getNotaTextual());
+            notaJson.put("local",createLocal(nota.getLocalRegisto()));
+            notaJson.put("imagem", createImagens(nota.getImagens()));
+            notaJson.put("audio", Base64.encodeToString(nota.getVoice(),Base64.DEFAULT) );
+        } catch (JSONException e) {
+            Log.e(TAG,"Não foi possivel criar o Json para a nota " + nota.getIdNota());
+            notaJson = null;
+        }
+        return notaJson;
+    }
+
+    private static JSONObject createLocal(Location loc){
+        JSONObject localJson = new JSONObject();
+
+        try {
+            localJson.put("lat",loc.getLatitude());
+            localJson.put("log",loc.getLongitude());
+        } catch (JSONException e) {
+            Log.w(TAG, "Não foi possivel criar o local de registo");
+            return localJson = null;
+        }
+        return localJson;
+    }
+
+    private static JSONArray createImagens(List<Bitmap> listaImagens){
+        JSONArray imagensJson = new JSONArray();
+
+        for (Bitmap bitmap : listaImagens ) {
+            ByteBuffer byteBuffer = ByteBuffer.allocate(bitmap.getRowBytes() * bitmap.getHeight());
+            bitmap.copyPixelsToBuffer(byteBuffer);
+            imagensJson.put(Base64.encodeToString(byteBuffer.array(),Base64.DEFAULT));
+        }
+
+        return imagensJson;
+
+    }
 
 
 }

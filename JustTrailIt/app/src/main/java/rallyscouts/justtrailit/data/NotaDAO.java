@@ -61,21 +61,20 @@ public class NotaDAO {
     }
 
 
-    public boolean insertNota(int idNota, int idAtividade, String notaTextual, byte[] audio, float lat, float lng, List<Bitmap> imagens){
+    public boolean insertNota(int idAtividade, Nota nota){
         ContentValues contentValues = new ContentValues();
-        contentValues.put(NOTA_COLUMN_ID_NOTA, idNota);
+        contentValues.put(NOTA_COLUMN_ID_NOTA, nota.getIdNota());
         contentValues.put(NOTA_COLUMN_ATIVIDADE, idAtividade);
-        contentValues.put(NOTA_COLUMN_NOTA_TEXTUAL, notaTextual);
-        contentValues.put(NOTA_COLUMN_AUDIO, audio);
-        contentValues.put(NOTA_COLUMN_LATITUDE,lat);
-        contentValues.put(NOTA_COLUMN_LONGITUDE,lng);
+        contentValues.put(NOTA_COLUMN_NOTA_TEXTUAL, nota.getNotaTextual());
+        contentValues.put(NOTA_COLUMN_AUDIO, nota.getVoice());
+        contentValues.put(NOTA_COLUMN_LATITUDE,nota.getLocalRegisto().getLatitude());
+        contentValues.put(NOTA_COLUMN_LONGITUDE,nota.getLocalRegisto().getLongitude());
         if( mDatabase.insert(NOTA_TABLE_NAME, null, contentValues) == -1) return false ;
-        for ( Bitmap im : imagens ) {
-            insertImagem(idNota,idAtividade,im);
+        for ( Bitmap im : nota.getImagens() ) {
+            insertImagem(nota.getIdNota(),idAtividade,im);
         }
         return true;
     }
-
 
     public boolean insertImagem(int idNota, int idAtividade, Bitmap imagem){
         ContentValues contentValues = new ContentValues();
@@ -127,4 +126,42 @@ public class NotaDAO {
         return imagens;
     }
 
+    public List<Nota> getAllNotas(int idAtividade){
+        List<Nota> notas = new ArrayList<>();
+
+        Cursor res = mDatabase.rawQuery("SELECT " + NOTA_COLUMN_ID_NOTA +
+                " FROM " + NOTA_TABLE_NAME +
+                " WHERE " + NOTA_COLUMN_ATIVIDADE + " = ?",
+                new String[]{""+idAtividade});
+
+        res.moveToFirst();
+
+        while(res.isAfterLast()){
+            Nota n = getNota(res.getInt(res.getColumnIndex(NOTA_COLUMN_ATIVIDADE)),idAtividade);
+            if(n!=null){
+                notas.add(n);
+            }
+            res.moveToNext();
+        }
+        return notas;
+
+    }
+
+
+
+    public boolean insertNota(int idNota, int idAtividade, String notaTextual, byte[] audio, float lat, float lng, List<Bitmap> imagens){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(NOTA_COLUMN_ID_NOTA, idNota);
+        contentValues.put(NOTA_COLUMN_ATIVIDADE, idAtividade);
+        contentValues.put(NOTA_COLUMN_NOTA_TEXTUAL, notaTextual);
+        contentValues.put(NOTA_COLUMN_AUDIO, audio);
+        contentValues.put(NOTA_COLUMN_LATITUDE,lat);
+        contentValues.put(NOTA_COLUMN_LONGITUDE,lng);
+        if( mDatabase.insert(NOTA_TABLE_NAME, null, contentValues) == -1) return false ;
+        for ( Bitmap im : imagens ) {
+            insertImagem(idNota,idAtividade,im);
+        }
+        return true;
+    }
 }
+
