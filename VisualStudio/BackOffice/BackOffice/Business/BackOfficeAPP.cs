@@ -260,7 +260,7 @@ namespace BackOffice.Business
             this.guardaNovaAtividade(a);
             //depois apagar
             String s = this.jsonFrom(idAtividade);
-            System.IO.File.WriteAllText("C:\\Users\\Joao\\Desktop\\novo.json", s);
+            System.IO.File.WriteAllText("C:\\Users\\Octávio\\Desktop\\novo.json", s);
         }
 
 
