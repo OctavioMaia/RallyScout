@@ -25,7 +25,7 @@ public class JsonRC {
 
     public static final String TAG = "JsonClass";
 
-    public static JSONObject downloadAtividade(String emailBatedor){
+    public static JSONObject downloadAtividade(String emailBatedor, String password){
 
         JSONObject download = new JSONObject();
         try {
