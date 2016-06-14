@@ -27,6 +27,7 @@ namespace BackOffice.Data.DataBase
 
             string queryString = "select * from dbo.batedor Where Email='" + mail + "';";
             SqlCommand command = new SqlCommand(queryString, connection);
+            command.CommandTimeout = 60;
             SqlDataReader reader = command.ExecuteReader();
             if (reader.Read())
             {
@@ -39,7 +40,7 @@ namespace BackOffice.Data.DataBase
                b = new Batedor(mail as string, nome as string, pass as string,
                    Int32.Parse(tot.ToString()) , Double.Parse(horas.ToString()));
             }
-
+            reader.Close();
             return b;
         }
 
@@ -67,6 +68,7 @@ namespace BackOffice.Data.DataBase
 
             string queryString = "select Email from dbo.batedor ;";
             SqlCommand command = new SqlCommand(queryString, connection);
+            command.CommandTimeout = 60;
             SqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
@@ -76,7 +78,7 @@ namespace BackOffice.Data.DataBase
                 r.Add(email as string);
 
             }
-
+            reader.Close();
             return r;
         }
 
@@ -86,13 +88,13 @@ namespace BackOffice.Data.DataBase
             List <String> l= null;
             SqlConnection con = new SqlConnection(this.dbConf);
             con.Open();
+            //con.BeginTransaction();
             try
             {
                 l = this.keySet(con);
             }
             finally
             {
-
                 con.Close();
             }
             return l;
@@ -103,6 +105,7 @@ namespace BackOffice.Data.DataBase
             List<Batedor> l = null;
             SqlConnection con = new SqlConnection(this.dbConf);
             con.Open();
+           // con.BeginTransaction();
             try
             {
                 l = this.Values(con);
@@ -126,6 +129,32 @@ namespace BackOffice.Data.DataBase
             return b;
         }
 
+
+
+        private Boolean containsKey(string mail, SqlConnection connection)
+        {
+            Boolean ret = false;
+            Batedor b = this.get(mail, connection);
+            ret = (b != null);
+            return ret;
+        }
+
+        public Boolean containsKey(string mail)
+        {
+            Boolean b = false;
+            SqlConnection con = new SqlConnection(this.dbConf);
+            con.Open();
+            //con.BeginTransaction();
+            try
+            {
+                b = this.containsKey(mail,con);
+            }
+            finally
+            {
+                con.Close();
+            }
+            return b;
+        }
 
     }
 }
