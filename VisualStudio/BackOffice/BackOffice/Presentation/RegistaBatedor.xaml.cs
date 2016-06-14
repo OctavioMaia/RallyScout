@@ -40,6 +40,7 @@ namespace BackOffice.Presentation
                 {
                     Batedor b = new Batedor(email, nome, password);
                     backoffice.registarBatedor(b);
+                    this.Visibility = Visibility.Hidden;
                 }
                 else
                 {
@@ -51,7 +52,7 @@ namespace BackOffice.Presentation
                 MessageBox.Show("Verifique se introduziu todos os parametros!");
             }
 
-            this.Visibility = Visibility.Hidden;
+           
         }
 
         private void button_Copy_Click(object sender, RoutedEventArgs e)
