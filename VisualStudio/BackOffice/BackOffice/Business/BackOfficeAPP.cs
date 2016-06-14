@@ -10,6 +10,10 @@ using System.Speech.Recognition;
 using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using BackOffice.Business.Exceptions;
+using System.Net.Mail;
+using System.Net;
+using System.Net.Mime;
 
 namespace BackOffice.Business
 {
@@ -126,11 +130,46 @@ namespace BackOffice.Business
 
         public void gerarRelatorios(string path, int atividade_id)
         {
-
+            string pathPiloto = path + "copilot.pdf";
+            Atividade a = this.atividadeTERM[atividade_id];
+            if (!this.atividadeTERM.ContainsKey(atividade_id))
+            {
+                throw new AtividadeNaoIniciadaException("Atividade " + atividade_id + " Nao Terminada");
+            }
+            a.generateReportCopiloto(pathPiloto);
         }
-        public void enviarEmail(string mail)
+
+
+
+        public void email_send(string recipient, string subject, string body, List<string> attachmentFilenames)
         {
+            MailMessage mail = new MailMessage();
+            SmtpClient SmtpServer = new SmtpClient("smtp.gmail.com");
+            mail.From = new MailAddress(this.email);
+            mail.To.Add(recipient);
+            mail.Subject = subject;
+            mail.Body = body;
+
+
+            foreach (string attachmentFilename in attachmentFilenames)
+            {
+                if (attachmentFilename != null)
+                {
+                    System.Net.Mail.Attachment attachment;
+                    attachment = new System.Net.Mail.Attachment(attachmentFilename);
+                    mail.Attachments.Add(attachment);
+                }
+            }
+
+            SmtpServer.Port = 587;
+            SmtpServer.Credentials = new System.Net.NetworkCredential(this.email, this.passMail);
+            SmtpServer.EnableSsl = true;
+
+            SmtpServer.Send(mail);
 
         }
+
+
+     
     }
 }
