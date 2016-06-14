@@ -33,6 +33,10 @@ namespace BackOffice.Business
 
         public BackOfficeAPP(String confJSON)
         {
+
+            //Console.WriteLine("Inicio");
+            Connection.GetConnection();
+
             using (StreamReader r = new StreamReader(confJSON))
             {
                 string json = r.ReadToEnd();
