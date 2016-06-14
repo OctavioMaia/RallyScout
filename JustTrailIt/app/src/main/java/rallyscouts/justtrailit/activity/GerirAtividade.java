@@ -40,9 +40,8 @@ public class GerirAtividade extends AppCompatActivity {
         batedorLogin = batedores.getBatedor((String)getIntent().getExtras().get("email"));
         atividadeAProcess = atividades.getAtividade(batedorLogin.getAtividade());
 
-
-        atividade.setText("Atividade " + atividadeAProcess.getIdAtividade());
-        equipa.setText("Equipa: " + atividadeAProcess.getNomeEquipa());
+        //atividade.setText("Atividade " + atividadeAProcess.getIdAtividade());
+        //equipa.setText("Equipa: " + atividadeAProcess.getNomeEquipa());
 
     }
 
