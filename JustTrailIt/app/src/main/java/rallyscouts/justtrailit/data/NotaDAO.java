@@ -88,6 +88,17 @@ public class NotaDAO {
         return true;
     }
 
+    public int getMaiorNota()
+    {
+        int maiorNota;
+        Cursor nota = mDatabase.rawQuery(
+                "SELECT MAX( " + NOTA_COLUMN_ID_NOTA +" )" + "FROM " + NOTA_TABLE_NAME,null);
+        maiorNota = nota.getInt(1);
+    }
+
+
+
+
     public Nota getNota(int idNota, int idAtividade){
         Nota not = null;
         Cursor resNota = mDatabase.rawQuery(

@@ -64,4 +64,5 @@
         android:layout_below="@+id/button_RegistarVoz"
         android:layout_centerHorizontal="true"
         android:onClick="registarImagem"/>
+
 </RelativeLayout>
