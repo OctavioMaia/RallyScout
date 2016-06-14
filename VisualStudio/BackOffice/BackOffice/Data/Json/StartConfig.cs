@@ -12,6 +12,7 @@ namespace BackOffice.Data.Json
         public string password { get; set; }
         public string port { get; set; }
         public string[] dicionario { get; set; }
+        public string database { get; set; }
         public Simbolos simbolos { get; set; }
 
         public StartConfig(string mail, string pass, string porta, 
