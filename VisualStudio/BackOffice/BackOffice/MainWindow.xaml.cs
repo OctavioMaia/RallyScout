@@ -33,6 +33,16 @@ namespace BackOffice
 
             BackOfficeAPP b = new BackOfficeAPP(pathO);
             BatedorDAO d = new BatedorDAO(b.database);
+            Batedor bn = new Batedor("octavioMaia@gamil.com", "Beatriz", "penis", 0, 0);
+            Batedor old = d.put(bn);
+            if (old == null)
+            {
+                MessageBox.Show(" NOVO");
+            }
+            else
+            {
+                MessageBox.Show(old.ToString());
+            }
             
             /*
             List<String> users = d.keySet();
@@ -98,7 +108,7 @@ namespace BackOffice
             }*/
             //MessageBox.Show();
             this.Visibility = Visibility.Hidden;
-            InserirVeiculo l = new InserirVeiculo();
+            InserirVeiculo l = new InserirVeiculo(new List<Veiculo>());
             l.Visibility = Visibility.Visible;
            
 

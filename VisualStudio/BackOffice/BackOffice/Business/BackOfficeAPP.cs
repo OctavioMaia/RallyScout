@@ -208,6 +208,12 @@ namespace BackOffice.Business
         }
 
 
+        public List<Batedor> getBatedores()
+        {
+            //TODO ir a BD
+            return null;
+        }
+
         private Batedor getBatedor(string mail)
         {
             //TODO ir a BD
