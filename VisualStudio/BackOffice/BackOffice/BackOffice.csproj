@@ -118,6 +118,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Presentation\RegistaBatedor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Presentation\RegistoAtividade.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -129,6 +133,9 @@
     </Compile>
     <Compile Include="Presentation\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\RegistaBatedor.xaml.cs">
+      <DependentUpon>RegistaBatedor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Presentation\RegistoAtividade.xaml.cs">
       <DependentUpon>RegistoAtividade.xaml</DependentUpon>
