@@ -90,14 +90,20 @@
     <Compile Include="Business\Equipa.cs" />
     <Compile Include="Business\Exceptions\AtividadeJaIniciadaException.cs" />
     <Compile Include="Business\Exceptions\AtividadeNaoIniciadaException.cs" />
+    <Compile Include="Business\Exceptions\AtividadeNaoTerminadaExeption.cs" />
     <Compile Include="Business\Exceptions\CaracteristicaExistenteException.cs" />
+    <Compile Include="Business\Exceptions\NaoExisteAtividadeExeption.cs" />
+    <Compile Include="Business\Exceptions\NaoExisteBatedorExeption.cs" />
     <Compile Include="Business\FichaBatedor.cs" />
+    <Compile Include="Data\Json\BackToJust.cs" />
     <Compile Include="Business\Mapa.cs" />
     <Compile Include="Business\Nota.cs" />
     <Compile Include="Business\Exceptions\NotaRepetidaException.cs" />
     <Compile Include="Business\Veiculo.cs" />
     <Compile Include="Business\Exceptions\VeiculoRepetidoException.cs" />
     <Compile Include="Business\Voz.cs" />
+    <Compile Include="Data\Json\JustToBack.cs" />
+    <Compile Include="Data\Json\StartConfig.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

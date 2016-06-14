@@ -5,8 +5,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
+import java.nio.ByteBuffer;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +35,8 @@ public class NotaDAO {
     public static final String NOTA_COLUMN_LONGITUDE = "Longitude";
 
     public static final String IMAGEM_TABLE_NAME = "Imagem";
-    public static final String IMAGEM_COLUMN_IMAGE = "Mapa";
+    public static final String IMAGEM_COLUMN_ID = "idImagem";
+    public static final String IMAGEM_COLUMN_IMAGE = "Imagem";
     public static final String IMAGEM_COLUMN_NOTA = "Nota";
     public static final String IMAGEM_COLUMN_ATIVIDADE = "Atividade";
 
@@ -57,6 +60,7 @@ public class NotaDAO {
         myDBadapter.close();
     }
 
+
     public boolean insertNota(int idNota, int idAtividade, String notaTextual, byte[] audio, float lat, float lng, List<Bitmap> imagens){
         ContentValues contentValues = new ContentValues();
         contentValues.put(NOTA_COLUMN_ID_NOTA, idNota);
@@ -72,11 +76,15 @@ public class NotaDAO {
         return true;
     }
 
+
     public boolean insertImagem(int idNota, int idAtividade, Bitmap imagem){
         ContentValues contentValues = new ContentValues();
         contentValues.put(IMAGEM_COLUMN_NOTA, idNota);
         contentValues.put(IMAGEM_COLUMN_ATIVIDADE, idAtividade);
-        contentValues.put(IMAGEM_COLUMN_IMAGE, (imagem));
+        int size = imagem.getRowBytes() * imagem.getHeight();
+        ByteBuffer byteBuffer = ByteBuffer.allocate(size);
+        imagem.copyPixelsToBuffer(byteBuffer);
+        contentValues.put(IMAGEM_COLUMN_IMAGE, byteBuffer.array());
         if( mDatabase.insert(IMAGEM_TABLE_NAME, null, contentValues) == -1) return false ;
         return true;
     }
@@ -95,13 +103,28 @@ public class NotaDAO {
                 new String[]{ ""+idNota,""+idAtividade }
         );
 
-        List<Image> imagens = new ArrayList<>();
+        List<Bitmap> imagens = new ArrayList<>();
         return not;
     }
 
 
-    public List<byte[]> getAllImagens(int idNota, int idAtividade){
+    public List<Bitmap> getAllImagens(int idNota, int idAtividade){
+        ArrayList<Bitmap> imagens = new ArrayList<>();
 
+        Cursor resImagens = mDatabase.rawQuery(
+                "SELECT * FROM " + IMAGEM_TABLE_NAME +
+                        "WHERE " + IMAGEM_COLUMN_NOTA + " = ? AND " + IMAGEM_COLUMN_ATIVIDADE + " = ?",
+                new String[]{ ""+idNota, ""+idAtividade }
+        );
+
+        resImagens.moveToFirst();
+        while(resImagens.isAfterLast()){
+            byte[] byteArray = resImagens.getBlob(resImagens.getColumnIndex(IMAGEM_COLUMN_IMAGE));
+            Bitmap bm = BitmapFactory.decodeByteArray(byteArray, 0 ,byteArray.length);
+            imagens.add(bm);
+            resImagens.moveToNext();
+        }
+        return imagens;
     }
 
 }
