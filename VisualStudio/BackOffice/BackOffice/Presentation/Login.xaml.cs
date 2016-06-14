@@ -23,5 +23,11 @@ namespace BackOffice.Presentation
         {
             InitializeComponent();
         }
+
+        private void buttonLogin_Click(object sender, RoutedEventArgs e)
+        {
+            RegistoAtividade ra = new RegistoAtividade();
+            ra.Visibility = Visibility.Visible;
+        }
     }
 }
