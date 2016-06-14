@@ -217,6 +217,12 @@ namespace BackOffice.Business
             return this.batedores.Values();
         }
 
+
+        public List<String> getBatedoresMails()
+        {
+            return this.batedores.keySet();
+        }
+
         private Batedor getBatedor(string mail)
         {
             return this.batedores.get(mail);

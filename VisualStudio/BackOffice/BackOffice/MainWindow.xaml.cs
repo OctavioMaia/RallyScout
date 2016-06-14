@@ -32,7 +32,7 @@ namespace BackOffice
             string pathJ = "C:\\Users\\Octávio\\Documents\\GitHub\\RallyScout\\ExemplosJson\\config.json";
 
             BackOfficeAPP b = new BackOfficeAPP(pathO);
-            BatedorDAO d = new BatedorDAO(b.database);
+           /* BatedorDAO d = new BatedorDAO(b.database);
             Batedor bn = new Batedor("octavioMaia@gamil.com", "Beatriz", "penis", 0, 0);
             Batedor old = d.put(bn);
             if (old == null)
@@ -42,7 +42,7 @@ namespace BackOffice
             else
             {
                 MessageBox.Show(old.ToString());
-            }
+            }*/
             
             /*
             List<String> users = d.keySet();
@@ -53,12 +53,12 @@ namespace BackOffice
             }*/
             
             
-            List<Batedor> bs = d.Values();
+          /*  List<Batedor> bs = d.Values();
 
             foreach (Batedor b1 in bs)
             {
                 MessageBox.Show(b1.ToString());
-            }
+            }*/
 
             
             //  MessageBox.Show(b.email);
@@ -108,7 +108,7 @@ namespace BackOffice
             }*/
             //MessageBox.Show();
             this.Visibility = Visibility.Hidden;
-            InserirVeiculo l = new InserirVeiculo(new List<Veiculo>());
+            RegistaBatedor l = new RegistaBatedor(b);
             l.Visibility = Visibility.Visible;
            
 
