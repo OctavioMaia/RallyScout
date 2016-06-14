@@ -56,7 +56,7 @@ namespace BackOffice.Presentation
             //List<Batedor> batedores = backoffice.getBatedores();
             String mailBatedor = "";// = backoffice.getBatedor().email();
 
-            backoffice.registarAtividade(0,mailBatedor, trajeto, nomeProva, nomeEquipa, emailEquipa, l); 
+            backoffice.registarAtividade(mailBatedor, trajeto, nomeProva, nomeEquipa, emailEquipa, l); 
             this.Visibility = Visibility.Hidden;
         }
 
