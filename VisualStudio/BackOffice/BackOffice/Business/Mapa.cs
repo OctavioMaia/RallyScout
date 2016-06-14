@@ -7,7 +7,9 @@ using System.Device.Location;
 using System.Windows;
 
 namespace BackOffice.Business
-{using System.Xml.Linq;
+{
+    using System.Globalization;
+    using System.Xml.Linq;
 
     public class Mapa
     {
@@ -55,7 +57,13 @@ namespace BackOffice.Business
             int i = 0;
             foreach (var wpt in waypoints)
             {
-                GeoCoordinate g = new GeoCoordinate(Double.Parse(wpt.Latitude), Double.Parse(wpt.Longitude));
+                //MessageBox.Show(wpt.Latitude + " " + wpt.Latitude.GetType().ToString());
+                Double lat = Double.Parse(wpt.Latitude,CultureInfo.InvariantCulture);
+                Double longit = Double.Parse(wpt.Longitude, CultureInfo.InvariantCulture);
+
+
+                GeoCoordinate g = new GeoCoordinate(lat, longit);
+                //GeoCoordinate g = new GeoCoordinate(Double.Parse(wpt.Latitude), Double.Parse(wpt.Longitude));
                 this.cords.Add(i, g);
                 i++;
             }

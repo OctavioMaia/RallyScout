@@ -65,8 +65,8 @@ namespace BackOffice.Presentation
             String emailEquipa = textBoxEmailEquipa.Text;
             int index = comboBox.SelectedIndex;
             
-            ComboBoxItem typeItem = (ComboBoxItem)comboBox.SelectedItem;
-            string mailBatedor = typeItem.Content.ToString();
+            //ComboBoxItem typeItem = (ComboBoxItem)
+            string mailBatedor = comboBox.SelectedItem as string;
 
             backoffice.registarAtividade(mailBatedor, trajeto, nomeProva, nomeEquipa, emailEquipa, l); 
             this.Visibility = Visibility.Hidden;
