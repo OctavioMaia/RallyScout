@@ -30,8 +30,8 @@ namespace BackOffice.Business
 
         public int port { get; set; }
         public string IP { get; set; }
-
-        public BackOfficeAPP(String confJSON)
+        public string database { get; set; }
+       /* private BackOfficeAPP(String confJSON)
         {
 
             //Console.WriteLine("Inicio");
@@ -46,7 +46,6 @@ namespace BackOffice.Business
 
                 this.email = mail;
                 this.passMail = pass;
-
                 JArray dic = results.dicionario;
                 string[] arr = dic.ToObject<string[]>();
                 Choices escolhas = new Choices();
@@ -108,9 +107,9 @@ namespace BackOffice.Business
             //TODO
             this.atividadeFE = new Dictionary<int, Atividade>();
         }
+        */
 
-
-        public BackOfficeAPP(String confJSON, int lixo)
+        public BackOfficeAPP(String confJSON)
         {
             string json;
             using (StreamReader r = new StreamReader(confJSON))
@@ -137,7 +136,7 @@ namespace BackOffice.Business
             this.port = Int32.Parse( s.port);
             this.passMail = s.password;
             this.email = s.email;
-
+            this.database = s.database;
             //gramatica
             string[] gram = s.dicionario;
             Choices escolhas = new Choices();

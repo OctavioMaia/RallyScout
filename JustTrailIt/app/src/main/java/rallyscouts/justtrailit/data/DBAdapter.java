@@ -20,7 +20,6 @@ public class DBAdapter extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_ATIVIDADE =
             "CREATE TABLE " + AtividadeDAO.ATIVIDADE_TABLE_NAME + " ( " +
                     AtividadeDAO.ATIVIDADE_COLUMN_ID + " INTEGER PRIMARY KEY, " +
-                    AtividadeDAO.ATIVIDADE_COLUMN_EQUIPA_EMAIL + " VARCHAR(50) NOT NULL, " +
                     AtividadeDAO.ATIVIDADE_COLUMN_EQUIPA_NOME + " VARCHAR(50) NOT NULL )";
 
     private static final String CREATE_TABLE_BATEDOR =
