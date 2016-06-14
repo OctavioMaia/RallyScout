@@ -112,7 +112,7 @@ public class NotaDAO {
                         " WHERE " + IMAGEM_COLUMN_NOTA + " = ? AND " + IMAGEM_COLUMN_ATIVIDADE + " = ?",
                 new String[]{ ""+idNota,""+idAtividade }
         );
-
+        /* Ver isto que ainda falata */
         List<Bitmap> imagens = new ArrayList<>();
         return not;
     }

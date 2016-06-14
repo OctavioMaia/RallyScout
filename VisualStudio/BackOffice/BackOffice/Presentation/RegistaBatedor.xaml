@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BackOffice.Presentation"
         mc:Ignorable="d"
-        Title="RegistaBatedor" Height="210.487" Width="860.433" ResizeMode="NoResize" FontFamily="Arial">
+        Title="RegistaBatedor" Height="213.374" Width="865.244" ResizeMode="NoResize" FontFamily="Arial" WindowStartupLocation="CenterScreen">
     <Grid>
         <Label x:Name="labelModeloVeiculo" Content="Password" HorizontalAlignment="Left" Margin="10,103,0,0" VerticalAlignment="Top" Height="40" Width="103" FontFamily="Arial" FontSize="18" FontWeight="Bold"/>
         <Label x:Name="labelMarca" Content="Nome" HorizontalAlignment="Left" Margin="10,56,0,0" VerticalAlignment="Top" Height="42" Width="86" FontFamily="Arial" FontSize="18" FontWeight="Bold"/>

@@ -29,6 +29,18 @@ namespace BackOffice.Presentation
         {
             backoffice = b;
             InitializeComponent();
+            UpdateComboBox();
+        }
+
+        private void UpdateComboBox()
+        {
+            List<String> l = this.backoffice.getBatedoresMails();
+
+            foreach(String s in l)
+            {
+                comboBox.Items.Add(s);
+            }
+            
         }
 
         private void buttonAdicionarVeiculo_Click(object sender, RoutedEventArgs e)
@@ -52,9 +64,9 @@ namespace BackOffice.Presentation
             String nomeEquipa = textBoxNomeEquipa.Text;
             String emailEquipa = textBoxEmailEquipa.Text;
             int index = comboBox.SelectedIndex;
-
-            //List<Batedor> batedores = backoffice.getBatedores();
-            String mailBatedor = "";// = backoffice.getBatedor().email();
+            
+            //ComboBoxItem typeItem = (ComboBoxItem)
+            string mailBatedor = comboBox.SelectedItem as string;
 
             backoffice.registarAtividade(mailBatedor, trajeto, nomeProva, nomeEquipa, emailEquipa, l); 
             this.Visibility = Visibility.Hidden;

@@ -259,8 +259,8 @@ namespace BackOffice.Business
             Atividade a = new Atividade(idAtividade, mailEquipa, nomeprova, mapPath, lv, new Equipa(nomeEquipa, mailEquipa), b);
             this.guardaNovaAtividade(a);
             //depois apagar
-            //String s = this.jsonFrom(idAtividade);
-            //System.IO.File.WriteAllText("C:\\Users\\Joao\\Desktop\\novo.json", s);
+            String s = this.jsonFrom(idAtividade);
+            System.IO.File.WriteAllText("C:\\Users\\Octávio\\Desktop\\novo.json", s);
         }
 
 
@@ -271,7 +271,41 @@ namespace BackOffice.Business
             return null;
         }
 
+        public List<Atividade> getAtividadesTerminas()
+        {
+            //TODO
+            return null;
+        }
 
+        public List<Atividade> getAtividadesPorTerminar()
+        {
+            //TODO
+            return null;
+        }
+
+        public List<Atividade> getAtividades()
+        {
+            //TODO
+            return null;
+        }
+
+        public List<int> getAtividadesTerminasID()
+        {
+            //TODO
+            return null;
+        }
+
+        public List<int> getAtividadesPorTerminarID()
+        {
+            //TODO
+            return null;
+        }
+
+        public List<int> getAtividadesID()
+        {
+            //TODO
+            return null;
+        }
         public Atividade consultarAtividadeTerm(int id)
         {
             Atividade a = this.getAtividade(id);

@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\App.xaml
-4-383214890
+6-1645151556
 
-30-1723180389
+3353106561
 21-949533158
-MainWindow.xaml;Presentation\InserirVeiculo.xaml;Presentation\Login.xaml;Presentation\RegistoAtividade.xaml;
+MainWindow.xaml;Presentation\ConsultaBatedor.xaml;Presentation\InserirVeiculo.xaml;Presentation\Login.xaml;Presentation\RegistaBatedor.xaml;Presentation\RegistoAtividade.xaml;
 
 False
 

@@ -1,0 +1,28 @@
+﻿<Window x:Class="BackOffice.Presentation.ConsultaBatedor"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BackOffice.Presentation"
+        mc:Ignorable="d"
+        Title="Consulta Batedor" Height="254.743" Width="430.286" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="0*"/>
+        </Grid.ColumnDefinitions>
+        <Label x:Name="label" Content="Batedor" HorizontalAlignment="Left" Height="27" Margin="10,10,0,0" VerticalAlignment="Top" Width="73" FontFamily="Arial" FontSize="16" FontWeight="Bold"/>
+        <ComboBox x:Name="comboBox" HorizontalAlignment="Left" Height="27" Margin="88,10,0,0" VerticalAlignment="Top" Width="327" SelectionChanged="comboBox_SelectionChanged"/>
+        <Separator HorizontalAlignment="Left" Height="6" Margin="16,42,0,0" VerticalAlignment="Top" Width="399"/>
+        <Label x:Name="label_Copy" Content="Nome" HorizontalAlignment="Left" Height="27" Margin="10,53,0,0" VerticalAlignment="Top" Width="73" FontFamily="Arial" FontSize="16" FontWeight="Bold"/>
+        <Label x:Name="label_Copy1" Content="Email" HorizontalAlignment="Left" Height="27" Margin="10,85,0,0" VerticalAlignment="Top" Width="73" FontFamily="Arial" FontSize="16" FontWeight="Bold" RenderTransformOrigin="0.54,3.695"/>
+        <Label x:Name="label_Copy2" Content="Nº Atividades" HorizontalAlignment="Left" Height="27" Margin="10,117,0,0" VerticalAlignment="Top" Width="120" FontFamily="Arial" FontSize="16" FontWeight="Bold"/>
+        <Label x:Name="label_Copy3" Content="Horas de trabalho" HorizontalAlignment="Left" Height="27" Margin="10,149,0,0" VerticalAlignment="Top" Width="148" FontFamily="Arial" FontSize="16" FontWeight="Bold"/>
+        <Button x:Name="button" Content="Regressar" HorizontalAlignment="Left" Height="32" Margin="16,181,0,0" VerticalAlignment="Top" Width="399" FontFamily="Arial" FontSize="16" FontWeight="Bold" Click="button_Click"/>
+        <TextBox x:Name="textBoxNome" HorizontalAlignment="Left" Height="27" Margin="163,53,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="252" FontFamily="Arial" FontSize="14" IsEnabled="False"/>
+        <TextBox x:Name="textBoxEmail" HorizontalAlignment="Left" Height="27" Margin="163,85,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="252" FontFamily="Arial" FontSize="14" IsEnabled="False"/>
+        <TextBox x:Name="textBoxAtividades" HorizontalAlignment="Left" Height="27" Margin="163,117,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="252" FontFamily="Arial" FontSize="14" IsEnabled="False"/>
+        <TextBox x:Name="textBoxHoras" HorizontalAlignment="Left" Height="27" Margin="163,149,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="252" FontFamily="Arial" FontSize="14" IsEnabled="False"/>
+
+    </Grid>
+</Window>

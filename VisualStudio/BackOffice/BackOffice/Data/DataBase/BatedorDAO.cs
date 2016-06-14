@@ -209,9 +209,6 @@ namespace BackOffice.Data.DataBase
                 con.Close();
             }
             return b;
-
-
-            return b;
         }
 
         public int size()
