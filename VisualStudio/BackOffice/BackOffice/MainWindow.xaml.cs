@@ -34,14 +34,15 @@ namespace BackOffice
             BackOfficeAPP b = new BackOfficeAPP(pathO);
             BatedorDAO d = new BatedorDAO(b.database);
             
+            /*
             List<String> users = d.keySet();
 
             foreach(string s in users)
             {
                 MessageBox.Show(d.get(s).ToString());
-            }
+            }*/
             
-
+            
             List<Batedor> bs = d.Values();
 
             foreach (Batedor b1 in bs)
@@ -49,7 +50,7 @@ namespace BackOffice
                 MessageBox.Show(b1.ToString());
             }
 
-
+            
             //  MessageBox.Show(b.email);
             // MessageBox.Show(b.passMail);
             /*
