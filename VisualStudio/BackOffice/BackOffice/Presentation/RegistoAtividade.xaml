@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BackOffice.Presentation"
         mc:Ignorable="d"
-        Title="RegistoAtividade" Height="347.878" Width="796.335" ResizeMode="NoResize">
+        Title="Registo de Atividade" Height="347.878" Width="796.335" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <Grid>
         <Label x:Name="labelUsername" Content="Trajeto" HorizontalAlignment="Left" Margin="15,13,0,0" VerticalAlignment="Top" Height="39" Width="106" FontFamily="Arial" FontSize="18.667" FontWeight="Bold"/>
         <TextBox x:Name="textBoxPath" HorizontalAlignment="Left" Height="27" Margin="148,13,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="527" FontFamily="Arial" FontSize="16" IsEnabled="False"/>

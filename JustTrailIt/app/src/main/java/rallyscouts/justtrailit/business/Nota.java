@@ -39,7 +39,13 @@ public class Nota {
         this.idNota = idNota;
     }
 
+    public ArrayList<Bitmap> getImagens() {
+        return imagens;
+    }
 
+    public void setImagens(ArrayList<Bitmap> imagens) {
+        this.imagens = imagens;
+    }
 
     public Location getLocalRegisto() {
         return localRegisto;
