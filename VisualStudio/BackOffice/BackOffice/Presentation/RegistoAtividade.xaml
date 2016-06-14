@@ -20,8 +20,8 @@
         <ComboBox x:Name="comboBox" HorizontalAlignment="Left" Height="28" Margin="148,186,0,0" VerticalAlignment="Top" Width="622" FontFamily="Arial" FontSize="16"/>
         <Label x:Name="labelVeiculo" Content="Veiculo" HorizontalAlignment="Left" Margin="15,223,0,0" VerticalAlignment="Top" Height="28" Width="106" FontFamily="Arial" FontSize="18.667" FontWeight="Bold"/>
         <Button x:Name="buttonAdicionarVeiculo" Content="Gestão de Veículos" HorizontalAlignment="Left" Height="28" Margin="148,223,0,0" VerticalAlignment="Top" Width="622" FontFamily="Arial" FontSize="16" Click="buttonAdicionarVeiculo_Click"/>
-        <Button x:Name="buttonOK" Content="Ok" HorizontalAlignment="Left" Height="32" Margin="15,270,0,0" VerticalAlignment="Top" Width="363" FontFamily="Arial" FontSize="18.667"/>
-        <Button x:Name="buttonCancelar" Content="Cancelar" HorizontalAlignment="Left" Height="32" Margin="407,270,0,0" VerticalAlignment="Top" Width="363" FontFamily="Arial" FontSize="18.667"/>
+        <Button x:Name="buttonOK" Content="Ok" HorizontalAlignment="Left" Height="32" Margin="15,270,0,0" VerticalAlignment="Top" Width="363" FontFamily="Arial" FontSize="18.667" Click="buttonOK_Click"/>
+        <Button x:Name="buttonCancelar" Content="Cancelar" HorizontalAlignment="Left" Height="32" Margin="407,270,0,0" VerticalAlignment="Top" Width="363" FontFamily="Arial" FontSize="18.667" Click="buttonCancelar_Click"/>
 
     </Grid>
 </Window>

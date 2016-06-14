@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BackOffice.Business
 {
-    class Batedor
+    public class Batedor
     {
         public string email { get; set; }
         public string nome { get; set; }
