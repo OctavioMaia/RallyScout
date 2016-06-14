@@ -40,10 +40,14 @@ public class GerirAtividade extends AppCompatActivity {
         batedorLogin = batedores.getBatedor((String)getIntent().getExtras().get("email"));
         atividadeAProcess = atividades.getAtividade(batedorLogin.getAtividade());
 
+        //atividade.setText("Atividade " + atividadeAProcess.getIdAtividade());
+        //equipa.setText("Equipa: " + atividadeAProcess.getNomeEquipa());
 
-        atividade.setText("Atividade " + atividadeAProcess.getIdAtividade());
-        equipa.setText("Equipa: " + atividadeAProcess.getNomeEquipa());
+    }
 
+    public void verPercurso(View v){
+        Intent verpercurso = new Intent(GerirAtividade.this, MapaPercurso.class);
+        GerirAtividade.this.startActivity(verpercurso);
     }
 
     public void registarNota(View v){
@@ -58,6 +62,7 @@ public class GerirAtividade extends AppCompatActivity {
 
         Intent vernotas = new Intent(GerirAtividade.this, Notas.class);
         GerirAtividade.this.startActivity(vernotas);
+
 
     }
 

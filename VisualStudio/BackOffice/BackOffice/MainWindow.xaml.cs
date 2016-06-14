@@ -32,7 +32,7 @@ namespace BackOffice
             string pathJ = "C:\\Users\\Joao\\Documents\\GitHub\\RallyScout\\ExemplosJson\\config.json";
 
 
-            BackOfficeAPP b = new BackOfficeAPP(pathO);
+            BackOfficeAPP b = new BackOfficeAPP(pathJ);
            /* BatedorDAO d = new BatedorDAO(b.database);
             Batedor bn = new Batedor("octavioMaia@gamil.com", "Beatriz", "penis", 0, 0);
             Batedor old = d.put(bn);
