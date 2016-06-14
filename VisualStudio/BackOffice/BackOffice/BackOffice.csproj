@@ -95,6 +95,8 @@
     <Compile Include="Business\Exceptions\NaoExisteAtividadeExeption.cs" />
     <Compile Include="Business\Exceptions\NaoExisteBatedorExeption.cs" />
     <Compile Include="Business\FichaBatedor.cs" />
+    <Compile Include="Data\DataBase\AtividadeDAO.cs" />
+    <Compile Include="Data\DataBase\BatedorDAO.cs" />
     <Compile Include="Data\Json\BackToJust.cs" />
     <Compile Include="Business\Mapa.cs" />
     <Compile Include="Business\Nota.cs" />
@@ -108,11 +110,23 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Presentation\ConsultaBatedor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presentation\ConsultarAtividadeConcluida.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Presentation\InserirVeiculo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Presentation\Login.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presentation\RegistaBatedor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -122,11 +136,20 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Presentation\ConsultaBatedor.xaml.cs">
+      <DependentUpon>ConsultaBatedor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\ConsultarAtividadeConcluida.xaml.cs">
+      <DependentUpon>ConsultarAtividadeConcluida.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Presentation\InserirVeiculo.xaml.cs">
       <DependentUpon>InserirVeiculo.xaml</DependentUpon>
     </Compile>
     <Compile Include="Presentation\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\RegistaBatedor.xaml.cs">
+      <DependentUpon>RegistaBatedor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Presentation\RegistoAtividade.xaml.cs">
       <DependentUpon>RegistoAtividade.xaml</DependentUpon>

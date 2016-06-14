@@ -8,7 +8,7 @@ using BackOffice.Business;
 
 namespace BackOffice.Data.Json
 {
-    class BackToJust
+    public class BackToJust
     {
         public int idAtividade { get; set; }
         public String email { get; set; }
@@ -24,8 +24,16 @@ namespace BackOffice.Data.Json
 
             this.mapa = new Map();
             this.mapa.nomeProva = a.percurso.nomeProva;
-            Cord[] cords = new Cord[a.percurso.cords.Count];
-            for (int i = 0; i < a.percurso.cords.Count; i++)
+
+            int totCords = 0;
+            if (a.percurso.cords != null)
+            {
+                totCords = a.percurso.cords.Count;
+            }
+
+
+            Cord[] cords = new Cord[totCords];
+            for (int i = 0; i < totCords; i++)
             {
                 GeoCoordinate g = a.percurso.cords[i];
                 Cord c = new Cord(g.Latitude, g.Longitude);
@@ -33,8 +41,11 @@ namespace BackOffice.Data.Json
             }
             this.mapa.percurso = cords;
 
-
-            int totcar = a.veiculos.Count;
+            int totcar = 0;
+            if (a.veiculos != null)
+            {
+                totcar = a.veiculos.Count;
+            } 
             Car[] carros = new Car[totcar];
             for(int i = 0; i < totcar; i++)
             {
@@ -53,13 +64,13 @@ namespace BackOffice.Data.Json
 
     }
 
-    class Map
+    public class Map
     {
         public String nomeProva { get; set; }
         public Cord[] percurso { get; set; }
         
     }
-    class Cord
+    public class Cord
     {
         public double lat { get; set; }
         public double log { get; set; }
@@ -69,7 +80,7 @@ namespace BackOffice.Data.Json
             this.log = longi;
         }
     }
-    class Car
+    public class Car
     {
         public string chassi { get; set; }
         public string[] caracteristicas { get; set; }

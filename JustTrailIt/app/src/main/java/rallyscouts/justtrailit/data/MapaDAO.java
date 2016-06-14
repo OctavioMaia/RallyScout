@@ -58,11 +58,36 @@ public class MapaDAO {
         myDBadapter.close();
     }
 
+    public boolean insertMapa(Mapa p){
+        boolean ret = true;
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MAPA_COLUMN_ATIVIDADE_ID, p.getIdMapa());
+        contentValues.put(MAPA_COLUMN_NOME_PROVA, p.getNomeProva());
+        if( mDatabase.insert(MAPA_TABLE_NAME, null, contentValues) == -1 ) ret = false;
+
+        Map<Integer,Location> listaCoords = p.getCoord();
+
+        for (Integer ordem : listaCoords.keySet()) {
+            insertMapaCoordenada(p.getIdMapa(), ordem, listaCoords.get(ordem));
+        }
+        return ret;
+    }
+
     public boolean insertMapa(int idMapa, String nomeProva) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(MAPA_COLUMN_ATIVIDADE_ID, idMapa);
         contentValues.put(MAPA_COLUMN_NOME_PROVA, nomeProva);
         if( mDatabase.insert(MAPA_TABLE_NAME, null, contentValues) == -1 ) return false;
+        return true;
+    }
+
+    public boolean insertMapaCoordenada(int idMapa, Integer ordem, Location loc){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MAPA_COORDENADAS_COLUMN_MAPA, idMapa );
+        contentValues.put(MAPA_COORDENADAS_COLUMN_NR_COORDENADA, ordem );
+        contentValues.put(MAPA_COORDENADAS_COLUMN_LONGITUDE, loc.getLongitude() );
+        contentValues.put(MAPA_COORDENADAS_COLUMN_LATITUDE, loc.getLatitude());
+        if( mDatabase.insert(MAPA_COORDENADAS_TABLE_NAME, null, contentValues) == -1 ) return false;
         return true;
     }
 
@@ -104,4 +129,14 @@ public class MapaDAO {
         }
         return coord;
     }
+
+    public int deleteMapaCoordenadas(int idMapa){
+        return mDatabase.delete(MAPA_COORDENADAS_TABLE_NAME,MAPA_COORDENADAS_COLUMN_MAPA + " = ?", new String[]{ ""+idMapa });
+    }
+
+    public int deleteMapa(int idMapa){
+        deleteMapaCoordenadas(idMapa);
+        return mDatabase.delete(MAPA_TABLE_NAME,MAPA_COLUMN_ATIVIDADE_ID + " = ?", new String[]{ ""+idMapa });
+    }
+
 }

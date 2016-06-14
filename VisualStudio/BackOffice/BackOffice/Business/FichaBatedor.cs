@@ -6,10 +6,15 @@ using System.Threading.Tasks;
 
 namespace BackOffice.Business
 {
-    class FichaBatedor
+    public class FichaBatedor
     {
         public int nAtividades { get; set; }
         public double horasEmReConhecimento { get; set; }
+
+        public override string ToString()
+        {
+            return " (FichaBatedor) Atividades: " + nAtividades + " Horas: " +this.horasEmReConhecimento;
+        }
 
         public FichaBatedor()
         {

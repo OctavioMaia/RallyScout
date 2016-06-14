@@ -10,6 +10,7 @@ import android.util.Log;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import rallyscouts.justtrailit.business.Veiculo;
 
@@ -58,20 +59,24 @@ public class VeiculoDAO {
 
     /**
      * metodo que insere um veiculo
-     * @param chassi
-     * @param marca
-     * @param modelo
-     * @param atividade
+     * @param vec
      * @return
      */
-    public boolean insertVeiculo  (String chassi, String marca, String modelo, int atividade) {
+    public boolean insertVeiculo(int idAtividade, Veiculo vec) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(VEICULO_COLUMN_CHASSI, chassi);
-        contentValues.put(VEICULO_COLUMN_MARCA, marca);
-        contentValues.put(VEICULO_COLUMN_MODELO, modelo);
-        contentValues.put(VEICULO_COLUMN_ATIVIDADE, atividade);
+        contentValues.put(VEICULO_COLUMN_CHASSI, vec.getChassi());
+        contentValues.put(VEICULO_COLUMN_MARCA, vec.getMarca());
+        contentValues.put(VEICULO_COLUMN_MODELO, vec.getModelo());
+        contentValues.put(VEICULO_COLUMN_ATIVIDADE, idAtividade);
         if( mDatabase.insert(VEICULO_TABLE_NAME, null, contentValues) == -1 ) return false;
         return true;
+    }
+
+
+    public void insertVeiculos(int idAtividade, List<Veiculo> lista){
+        for (Veiculo v :lista ) {
+            insertVeiculo(idAtividade,v);
+        }
     }
 
     /**

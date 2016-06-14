@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace BackOffice.Data.Json
 {
-    class JustToBack
+    public class JustToBack
     {
         public int idAtividade { get; set; }
         public string email { get; set; }
         public Note[] notas { get; set; }
     }
-    class Note
+    public class Note
     {
         public int idNota { get; set; }
         public string notaTextual { get; set; }

@@ -47,4 +47,6 @@ public class Batedor {
     public void setPassword(String password) {
         this.password = password;
     }
+
+
 }

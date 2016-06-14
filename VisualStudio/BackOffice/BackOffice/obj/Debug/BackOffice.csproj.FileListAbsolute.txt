@@ -44,3 +44,13 @@ C:\Users\Octávio\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice
 C:\Users\Octávio\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\Presentation\RegistoAtividade.baml
 C:\Users\Octávio\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\Presentation\InserirVeiculo.g.cs
 C:\Users\Octávio\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\Presentation\InserirVeiculo.baml
+C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\Presentation\InserirVeiculo.g.cs
+C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\Presentation\Login.g.cs
+C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\Presentation\RegistoAtividade.g.cs
+C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\Presentation\InserirVeiculo.baml
+C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\Presentation\Login.baml
+C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\Presentation\RegistoAtividade.baml
+C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\Presentation\RegistaBatedor.g.cs
+C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\Presentation\RegistaBatedor.baml
+C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\Presentation\ConsultaBatedor.g.cs
+C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\Presentation\ConsultaBatedor.baml

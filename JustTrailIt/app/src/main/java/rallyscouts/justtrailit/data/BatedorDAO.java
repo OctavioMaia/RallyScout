@@ -85,6 +85,16 @@ public class BatedorDAO {
         return true;
     }
 
+    public boolean updateBatedor(Batedor bat){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(BATEDOR_COLUMN_EMAIL, bat.getEmail());
+        contentValues.put(BATEDOR_COLUMN_PASSWORD, bat.getPassword());
+        contentValues.put(BATEDOR_COLUMN_NOME, bat.getNome());
+        contentValues.put(BATEDOR_COLUMN_ATIVIDADE, bat.getAtividade());
+        if( mDatabase.update(BATEDOR_TABLE_NAME, contentValues, BATEDOR_COLUMN_EMAIL + " = ? ", new String[]{bat.getEmail()}) == 0) return false;
+        return true;
+    }
+
     /**
      * getBatedor metodo devolve a infromação presente na base de dados sobre um batedor atravez do seu email
      * @param email
@@ -123,7 +133,7 @@ public class BatedorDAO {
      * @param email
      * @return
      */
-    public int removeBatedor(String email){
+    public int deleteBatedor(String email){
         return mDatabase.delete(BATEDOR_TABLE_NAME, BATEDOR_COLUMN_EMAIL + " = ?" , new String[]{ email });
     }
 }

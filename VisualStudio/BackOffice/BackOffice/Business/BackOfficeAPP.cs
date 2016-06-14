@@ -14,24 +14,26 @@ using System.Text;
 using System.Drawing;
 using System.Net.Sockets;
 using System.Net;
+using BackOffice.Data.DataBase;
 
 namespace BackOffice.Business
 {
-    class BackOfficeAPP
+    public class BackOfficeAPP
     {
         public List<String> batedoresOcupados { get; set; }
         public static Grammar gramatica { get; set; }
         public static Dictionary<String,String> simbolos { get; set; }
         public String email { get; set; }
         public String passMail { get; set; }
-        public Dictionary<String, Batedor> batedores { get; set; }
+        public BatedorDAO batedores { get; set; }
+        public AtividadeDAO atividades { get; set; }
         public Dictionary<int,Atividade> atividadeFE { get; set; }
         public Dictionary<int,Atividade> atividadeTERM { get; set; }
 
         public int port { get; set; }
         public string IP { get; set; }
-
-        public BackOfficeAPP(String confJSON)
+        public string database { get; set; }
+       /* private BackOfficeAPP(String confJSON)
         {
 
             //Console.WriteLine("Inicio");
@@ -46,7 +48,6 @@ namespace BackOffice.Business
 
                 this.email = mail;
                 this.passMail = pass;
-
                 JArray dic = results.dicionario;
                 string[] arr = dic.ToObject<string[]>();
                 Choices escolhas = new Choices();
@@ -108,9 +109,9 @@ namespace BackOffice.Business
             //TODO
             this.atividadeFE = new Dictionary<int, Atividade>();
         }
+        */
 
-
-        public BackOfficeAPP(String confJSON, int lixo)
+        public BackOfficeAPP(String confJSON)
         {
             string json;
             using (StreamReader r = new StreamReader(confJSON))
@@ -137,7 +138,7 @@ namespace BackOffice.Business
             this.port = Int32.Parse( s.port);
             this.passMail = s.password;
             this.email = s.email;
-
+            this.database = s.database;
             //gramatica
             string[] gram = s.dicionario;
             Choices escolhas = new Choices();
@@ -188,7 +189,9 @@ namespace BackOffice.Business
 
 
             //TODO BD dos 
-
+            this.atividades = new AtividadeDAO(this.database);
+            this.batedores = new BatedorDAO(this.database);
+            this.atividadeFE = new Dictionary<int, Atividade>();
 
 
             //return u;
@@ -209,22 +212,35 @@ namespace BackOffice.Business
         }
 
 
+        public List<Batedor> getBatedores()
+        {
+            return this.batedores.Values();
+        }
+
+
+        public List<String> getBatedoresMails()
+        {
+            return this.batedores.keySet();
+        }
+
         private Batedor getBatedor(string mail)
         {
-            //TODO ir a BD
-            return this.batedores[mail];
+            return this.batedores.get(mail);
         }
 
         private void guardaNovaAtividade(Atividade a)
         {
             this.atividadeFE.Add(a.idAtividade, a);
+            //this.atividades.put(a);
             //TODO ir a BD
         }
 
         private int getNextAtividadeID()
         {
-            //TODO ir a BD
-            return 0;
+            List<Int32> l = this.atividades.keySet();
+            if (l.Count == 0) return 0;
+            l.Sort();
+            return l[l.Count - 1];
         }
 
         public void registarAtividade(string mailBatedor, string mapPath, string nomeprova,
@@ -242,7 +258,9 @@ namespace BackOffice.Business
             Batedor b = this.getBatedor(mailBatedor);
             Atividade a = new Atividade(idAtividade, mailEquipa, nomeprova, mapPath, lv, new Equipa(nomeEquipa, mailEquipa), b);
             this.guardaNovaAtividade(a);
-            
+            //depois apagar
+            String s = this.jsonFrom(idAtividade);
+            System.IO.File.WriteAllText("C:\\Users\\Octávio\\Desktop\\novo.json", s);
         }
 
 
@@ -253,7 +271,41 @@ namespace BackOffice.Business
             return null;
         }
 
+        public List<Atividade> getAtividadesTerminas()
+        {
+            //TODO
+            return null;
+        }
 
+        public List<Atividade> getAtividadesPorTerminar()
+        {
+            //TODO
+            return null;
+        }
+
+        public List<Atividade> getAtividades()
+        {
+            //TODO
+            return null;
+        }
+
+        public List<int> getAtividadesTerminasID()
+        {
+            //TODO
+            return null;
+        }
+
+        public List<int> getAtividadesPorTerminarID()
+        {
+            //TODO
+            return null;
+        }
+
+        public List<int> getAtividadesID()
+        {
+            //TODO
+            return null;
+        }
         public Atividade consultarAtividadeTerm(int id)
         {
             Atividade a = this.getAtividade(id);
@@ -269,7 +321,16 @@ namespace BackOffice.Business
         } 
         
 
-        
+        public Boolean existeBatedor(string mail)
+        {
+            return this.batedores.containsKey(mail);
+        }
+
+        public void registarBatedor(Batedor b)
+        {
+            this.batedores.put(b);
+        }
+
 
         public Batedor consultarFichaBatedor(string mail)
         {

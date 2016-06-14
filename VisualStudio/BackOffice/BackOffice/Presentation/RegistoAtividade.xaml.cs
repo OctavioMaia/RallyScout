@@ -1,5 +1,8 @@
-﻿using System;
+﻿using BackOffice.Business;
+using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,9 +22,60 @@ namespace BackOffice.Presentation
     /// </summary>
     public partial class RegistoAtividade : Window
     {
-        public RegistoAtividade()
+        List<Veiculo> l { get; set; }
+        BackOfficeAPP backoffice;
+
+        public RegistoAtividade(BackOfficeAPP b)
         {
+            backoffice = b;
             InitializeComponent();
+            UpdateComboBox();
+        }
+
+        private void UpdateComboBox()
+        {
+            List<String> l = this.backoffice.getBatedoresMails();
+
+            foreach(String s in l)
+            {
+                comboBox.Items.Add(s);
+            }
+            
+        }
+
+        private void buttonAdicionarVeiculo_Click(object sender, RoutedEventArgs e)
+        {
+            l = new List<Veiculo>();
+            InserirVeiculo i = new InserirVeiculo(backoffice,l);
+            i.Visibility = Visibility.Visible;
+        }
+
+        private void buttonProcurarFicheiro_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            if (openFileDialog.ShowDialog() == true)
+                textBoxPath.Text = openFileDialog.FileName;
+        }
+
+        private void buttonOK_Click(object sender, RoutedEventArgs e)
+        {
+            String trajeto = textBoxPath.Text;//.Replace('/', '\\');
+            String nomeProva = textBoxNomeProva.Text;
+            String nomeEquipa = textBoxNomeEquipa.Text;
+            String emailEquipa = textBoxEmailEquipa.Text;
+            int index = comboBox.SelectedIndex;
+            
+            //ComboBoxItem typeItem = (ComboBoxItem)
+            string mailBatedor = comboBox.SelectedItem as string;
+
+            backoffice.registarAtividade(mailBatedor, trajeto, nomeProva, nomeEquipa, emailEquipa, l); 
+            this.Visibility = Visibility.Hidden;
+        }
+
+        private void buttonCancelar_Click(object sender, RoutedEventArgs e)
+        {
+            this.Visibility = Visibility.Hidden;
         }
     }
 }
+
