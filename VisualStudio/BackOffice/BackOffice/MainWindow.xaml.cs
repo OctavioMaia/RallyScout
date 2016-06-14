@@ -32,7 +32,7 @@ namespace BackOffice
             string pathJ = "C:\\Users\\Joao\\Documents\\GitHub\\RallyScout\\ExemplosJson\\config.json";
 
 
-            BackOfficeAPP b = new BackOfficeAPP(pathO);
+            BackOfficeAPP b = new BackOfficeAPP(pathJ);
            /* BatedorDAO d = new BatedorDAO(b.database);
             Batedor bn = new Batedor("octavioMaia@gamil.com", "Beatriz", "penis", 0, 0);
             Batedor old = d.put(bn);
@@ -109,7 +109,7 @@ namespace BackOffice
             }*/
             //MessageBox.Show();
             this.Visibility = Visibility.Hidden;
-            RegistoAtividade l = new RegistoAtividade(b);
+            ConsultaBatedor l = new ConsultaBatedor(b);
             l.Visibility = Visibility.Visible;
            
 
