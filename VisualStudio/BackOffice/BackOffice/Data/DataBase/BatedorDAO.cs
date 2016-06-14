@@ -10,7 +10,7 @@ using System.Windows;
 
 namespace BackOffice.Data.DataBase
 {
-    class BatedorDAO
+    public class BatedorDAO
     {
       //  public SqlConnection con { get; set; } //= new SqlConnection(b.database);
         public string dbConf { get; set; }

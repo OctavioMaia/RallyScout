@@ -14,6 +14,7 @@ using System.Text;
 using System.Drawing;
 using System.Net.Sockets;
 using System.Net;
+using BackOffice.Data.DataBase;
 
 namespace BackOffice.Business
 {
@@ -24,7 +25,7 @@ namespace BackOffice.Business
         public static Dictionary<String,String> simbolos { get; set; }
         public String email { get; set; }
         public String passMail { get; set; }
-        public Dictionary<String, Batedor> batedores { get; set; }
+        public BatedorDAO batedores { get; set; }
         public Dictionary<int,Atividade> atividadeFE { get; set; }
         public Dictionary<int,Atividade> atividadeTERM { get; set; }
 
@@ -210,15 +211,15 @@ namespace BackOffice.Business
 
         public List<Batedor> getBatedores()
         {
-            //TODO ir a BD
-            return null;
+            return this.batedores.Values();
+           // return null;
         }
 
         private Batedor getBatedor(string mail)
         {
             //TODO ir a BD
-            return new Batedor("a","antonio","1",0,0);
-            return this.batedores[mail];
+            //return new Batedor("a","antonio","1",0,0);
+            return this.batedores.get(mail);
         }
 
         private void guardaNovaAtividade(Atividade a)
