@@ -62,6 +62,7 @@ public class BatedorDAO {
         contentValues.put(BATEDOR_COLUMN_EMAIL, email);
         contentValues.put(BATEDOR_COLUMN_PASSWORD, pass);
         contentValues.put(BATEDOR_COLUMN_NOME, nome);
+        contentValues.put(BATEDOR_COLUMN_ATIVIDADE, -1);
         if( mDatabase.insert(BATEDOR_TABLE_NAME, null, contentValues) == -1 ) return false;
         return true;
     }
@@ -102,6 +103,19 @@ public class BatedorDAO {
             );
         }
         return bat;
+    }
+
+    /**
+     * metodo que verifica se um deteminado email se encontra na base de dados
+     * associado a algum batedor
+     * @param email
+     * @return
+     */
+    public boolean contains(String email){
+        boolean cont = true;
+        Cursor res = mDatabase.rawQuery("SELECT * FROM " + BATEDOR_TABLE_NAME + " WHERE " + BATEDOR_COLUMN_EMAIL + " = ?" , new String[]{ email });
+        if(res.getCount()==0) cont = false;
+        return cont;
     }
 
     /**
