@@ -25,6 +25,13 @@ public class Veiculo {
         this.modelo = modelo;
     }
 
+    public Veiculo(){
+        this.chassi = null;
+        this.modelo = null;
+        this.marca = null;
+        this.caracteristicas = null;
+    }
+
     public ArrayList<String> getCaracteristicas() {
         return caracteristicas;
     }
