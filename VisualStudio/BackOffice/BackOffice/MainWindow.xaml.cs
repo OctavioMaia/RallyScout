@@ -109,7 +109,7 @@ namespace BackOffice
             }*/
             //MessageBox.Show();
             this.Visibility = Visibility.Hidden;
-            RegistoAtividade l = new RegistoAtividade(b);
+            ConsultaBatedor l = new ConsultaBatedor(b);
             l.Visibility = Visibility.Visible;
            
 

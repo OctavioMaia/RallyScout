@@ -271,7 +271,41 @@ namespace BackOffice.Business
             return null;
         }
 
+        public List<Atividade> getAtividadesTerminas()
+        {
+            //TODO
+            return null;
+        }
 
+        public List<Atividade> getAtividadesPorTerminar()
+        {
+            //TODO
+            return null;
+        }
+
+        public List<Atividade> getAtividades()
+        {
+            //TODO
+            return null;
+        }
+
+        public List<int> getAtividadesTerminasID()
+        {
+            //TODO
+            return null;
+        }
+
+        public List<int> getAtividadesPorTerminarID()
+        {
+            //TODO
+            return null;
+        }
+
+        public List<int> getAtividadesID()
+        {
+            //TODO
+            return null;
+        }
         public Atividade consultarAtividadeTerm(int id)
         {
             Atividade a = this.getAtividade(id);
