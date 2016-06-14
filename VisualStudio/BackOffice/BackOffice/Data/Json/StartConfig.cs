@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 namespace BackOffice.Data.Json
 {
-    class StartConfig
+    public class StartConfig
     {
         public string email { get; set; }
         public string password { get; set; }
         public string port { get; set; }
         public string[] dicionario { get; set; }
+        public string database { get; set; }
         public Simbolos simbolos { get; set; }
 
         public StartConfig(string mail, string pass, string porta, 
@@ -24,7 +25,7 @@ namespace BackOffice.Data.Json
             this.simbolos = simb;
         }
     }
-    class Simbolos
+    public class Simbolos
     {
         public Corner corner { get; set; }
         public Dictionary<String, String> road { get; set; }
@@ -35,7 +36,7 @@ namespace BackOffice.Data.Json
         }
     }
 
-    class Corner
+    public class Corner
     {
         public Dictionary<String, String> grade { get; set; }
         public Dictionary<String, String> duration { get; set; }

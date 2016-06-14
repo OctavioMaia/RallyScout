@@ -95,6 +95,8 @@
     <Compile Include="Business\Exceptions\NaoExisteAtividadeExeption.cs" />
     <Compile Include="Business\Exceptions\NaoExisteBatedorExeption.cs" />
     <Compile Include="Business\FichaBatedor.cs" />
+    <Compile Include="Data\DataBase\AtividadeDAO.cs" />
+    <Compile Include="Data\DataBase\BatedorDAO.cs" />
     <Compile Include="Data\Json\BackToJust.cs" />
     <Compile Include="Business\Mapa.cs" />
     <Compile Include="Business\Nota.cs" />
@@ -116,6 +118,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Presentation\RegistaBatedor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Presentation\RegistoAtividade.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -127,6 +133,9 @@
     </Compile>
     <Compile Include="Presentation\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\RegistaBatedor.xaml.cs">
+      <DependentUpon>RegistaBatedor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Presentation\RegistoAtividade.xaml.cs">
       <DependentUpon>RegistoAtividade.xaml</DependentUpon>

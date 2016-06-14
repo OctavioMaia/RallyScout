@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BackOffice.Business
 {
-    class Equipa
+    public class Equipa
     {
         public string nome { get; set; }
         public string email { get; set; }

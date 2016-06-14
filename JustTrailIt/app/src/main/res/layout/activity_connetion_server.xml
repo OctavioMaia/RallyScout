@@ -30,8 +30,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignRight="@+id/textView_adressIP"
-        android:layout_alignEnd="@+id/textView_adressIP"
-        android:text="adress" />
+        android:layout_alignEnd="@+id/textView_adressIP" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -56,8 +55,7 @@
         android:layout_alignParentStart="true"
         android:layout_marginTop="30dp"
         android:layout_alignRight="@+id/textView_Port"
-        android:layout_alignEnd="@+id/textView_Port"
-        android:text="port" />
+        android:layout_alignEnd="@+id/textView_Port" />
 
     <Button
         android:layout_width="wrap_content"

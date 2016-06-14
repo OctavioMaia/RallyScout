@@ -17,14 +17,19 @@ namespace BackOffice.Presentation
 {
     public partial class InserirVeiculo : Window
     {
-        public InserirVeiculo()
+        List<Veiculo> veiculos;
+        BackOfficeAPP backoffice;
+        
+        public InserirVeiculo(BackOfficeAPP b, List<Veiculo> l)
         {
+            this.backoffice = b;
+            this.veiculos = l;
             InitializeComponent();
+            listaVeiculos.Items.Remove(listaVeiculos.Items.GetItemAt(0));
         }
-
+       
         private void buttonAdicionarVeiculo_Click(object sender, RoutedEventArgs e)
         {
-            List<Veiculo> veiculos = new List<Veiculo>();
             String chassi = textBoxChassi.Text;
             String marca = textBoxMarca.Text;
             String modelo = textBoxModelo.Text;
@@ -34,6 +39,7 @@ namespace BackOffice.Presentation
             List<String> carateristicasSplit = new List<string>();
             for (int i = 0; i < split.Length; i++)
             {
+                //MessageBox.Show(split[i]);
                 carateristicasSplit.Add(split[i]);
             }
 
@@ -41,13 +47,33 @@ namespace BackOffice.Presentation
             veiculos.Add(v);
 
             //cenas
-            listaVeiculos.Items.Remove(listaVeiculos.Items.GetItemAt(0));
+            
             var lista = new String[] { chassi, marca, modelo };
 
             this.listaVeiculos.Items.Add(new MyItem { Chassi = chassi, Marca = marca, Modelo = modelo});
         }
 
-       
+        private void buttonRemoverVeiculo_Click(object sender, RoutedEventArgs e)
+        {
+            if (listaVeiculos.SelectedItems.Count > 0)
+            {
+                var selectedItem = (dynamic)listaVeiculos.SelectedItems[0];
+                string chassi = selectedItem.Chassi;
+                for (int i=0; i < veiculos.Count; i++)
+                {
+                    if (veiculos[i].chassi.Equals(chassi))
+                    {
+                        veiculos.RemoveAt(i);
+                    }
+                }
+                listaVeiculos.Items.Remove(listaVeiculos.SelectedItems[0]);
+            }
+        }
+
+        private void buttonOK_Click(object sender, RoutedEventArgs e)
+        {
+            this.Visibility = Visibility.Hidden;
+        }
     }
 
     class MyItem
