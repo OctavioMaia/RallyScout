@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using BackOffice.Business;
+using BackOffice.Presentation;
 
 namespace BackOffice
 {
@@ -24,12 +25,14 @@ namespace BackOffice
         public MainWindow()
         {
             //Mapa m = new Mapa("teste", 1, "C:\\Users\\Joao\\Desktop\\map.gpx");
-            BackOfficeAPP b = new BackOfficeAPP("C:\\Users\\Joao\\Documents\\GitHub\\RallyScout\\ExemplosJson\\config.json");
+
+            BackOfficeAPP b = new BackOfficeAPP("C:\\Users\\Joao\\Documents\\GitHub\\RallyScout\\ExemplosJson\\config.json",1);
           //  MessageBox.Show(b.email);
            // MessageBox.Show(b.passMail);
-
+            /*
             Dictionary<string, string> d = BackOfficeAPP.simbolos;
 
+            
             Atividade a = new Atividade(1, "jms", "Teste", "C:\\Users\\Joao\\Desktop\\map.gpx", new List<Veiculo>(), new Equipa("jmsEquipa", "jms@a"), new Batedor("jms","jms","123"));
             b.atividadeFE.Add(a.idAtividade, a);
 
@@ -50,6 +53,7 @@ namespace BackOffice
                 n.notasVoz = v;
                 a.addNota(n);
             }
+
             //gerar pdf
             //a.generateReportCopiloto("C:\\Users\\Joao\\Desktop\\Teste.pdf");
            
@@ -61,15 +65,20 @@ namespace BackOffice
 
             MessageBox.Show("Vou mandar");
             b.email_send(b.email, "Subject test", "body Teste", at);
+
             MessageBox.Show("Mandei");*/
+
             /*foreach (string chave in d.Keys)
             {
                 MessageBox.Show(chave + " --> " + d[chave]);
             }*/
             //MessageBox.Show();
+            this.Visibility = Visibility.Hidden;
+            InserirVeiculo l = new InserirVeiculo();
+            l.Visibility = Visibility.Visible;
 
 
-            InitializeComponent();
+            // InitializeComponent();
         }
     }
 }

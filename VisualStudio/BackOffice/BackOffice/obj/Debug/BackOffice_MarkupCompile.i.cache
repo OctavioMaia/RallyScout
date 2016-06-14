@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\
+C:\Users\Octávio\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\
 BackOffice
 none
 false
 DEBUG;TRACE
-C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\App.xaml
-11151548125
+C:\Users\Octávio\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\App.xaml
+4-383214890
 
-251599764747
-201576571816
-MainWindow.xaml;
+271540080464
+21247768635
+MainWindow.xaml;Presentation\InserirVeiculo.xaml;Presentation\Login.xaml;Presentation\RegistoAtividade.xaml;
 
-False
+True
 

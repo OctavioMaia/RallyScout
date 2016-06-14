@@ -30,6 +30,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -114,56 +115,30 @@ public class LoginActivity extends AppCompatActivity  {
         String password = mPasswordView.getText().toString();
 
         boolean cancel = false;
-        View focusView = null;
 
-        // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
-            cancel = true;
-        }
-
-        // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
-            cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
-            cancel = true;
-        }
-
-
-        if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
-            focusView.requestFocus();
-        } else {
-            Intent myIntent = new Intent(LoginActivity.this, MenuBatedor.class);
-            Batedor bat = batedores.getBatedor(email);
-            if(bat==null){
-                if(batedores.insertBatedor(email,password,"")){
-                    Log.i(TAG,"Sou o maior");
-                }else{
-                    Log.i(TAG,"Es uma merda");
-                }
+        // Check if email exists in database
+        if(batedores.contains(email)){
+            if(!isPasswordValid(email,password)){
+                mPasswordView.setError("This password is invalid");
+                cancel = true;
             }
+        }else{
+            batedores.insertBatedor(email,password,"");
+        }
 
-            bat = batedores.getBatedor(email);
-            myIntent.putExtra("bat",bat.getPassword());
+        if (!cancel) {
+            Intent myIntent = new Intent(LoginActivity.this, MenuBatedor.class);
+            myIntent.putExtra("email",email);
             LoginActivity.this.startActivity(myIntent);
         }
     }
 
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
         return email.contains("@");
     }
 
-    private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
+    private boolean isPasswordValid(String email, String password) {
+        return batedores.getBatedor(email).getPassword().equals(password);
     }
 }
 

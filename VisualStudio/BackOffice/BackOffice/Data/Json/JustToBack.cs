@@ -9,6 +9,7 @@ namespace BackOffice.Data.Json
     class JustToBack
     {
         public int idAtividade { get; set; }
+        public string email { get; set; }
         public Note[] notas { get; set; }
     }
     class Note
