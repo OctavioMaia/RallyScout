@@ -286,6 +286,12 @@ namespace BackOffice.Business
             return this.batedores.containsKey(mail);
         }
 
+        public void registarBatedor(Batedor b)
+        {
+            this.batedores.put(b);
+        }
+
+
         public Batedor consultarFichaBatedor(string mail)
         {
             Batedor b = this.getBatedor(mail);
