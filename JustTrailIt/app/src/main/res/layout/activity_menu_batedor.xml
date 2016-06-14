@@ -65,7 +65,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Config Connetion Server"
+        android:text="Config Connection Server"
         android:id="@+id/button_configConnetion"
         android:layout_below="@+id/button_uploadAtividade"
         android:layout_alignParentLeft="true"
