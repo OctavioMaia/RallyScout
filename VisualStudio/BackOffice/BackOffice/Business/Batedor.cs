@@ -13,6 +13,12 @@ namespace BackOffice.Business
         public string password { get; set; }
         public FichaBatedor ficha { get; set; }
 
+        public override string ToString()
+        {
+            return " (Batedor) Email: " + email + " Nome: " + nome+" pass: " + password + this.ficha.ToString();
+        }
+
+        
         public Batedor(string mail, string name, string pass)
         {
             this.nome = name;

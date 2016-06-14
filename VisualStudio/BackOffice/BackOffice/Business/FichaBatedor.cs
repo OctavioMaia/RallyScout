@@ -11,6 +11,11 @@ namespace BackOffice.Business
         public int nAtividades { get; set; }
         public double horasEmReConhecimento { get; set; }
 
+        public override string ToString()
+        {
+            return " (FichaBatedor) Atividades: " + nAtividades + " Horas: " +this.horasEmReConhecimento;
+        }
+
         public FichaBatedor()
         {
             this.horasEmReConhecimento = 0;
