@@ -17,7 +17,7 @@ using System.Net;
 
 namespace BackOffice.Business
 {
-    class BackOfficeAPP
+    public class BackOfficeAPP
     {
         public List<String> batedoresOcupados { get; set; }
         public static Grammar gramatica { get; set; }

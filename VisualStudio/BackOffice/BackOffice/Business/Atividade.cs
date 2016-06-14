@@ -18,7 +18,7 @@ using System.IO;
 
 namespace BackOffice.Business
 {
-    class Atividade
+    public class Atividade
     {
         public int idAtividade { get; set; }
         public DateTime inicioReconhecimento { get; set; }

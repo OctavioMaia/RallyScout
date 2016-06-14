@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BackOffice.Business
 {
-    class FichaBatedor
+    public class FichaBatedor
     {
         public int nAtividades { get; set; }
         public double horasEmReConhecimento { get; set; }

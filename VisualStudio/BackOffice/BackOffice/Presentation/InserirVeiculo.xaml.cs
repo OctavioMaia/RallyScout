@@ -18,9 +18,11 @@ namespace BackOffice.Presentation
     public partial class InserirVeiculo : Window
     {
         List<Veiculo> veiculos;
-
-        public InserirVeiculo(List<Veiculo> l)
+        BackOfficeAPP backoffice;
+        
+        public InserirVeiculo(BackOfficeAPP b, List<Veiculo> l)
         {
+            this.backoffice = b;
             this.veiculos = l;
             InitializeComponent();
             listaVeiculos.Items.Remove(listaVeiculos.Items.GetItemAt(0));
@@ -37,6 +39,7 @@ namespace BackOffice.Presentation
             List<String> carateristicasSplit = new List<string>();
             for (int i = 0; i < split.Length; i++)
             {
+                //MessageBox.Show(split[i]);
                 carateristicasSplit.Add(split[i]);
             }
 

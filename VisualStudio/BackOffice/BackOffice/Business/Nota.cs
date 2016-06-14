@@ -9,7 +9,7 @@ using System.Drawing;
 
 namespace BackOffice.Business
 {
-    class Nota
+    public class Nota
     {
         public int idNota { get; set; }
         private string notaTextual { get; set; }

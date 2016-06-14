@@ -9,7 +9,7 @@ using System.Windows;
 namespace BackOffice.Business
 {using System.Xml.Linq;
 
-    class Mapa
+    public class Mapa
     {
         public string nomeProva { get; set; }
         public int idMapa { get; set; }

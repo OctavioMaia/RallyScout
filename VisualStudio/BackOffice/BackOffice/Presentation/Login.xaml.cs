@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BackOffice.Business;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,15 +20,23 @@ namespace BackOffice.Presentation
     /// </summary>
     public partial class Login : Window
     {
-        public Login()
+        BackOfficeAPP backoffice;
+
+        public Login(BackOfficeAPP b)
         {
+            backoffice = b;
             InitializeComponent();
         }
 
         private void buttonLogin_Click(object sender, RoutedEventArgs e)
         {
-            RegistoAtividade ra = new RegistoAtividade();
+            RegistoAtividade ra = new RegistoAtividade(backoffice);
             ra.Visibility = Visibility.Visible;
+        }
+
+        private void buttonSair_Click(object sender, RoutedEventArgs e)
+        {
+            this.Visibility = Visibility.Hidden;
         }
     }
 }
