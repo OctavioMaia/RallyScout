@@ -11,14 +11,29 @@ namespace BackOffice.Data.Json
     class BackToJust
     {
         public int idAtividade { get; set; }
+        public String email { get; set; }
+        public String nomeEquipa { get; set; }
         public Map mapa { get; set; }
+        public Car[] veiculos { get; set; }
 
         public BackToJust(Atividade a)
         {
             this.idAtividade = a.idAtividade;
+            this.email = a.batedor.email;
+            this.nomeEquipa = a.nomeEquipa;
+
             this.mapa = new Map();
             this.mapa.nomeProva = a.percurso.nomeProva;
-            this.mapa.nomeEquipa = a.nomeEquipa;
+            Cord[] cords = new Cord[a.percurso.cords.Count];
+            for (int i = 0; i < a.percurso.cords.Count; i++)
+            {
+                GeoCoordinate g = a.percurso.cords[i];
+                Cord c = new Cord(g.Latitude, g.Longitude);
+                cords[i] = c;
+            }
+            this.mapa.percurso = cords;
+
+
             int totcar = a.veiculos.Count;
             Car[] carros = new Car[totcar];
             for(int i = 0; i < totcar; i++)
@@ -32,16 +47,8 @@ namespace BackOffice.Data.Json
                 Car c = new Car(v.chassi, caract);
                 carros[i] = c;
             }
-            Cord[] cords = new Cord[a.percurso.cords.Count];
-            for(int i=0;i< a.percurso.cords.Count; i++)
-            {
-                GeoCoordinate g = a.percurso.cords[i];
-                Cord c = new Cord(g.Latitude, g.Longitude);
-                cords[i] = c;
-            }
-            this.mapa.percurso = cords;
-            this.mapa.veiculos = carros;
-
+            
+            this.veiculos = carros;
         }
 
     }
@@ -49,9 +56,8 @@ namespace BackOffice.Data.Json
     class Map
     {
         public String nomeProva { get; set; }
-        public String nomeEquipa { get; set; }
         public Cord[] percurso { get; set; }
-        public Car[] veiculos { get; set; }
+        
     }
     class Cord
     {

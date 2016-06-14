@@ -12,6 +12,8 @@ using BackOffice.Data.Json;
 using System.Windows;
 using System.Text;
 using System.Drawing;
+using System.Net.Sockets;
+using System.Net;
 
 namespace BackOffice.Business
 {
@@ -26,8 +28,15 @@ namespace BackOffice.Business
         public Dictionary<int,Atividade> atividadeFE { get; set; }
         public Dictionary<int,Atividade> atividadeTERM { get; set; }
 
+        public int port { get; set; }
+        public string IP { get; set; }
+
         public BackOfficeAPP(String confJSON)
         {
+
+            //Console.WriteLine("Inicio");
+            Connection.GetConnection();
+
             using (StreamReader r = new StreamReader(confJSON))
             {
                 string json = r.ReadToEnd();
@@ -98,6 +107,105 @@ namespace BackOffice.Business
             //esta tudo lido que vem do json falta o resto
             //TODO
             this.atividadeFE = new Dictionary<int, Atividade>();
+        }
+
+
+        public BackOfficeAPP(String confJSON, int lixo)
+        {
+            string json;
+            using (StreamReader r = new StreamReader(confJSON))
+            {
+                json  = r.ReadToEnd();
+            }
+            StartConfig s;
+            using (var sr = new StringReader(json))
+            using (var jr = new JsonTextReader(sr))
+            {
+                var js = new JsonSerializer();
+                s = js.Deserialize<StartConfig>(jr);
+
+            }
+            //Ja tenho as configuraçoes
+            try
+            {
+                this.IP = GetLocalIPAddress();
+            }
+            catch(Exception e)
+            {
+                this.IP = "0.0.0.0";
+            }
+            this.port = Int32.Parse( s.port);
+            this.passMail = s.password;
+            this.email = s.email;
+
+            //gramatica
+            string[] gram = s.dicionario;
+            Choices escolhas = new Choices();
+            for (int i = 0; i < gram.Length; i++)
+            {
+                escolhas.Add(gram[i]);
+            }
+            GrammarBuilder gb = new GrammarBuilder();
+            gb.Append(escolhas);
+            BackOfficeAPP.gramatica = new Grammar(gb);
+            //dicionario traduçao
+            BackOfficeAPP.simbolos = new Dictionary<string, string>();
+            String corner = "corner ";
+            Corner corn = s.simbolos.corner;
+            String grade = "grade ";
+            Dictionary<String, String> graded = corn.grade;
+            foreach(String key in graded.Keys)
+            {
+                String valor = corner + grade + graded[key];
+                BackOfficeAPP.simbolos.Add(key, valor);
+            }
+
+            String duration = "duration ";
+
+            Dictionary<String, String> dur = corn.duration;
+            foreach (String key in dur.Keys)
+            {
+                String valor = corner + duration + dur[key];
+                BackOfficeAPP.simbolos.Add(key, valor);
+            }
+
+            String further = "further ";
+
+            Dictionary<String, String> fur = corn.further;
+            foreach (String key in fur.Keys)
+            {
+                String valor = corner + further + fur[key];
+                BackOfficeAPP.simbolos.Add(key, valor);
+            }
+            String road = "road ";
+
+            Dictionary<String, String> ro = s.simbolos.road;
+            foreach (String key in ro.Keys)
+            {
+                String valor = road + ro[key];
+                BackOfficeAPP.simbolos.Add(key, valor);
+            }
+
+
+            //TODO BD dos 
+
+
+
+            //return u;
+        }
+
+
+        private static string GetLocalIPAddress()
+        {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    return ip.ToString();
+                }
+            }
+            throw new Exception("Local IP Address Not Found!");
         }
 
 

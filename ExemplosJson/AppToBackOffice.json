@@ -1,5 +1,6 @@
 {
   "idAtividade" : 1,
+  "email" : "batedor@mail.com",
   "notas":[
       { "idNota":1,
         "notaTextual":"Cruva muito linda e limpa", 
