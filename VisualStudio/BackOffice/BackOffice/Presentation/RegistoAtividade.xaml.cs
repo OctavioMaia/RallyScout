@@ -1,5 +1,8 @@
-﻿using System;
+﻿using BackOffice.Business;
+using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,9 +22,27 @@ namespace BackOffice.Presentation
     /// </summary>
     public partial class RegistoAtividade : Window
     {
+        List<Veiculo> l { get; set; }
+
         public RegistoAtividade()
         {
             InitializeComponent();
         }
+
+        private void buttonAdicionarVeiculo_Click(object sender, RoutedEventArgs e)
+        {
+            l = new List<Veiculo>();
+            InserirVeiculo i = new InserirVeiculo(l);
+            i.Visibility = Visibility.Visible;
+        }
+
+        private void buttonProcurarFicheiro_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            if (openFileDialog.ShowDialog() == true)
+                textBoxPath.Text = openFileDialog.FileName;
+        }
+
     }
 }
+

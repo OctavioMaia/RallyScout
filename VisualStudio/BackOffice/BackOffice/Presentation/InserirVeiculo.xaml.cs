@@ -17,14 +17,17 @@ namespace BackOffice.Presentation
 {
     public partial class InserirVeiculo : Window
     {
-        public InserirVeiculo()
-        {
-            InitializeComponent();
-        }
+        List<Veiculo> veiculos;
 
+        public InserirVeiculo(List<Veiculo> l)
+        {
+            this.veiculos = l;
+            InitializeComponent();
+            listaVeiculos.Items.Remove(listaVeiculos.Items.GetItemAt(0));
+        }
+       
         private void buttonAdicionarVeiculo_Click(object sender, RoutedEventArgs e)
         {
-            List<Veiculo> veiculos = new List<Veiculo>();
             String chassi = textBoxChassi.Text;
             String marca = textBoxMarca.Text;
             String modelo = textBoxModelo.Text;
@@ -41,13 +44,33 @@ namespace BackOffice.Presentation
             veiculos.Add(v);
 
             //cenas
-            listaVeiculos.Items.Remove(listaVeiculos.Items.GetItemAt(0));
+            
             var lista = new String[] { chassi, marca, modelo };
 
             this.listaVeiculos.Items.Add(new MyItem { Chassi = chassi, Marca = marca, Modelo = modelo});
         }
 
-       
+        private void buttonRemoverVeiculo_Click(object sender, RoutedEventArgs e)
+        {
+            if (listaVeiculos.SelectedItems.Count > 0)
+            {
+                var selectedItem = (dynamic)listaVeiculos.SelectedItems[0];
+                string chassi = selectedItem.Chassi;
+                for (int i=0; i < veiculos.Count; i++)
+                {
+                    if (veiculos[i].chassi.Equals(chassi))
+                    {
+                        veiculos.RemoveAt(i);
+                    }
+                }
+                listaVeiculos.Items.Remove(listaVeiculos.SelectedItems[0]);
+            }
+        }
+
+        private void buttonOK_Click(object sender, RoutedEventArgs e)
+        {
+            this.Visibility = Visibility.Hidden;
+        }
     }
 
     class MyItem

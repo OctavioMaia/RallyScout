@@ -17,7 +17,7 @@
         <TextBox x:Name="textBoxCarateristicas" HorizontalAlignment="Left" Height="27" Margin="159,146,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="721" FontFamily="Arial" FontSize="16"/>
         <Label x:Name="labelAviso" Content="*caso queira indicar mais que uma carateristica, separe por &quot;;&quot; (exemplo: &quot;a;b;c;d;e&quot;)" HorizontalAlignment="Left" Height="24" Margin="10,194,0,0" VerticalAlignment="Top" Width="500" FontFamily="Arial" FontWeight="Bold"/>
         <Separator HorizontalAlignment="Left" Height="13" Margin="10,223,0,0" VerticalAlignment="Top" Width="870"/>
-        <ListView x:Name="listaVeiculos" HorizontalAlignment="Left" Height="204" Margin="20,250,0,0" VerticalAlignment="Top" Width="697" FontFamily="Arial" FontSize="16">
+        <ListView x:Name="listaVeiculos" HorizontalAlignment="Left" Height="204" Margin="20,250,0,0" VerticalAlignment="Top" Width="697" FontFamily="Arial" FontSize="16" SelectionMode="Single">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Chassi" Width="150" DisplayMemberBinding="{Binding Chassi}" />
@@ -28,8 +28,8 @@
             <CheckBox Background="Black"/>
         </ListView>
         <Button x:Name="buttonAdicionarVeiculo" Content="Adicionar Veiculo" HorizontalAlignment="Left" Height="35" Margin="722,287,0,0" VerticalAlignment="Top" Width="158" FontFamily="Arial" FontSize="16" Click="buttonAdicionarVeiculo_Click"/>
-        <Button x:Name="buttonRemoverVeiculo" Content="Remover Veiculo" HorizontalAlignment="Left" Height="35" Margin="722,339,0,0" VerticalAlignment="Top" Width="158" FontFamily="Arial" FontSize="16"/>
-        <Button x:Name="buttonOK" Content="Ok" HorizontalAlignment="Left" Height="35" Margin="722,389,0,0" VerticalAlignment="Top" Width="158" FontFamily="Arial" FontSize="16"/>
+        <Button x:Name="buttonRemoverVeiculo" Content="Remover Veiculo" HorizontalAlignment="Left" Height="35" Margin="722,339,0,0" VerticalAlignment="Top" Width="158" FontFamily="Arial" FontSize="16" Click="buttonRemoverVeiculo_Click"/>
+        <Button x:Name="buttonOK" Content="Ok" HorizontalAlignment="Left" Height="35" Margin="722,389,0,0" VerticalAlignment="Top" Width="158" FontFamily="Arial" FontSize="16" Click="buttonOK_Click"/>
 
     </Grid>
 </Window>

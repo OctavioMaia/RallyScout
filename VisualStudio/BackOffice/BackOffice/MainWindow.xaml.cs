@@ -40,7 +40,7 @@ namespace BackOffice
             MessageBox.Show("Vou gerar Json");
             b.enviarAtividade(a.idAtividade);
             MessageBox.Show("gerado Json");
-            */
+            
             MessageBox.Show("ler Json");
             string json = System.IO.File.ReadAllText("C:\\Users\\Joao\\Desktop\\test.json");
             b.formJson(json);
@@ -74,7 +74,7 @@ namespace BackOffice
             }*/
             //MessageBox.Show();
             this.Visibility = Visibility.Hidden;
-            InserirVeiculo l = new InserirVeiculo();
+            Login l = new Login();
             l.Visibility = Visibility.Visible;
 
 
