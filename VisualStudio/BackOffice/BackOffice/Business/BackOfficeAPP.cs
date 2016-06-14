@@ -187,7 +187,7 @@ namespace BackOffice.Business
 
 
             //TODO BD dos 
-
+            this.atividadeFE = new Dictionary<int, Atividade>();
 
 
             //return u;
@@ -211,6 +211,7 @@ namespace BackOffice.Business
         private Batedor getBatedor(string mail)
         {
             //TODO ir a BD
+            return new Batedor("a","antonio","1",0,0);
             return this.batedores[mail];
         }
 
@@ -235,13 +236,15 @@ namespace BackOffice.Business
 
         }
 
-        private void registarAtividade(int idAtividade, string mailBatedor,string mapPath, string nomeprova,
+        public void registarAtividade(int idAtividade, string mailBatedor,string mapPath, string nomeprova,
             string nomeEquipa, string mailEquipa, List<Veiculo> lv)
         {
             Batedor b = this.getBatedor(mailBatedor);
             Atividade a = new Atividade(idAtividade, mailEquipa, nomeprova, mapPath, lv, new Equipa(nomeEquipa, mailEquipa), b);
             this.guardaNovaAtividade(a);
-            
+            //depois apagar
+            //String s = this.jsonFrom(idAtividade);
+            //System.IO.File.WriteAllText("C:\\Users\\Joao\\Desktop\\novo.json", s);
         }
 
 

@@ -30,8 +30,18 @@ namespace BackOffice.Presentation
 
         private void buttonLogin_Click(object sender, RoutedEventArgs e)
         {
-            RegistoAtividade ra = new RegistoAtividade(backoffice);
-            ra.Visibility = Visibility.Visible;
+
+            String user = textBoxUsername.Text;
+            String pw = passwordBox.Password.ToString();
+             
+            if(user.Equals(backoffice.email) && pw.Equals(backoffice.passMail)) {
+                RegistoAtividade ra = new RegistoAtividade(backoffice);
+                ra.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                MessageBox.Show("Credenciais incorretas!");
+            }
         }
 
         private void buttonSair_Click(object sender, RoutedEventArgs e)
