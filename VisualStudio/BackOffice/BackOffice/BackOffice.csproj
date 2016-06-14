@@ -114,6 +114,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Presentation\ConsultarAtividadeConcluida.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Presentation\InserirVeiculo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -134,6 +138,9 @@
   <ItemGroup>
     <Compile Include="Presentation\ConsultaBatedor.xaml.cs">
       <DependentUpon>ConsultaBatedor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\ConsultarAtividadeConcluida.xaml.cs">
+      <DependentUpon>ConsultarAtividadeConcluida.xaml</DependentUpon>
     </Compile>
     <Compile Include="Presentation\InserirVeiculo.xaml.cs">
       <DependentUpon>InserirVeiculo.xaml</DependentUpon>

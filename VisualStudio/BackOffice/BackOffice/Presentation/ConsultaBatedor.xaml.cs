@@ -61,5 +61,10 @@ namespace BackOffice.Presentation
             textBoxAtividades.Text = b.ficha.nAtividades.ToString();
 
         }
+
+        private void button_Click(object sender, RoutedEventArgs e)
+        {
+            this.Visibility = Visibility.Hidden;
+        }
     }
 }
