@@ -49,6 +49,7 @@ public class GerirAtividade extends AppCompatActivity {
     public void registarNota(View v){
 
         Intent registarnota = new Intent(GerirAtividade.this, RegistarNota.class);
+        registarnota.putExtra("idAtividade",batedorLogin.getAtividade());
         GerirAtividade.this.startActivity(registarnota);
 
     }
