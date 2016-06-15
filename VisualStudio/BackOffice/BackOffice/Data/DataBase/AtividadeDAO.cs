@@ -74,19 +74,19 @@ namespace BackOffice.Data.DataBase
             SqlConnection con = new SqlConnection(this.dbConf);
             con.Open();
             SqlTransaction tr =  con.BeginTransaction();
-            try
-            {
+            //try
+           // {
                 l = this.Values(con,tr);
                 tr.Commit();
-            }catch(Exception e)
-            {
-                tr.Rollback();
-            }
-            finally
-            {
+           // }catch(Exception e)
+            //{
+            //    tr.Rollback();
+            //}
+            //finally
+            //{
 
                 con.Close();
-            }
+            //}
             return l;
         }
 
@@ -263,7 +263,9 @@ namespace BackOffice.Data.DataBase
                 DateTime inicioR = Convert.ToDateTime(reader["InicioReconhecimento"]);
                 DateTime fimR = Convert.ToDateTime(reader["FimReconhecimento"]);
                 bool inProg = (bool)reader["InProgress"];
-                bool done = (bool)reader["Done"];
+                var v =  Convert.ToBoolean(reader["Done"]);
+                MessageBox.Show(v.GetType().ToString());
+                bool done = (bool)v;
                 string mailEquipa = reader["Equipa_Email"] as string;
                 string nomeEquipa = reader["Equipa_Nome"] as string;
                 string mailbate = reader["Batedor"] as string;
@@ -456,7 +458,7 @@ namespace BackOffice.Data.DataBase
                 string queryStringCarac = String.Format("SELECT * dbo.Cordenadas " +
                     "WHERE Mapa = '{0}';",
                           id);
-
+                reader.Close();
                 SqlCommand commandVC = new SqlCommand(queryStringCarac, connection,tr);
                 commandVC.CommandTimeout = 60;
                 SqlDataReader readerC = command.ExecuteReader();
@@ -472,7 +474,11 @@ namespace BackOffice.Data.DataBase
 
                 m = new Mapa(NomeProva as string, id, cords);
             }
-            reader.Close();
+            if (!reader.IsClosed)
+            {
+                reader.Close();
+
+            }
             return m;
         }
 
