@@ -32,6 +32,17 @@ namespace BackOffice.Business
             }
 
         }
+        public Nota( int idNota , string notaTextual , GeoCoordinate localRegisto ,
+         List<Image> imagens, byte[] voice, Voz notasVoz)
+        {
+            this.idNota = idNota;
+            this.notaTextual = notaTextual;
+            this.localRegisto = localRegisto;
+            this.imagens = imagens;
+            this.voice = voice;
+            this.notasVoz = notasVoz;
+        }
+
         public bool asVoice()
         {
             return this.notasVoz != null;
