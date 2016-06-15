@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="rallyscouts.justtrailit">
 
-
     <uses-sdk
         android:minSdkVersion="12"
         android:targetSdkVersion="17" />
@@ -23,14 +22,16 @@
         android:glEsVersion="0x00020000"
         android:required="true" />
 
+    <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <android:uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
+        android:name="android.support.multidex.MultiDexApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:name="android.support.multidex.MultiDexApplication">
+        android:theme="@style/AppTheme">
         <activity
             android:name=".activity.LoginActivity"
             android:label="@string/app_name">
@@ -46,11 +47,14 @@
         <activity android:name=".activity.Notas" />
         <activity android:name=".activity.InformacaoNota" />
         <activity android:name=".activity.ConnetionServer" />
-        <activity android:name=".activity.MapaPercurso"/>
+        <activity android:name=".activity.MapaPercurso" />
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyBsBoSA7rWLSGqibQEOa3ipnZUDYA5zOfI"/>
+            android:value="AIzaSyBsBoSA7rWLSGqibQEOa3ipnZUDYA5zOfI" />
+
+        <activity android:name=".activity.ShowVeiculos" />
+        <activity android:name=".activity.NotaDetails"></activity>
     </application>
 
 </manifest>
