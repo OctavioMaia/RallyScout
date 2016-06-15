@@ -26,21 +26,30 @@ namespace BackOffice.Presentation
             this.backoffice = b;
             this.anterior = w;
             InitializeComponent();
+            this.textBoxIP.Text = b.IP;
+            this.textBoxPorta.Text = b.port.ToString();
+            this.ellipse.Fill = new SolidColorBrush(Colors.Red);
+
+
         }
 
         private void buttonServer_Click(object sender, RoutedEventArgs e)
         {
+            
             if (!started)
             {
                 this.backoffice.startReceive();
                 ellipse.Fill = new SolidColorBrush(Colors.Green);
                 this.buttonServer.Content = "Stop";
+                started = true;
             }
             else
             {
                 this.backoffice.stopReceive();
                 ellipse.Fill = new SolidColorBrush(Colors.Red);
                 this.buttonServer.Content = "Start";
+                started = false;
+
             }
         }
 
@@ -71,6 +80,7 @@ namespace BackOffice.Presentation
         private void buttonLogout_Click(object sender, RoutedEventArgs e)
         {
             // Login l = new Login(this.backoffice);
+            this.Visibility = Visibility.Hidden;
             this.anterior.Visibility = Visibility.Visible;
         }
     }

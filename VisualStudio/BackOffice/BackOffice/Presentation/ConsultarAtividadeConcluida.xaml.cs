@@ -28,8 +28,9 @@ namespace BackOffice.Presentation
         {
             this.backoffice = b;
             InitializeComponent();
-            UpdateComboBox();
             this.atividades = this.backoffice.getAtividadesTerminadas();
+            UpdateComboBox();
+            
         }
 
         private void UpdateComboBox()
