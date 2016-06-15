@@ -2,11 +2,9 @@ C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\bin
 C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\bin\Debug\BackOffice.exe
 C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\bin\Debug\BackOffice.pdb
 C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\BackOffice.csprojResolveAssemblyReference.cache
-C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\MainWindow.g.cs
 C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\App.g.cs
 C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\BackOffice_MarkupCompile.cache
 C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\BackOffice_MarkupCompile.lref
-C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\MainWindow.baml
 C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\BackOffice.g.resources
 C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\BackOffice.Properties.Resources.resources
 C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\BackOffice.csproj.GenerateResource.Cache
@@ -54,3 +52,5 @@ C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj
 C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\Presentation\RegistaBatedor.baml
 C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\Presentation\ConsultaBatedor.g.cs
 C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\Presentation\ConsultaBatedor.baml
+C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\Presentation\ConsultarAtividadeConcluida.g.cs
+C:\Users\Joao\Documents\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\Presentation\ConsultarAtividadeConcluida.baml
