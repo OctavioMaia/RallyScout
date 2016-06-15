@@ -52,8 +52,15 @@ namespace BackOffice.Presentation
 
         private void buttonConsultaAtividade_Click(object sender, RoutedEventArgs e)
         {
-            ConsultarAtividadeConcluida cac = new ConsultarAtividadeConcluida(this.backoffice);
-            cac.Visibility = Visibility.Visible;
+            if (this.backoffice.getAtividadesTerminadas().Count > 0)
+            {
+                ConsultarAtividadeConcluida cac = new ConsultarAtividadeConcluida(this.backoffice);
+                cac.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                MessageBox.Show("Não existem atividades terminadas no sistema!");
+            }
         }
 
         private void buttonRegistaBatedir_Click(object sender, RoutedEventArgs e)
@@ -64,8 +71,14 @@ namespace BackOffice.Presentation
 
         private void buttonConsultaBatedor_Click(object sender, RoutedEventArgs e)
         {
-            ConsultaBatedor cb = new ConsultaBatedor(this.backoffice);
-            cb.Visibility = Visibility.Visible;
+            if (this.backoffice.getBatedores().Count > 0) {
+                ConsultaBatedor cb = new ConsultaBatedor(this.backoffice);
+                cb.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                MessageBox.Show("Não existem batedores no sistema!");
+            }
         }
 
         private void buttonLogout_Click(object sender, RoutedEventArgs e)
