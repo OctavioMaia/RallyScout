@@ -21,11 +21,12 @@ namespace BackOffice.Presentation
     public partial class Login : Window
     {
         BackOfficeAPP backoffice;
-
+        MainWindow mainW;
         public Login(BackOfficeAPP b)
         {
             backoffice = b;
             InitializeComponent();
+            this.mainW = null;
         }
 
         public Login()
@@ -34,8 +35,7 @@ namespace BackOffice.Presentation
             string pathJ = "C:\\Users\\Joao\\Documents\\GitHub\\RallyScout\\ExemplosJson\\config.json";
 
 
-            //BackOfficeAPP b = new BackOfficeAPP(pathJ);
-           // backoffice = b;
+            this.backoffice = new BackOfficeAPP(pathO);
             InitializeComponent();
         }
 
@@ -53,20 +53,31 @@ namespace BackOffice.Presentation
             {
                 MessageBox.Show("Credenciais incorretas!");
             }*/
-            Atividade a = new Atividade(1, "equipateste", "teste", "C:\\Users\\Joao\\Desktop\\Mapas\\map.gpx", new List<Veiculo>(), new Equipa("equipa1","mail1"), new Batedor("mailbatedor","batedor","123"));
-            a.addNota(new Nota(1,"abc", 41.478254,-8.300161,null,null));
-            a.addNota(new Nota(2, "abc", 41.443217,-8.2916261, null, null));
-            a.addNota(new Nota(3, "def", 41.48096,-8.295004,null, null));
-            a.addNota(new Nota(4, "ghi", 41.509005,-8.25150, null, null));
-            VisualizadorMap vm = new VisualizadorMap();
-            vm.carregaMapa(a);
-            vm.updateComboBox(a);
-            vm.Visible =true;
+            /* Atividade a = new Atividade(1, "equipateste", "teste", "C:\\Users\\Joao\\Desktop\\Mapas\\map.gpx", new List<Veiculo>(), new Equipa("equipa1","mail1"), new Batedor("mailbatedor","batedor","123"));
+             a.addNota(new Nota(1,"abc", 41.478254,-8.300161,null,null));
+             a.addNota(new Nota(2, "abc", 41.443217,-8.2916261, null, null));
+             a.addNota(new Nota(3, "def", 41.48096,-8.295004,null, null));
+             a.addNota(new Nota(4, "ghi", 41.509005,-8.25150, null, null));*/
+            if (this.mainW == null)
+            {
+                this.mainW = new MainWindow(this.backoffice, this);
+            }
+             
+
+            //vm.carregaMapa(a);
+            //vm.updateComboBox(a);
+            this.Visibility = Visibility.Hidden;
+            this.mainW.Visibility = Visibility.Visible;
         }
 
         private void buttonSair_Click(object sender, RoutedEventArgs e)
         {
-            this.Visibility = Visibility.Hidden;
+            if (this.mainW != null)
+            {
+                this.mainW.Close();
+            }
+            this.Close();
+           // this.Visibility = Visibility.Hidden;
         }
     }
 }

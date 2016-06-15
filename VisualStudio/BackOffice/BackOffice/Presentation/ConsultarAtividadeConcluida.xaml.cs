@@ -23,13 +23,16 @@ namespace BackOffice.Presentation
         BackOfficeAPP backoffice;
         List<Atividade> atividades;
         Atividade selecionada;
+        Boolean gerado;
 
         public ConsultarAtividadeConcluida(BackOfficeAPP b)
         {
             this.backoffice = b;
+            this.gerado = false;
             InitializeComponent();
-            UpdateComboBox();
             this.atividades = this.backoffice.getAtividadesTerminadas();
+            UpdateComboBox();
+            
         }
 
         private void UpdateComboBox()
@@ -112,6 +115,12 @@ namespace BackOffice.Presentation
             VisualizadorMap vm = new VisualizadorMap();
             vm.carregaMapa(this.selecionada);
             vm.Visible = true;
+        }
+
+        private void buttonGerar_Click(object sender, RoutedEventArgs e)
+        {
+            GerirRelatorio gr = new GerirRelatorio(this.backoffice);
+            gr.Visibility = Visibility.Visible;
         }
     }
 
