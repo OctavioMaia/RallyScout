@@ -1,15 +1,13 @@
 package rallyscouts.justtrailit.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.TextClock;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import rallyscouts.justtrailit.R;
@@ -76,12 +74,11 @@ public class VeiculoExpandableListAdapter  extends BaseExpandableListAdapter{
         TextView tmarca = (TextView) convertView.findViewById(R.id.textView_marca);
         TextView tmodelo = (TextView) convertView.findViewById(R.id.textView_modelo);
 
-
         Veiculo vec = veiculos.get(groupPosition);
 
-        if(tchassi != null){ tchassi.setText("CHASSI: " + vec.getChassi()); }
-        if(tmarca != null){ tmarca.setText("MARCA: " + vec.getMarca()); }
-        if(tmodelo != null){ tmodelo.setText("MODELO: " + vec.getModelo()); }
+        if(tchassi != null && vec.getChassi()!=null ){ tchassi.setText("CHASSI: " + vec.getChassi()); }
+        if(tmarca != null && vec.getMarca()!=null ){ tmarca.setText("MARCA: " + vec.getMarca()); }
+        if(tmodelo != null && vec.getModelo()!=null ){ tmodelo.setText("MODELO: " + vec.getModelo()); }
 
         return convertView;
     }
@@ -95,7 +92,7 @@ public class VeiculoExpandableListAdapter  extends BaseExpandableListAdapter{
 
         TextView tcaract = (TextView) convertView.findViewById(R.id.textView_caract);
 
-        if(tcaract != null){ tcaract.setText( veiculos.get(groupPosition).getCaracteristicas().get(childPosition) ); }
+        if(tcaract != null){ tcaract.setText( veiculos.get(groupPosition).getCaracteristicas().get(childPosition) );Log.i("TESTE2","ESTOU"); }
 
         return convertView;
     }

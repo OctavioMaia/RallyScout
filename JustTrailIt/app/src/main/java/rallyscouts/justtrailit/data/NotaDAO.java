@@ -124,7 +124,7 @@ public class NotaDAO {
         );
 
         resImagens.moveToFirst();
-        while(resImagens.isAfterLast()){
+        while(resImagens.isAfterLast()==false){
             byte[] byteArray = resImagens.getBlob(resImagens.getColumnIndex(IMAGEM_COLUMN_IMAGE));
             Bitmap bm = BitmapFactory.decodeByteArray(byteArray, 0 ,byteArray.length);
             imagens.add(bm);
@@ -143,7 +143,7 @@ public class NotaDAO {
 
         res.moveToFirst();
 
-        while(res.isAfterLast()){
+        while(res.isAfterLast()==false){
             Nota n = getNota(res.getInt(res.getColumnIndex(NOTA_COLUMN_ATIVIDADE)),idAtividade);
             if(n!=null){
                 notas.add(n);

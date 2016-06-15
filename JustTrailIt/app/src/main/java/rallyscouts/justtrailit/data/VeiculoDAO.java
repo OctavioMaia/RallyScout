@@ -63,13 +63,19 @@ public class VeiculoDAO {
      * @return
      */
     public boolean insertVeiculo(int idAtividade, Veiculo vec) {
+        boolean ret = false;
         ContentValues contentValues = new ContentValues();
         contentValues.put(VEICULO_COLUMN_CHASSI, vec.getChassi());
         contentValues.put(VEICULO_COLUMN_MARCA, vec.getMarca());
         contentValues.put(VEICULO_COLUMN_MODELO, vec.getModelo());
         contentValues.put(VEICULO_COLUMN_ATIVIDADE, idAtividade);
-        if( mDatabase.insert(VEICULO_TABLE_NAME, null, contentValues) == -1 ) return false;
-        return true;
+        if( mDatabase.insert(VEICULO_TABLE_NAME, null, contentValues) != -1 ){
+            for ( String carct : vec.getCaracteristicas() ) {
+                insertVeiculoCaracteristica(vec.getChassi(),carct);
+            }
+            ret=true;
+        }
+        return ret;
     }
 
 
@@ -85,7 +91,7 @@ public class VeiculoDAO {
      * @param caracteritica
      * @return
      */
-    public boolean insertVeiculoCaracteristica  (String chassi, String caracteritica) {
+    private boolean insertVeiculoCaracteristica  (String chassi, String caracteritica) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(VEICULO_CARACTERISTICAS_COLUMN_CHASSI, chassi);
         contentValues.put(VEICULO_CARACTERISTICAS_COLUMN_CARACTERISTICA, caracteritica);
@@ -111,7 +117,7 @@ public class VeiculoDAO {
     public void deleteAllVeiculoAtividade(int idAtividade){
         Cursor resVeiculos =  mDatabase.rawQuery("SELECT * FROM " + VEICULO_TABLE_NAME + " WHERE " + VEICULO_COLUMN_ATIVIDADE + " = ?", new String[]{ ""+idAtividade });
         resVeiculos.moveToFirst();
-        while(resVeiculos.isAfterLast()){
+        while(resVeiculos.isAfterLast()==false){
             deleteVeiculo(resVeiculos.getString(resVeiculos.getColumnIndex(VEICULO_COLUMN_CHASSI)));
             resVeiculos.moveToNext();
         }
@@ -175,6 +181,7 @@ public class VeiculoDAO {
 
             resCaracteristicas.moveToFirst();
             while (resCaracteristicas.isAfterLast() == false){
+                Log.i(TAG,"CARCATE: " + resCaracteristicas.getString(resCaracteristicas.getColumnIndex(VEICULO_CARACTERISTICAS_COLUMN_CARACTERISTICA)));
                 caracteristicas.add(resCaracteristicas.getString(resCaracteristicas.getColumnIndex(VEICULO_CARACTERISTICAS_COLUMN_CARACTERISTICA)));
                 resCaracteristicas.moveToNext();
             }
@@ -185,6 +192,8 @@ public class VeiculoDAO {
                     resVeiculos.getString(resVeiculos.getColumnIndex(VEICULO_COLUMN_MODELO)),
                     caracteristicas
             );
+
+
 
             veiculos.add(v);
             resVeiculos.moveToNext();

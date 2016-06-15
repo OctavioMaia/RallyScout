@@ -1,17 +1,14 @@
 package rallyscouts.justtrailit.activity;
 
-import android.app.ListActivity;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.ExpandableListView;
-import android.widget.ListView;
 
 import rallyscouts.justtrailit.R;
 import rallyscouts.justtrailit.adapters.VeiculoExpandableListAdapter;
 import rallyscouts.justtrailit.data.VeiculoDAO;
 
-public class ShowVeiculos extends ListActivity {
+public class ShowVeiculos extends AppCompatActivity {
 
     private VeiculoDAO veiculos;
 
@@ -22,14 +19,13 @@ public class ShowVeiculos extends ListActivity {
 
         this.veiculos = new VeiculoDAO(ShowVeiculos.this);
 
-
         this.setTitle("Veiculos");
 
-        ExpandableListView listView = (ExpandableListView) findViewById(R.id.lvExp);
+        ExpandableListView listView = (ExpandableListView) findViewById(R.id.expandList);
 
         VeiculoExpandableListAdapter veiculosAdapter = new VeiculoExpandableListAdapter(
                 this,
-                veiculos.getAllVeiculos((int)getIntent().getExtras().get("idAtiviade"))
+                veiculos.getAllVeiculos((int)getIntent().getExtras().get("idAtividade"))
         );
 
         listView.setAdapter(veiculosAdapter);

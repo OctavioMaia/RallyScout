@@ -120,8 +120,8 @@ public class MapaDAO {
         if(res.getCount()>0){
             while(res.isAfterLast() == false){
                 Location loc = new Location("");
-                loc.setLatitude(res.getFloat(res.getColumnIndex(MAPA_COORDENADAS_COLUMN_LATITUDE)));
-                loc.setLongitude(res.getFloat(res.getColumnIndex(MAPA_COORDENADAS_COLUMN_LONGITUDE)));
+                loc.setLatitude(res.getDouble(res.getColumnIndex(MAPA_COORDENADAS_COLUMN_LATITUDE)));
+                loc.setLongitude(res.getDouble(res.getColumnIndex(MAPA_COORDENADAS_COLUMN_LONGITUDE)));
                 coord.put(res.getInt(res.getColumnIndex(MAPA_COORDENADAS_COLUMN_NR_COORDENADA)), loc);
                 res.moveToNext();
             }

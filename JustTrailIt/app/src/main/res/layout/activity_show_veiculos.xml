@@ -10,15 +10,10 @@
     tools:context="rallyscouts.justtrailit.activity.ShowVeiculos">
 
     <ExpandableListView
-        android:id="@android:id/lvExp"
+        android:id="@+id/expandList"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
     </ExpandableListView>
 
-    <TextView android:id="@android:id/empty"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#FF0000"
-        android:text="No data"/>
 
 </LinearLayout>

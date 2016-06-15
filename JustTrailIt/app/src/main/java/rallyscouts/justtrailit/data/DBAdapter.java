@@ -15,7 +15,7 @@ public class DBAdapter extends SQLiteOpenHelper {
 
     public static final String TAG = "DBAdapter";
     public static final String DATABASE_NAME = "JustTrailIt";
-    public static final int DATABASE_VERSION = 14;
+    public static final int DATABASE_VERSION = 20;
 
     private static final String CREATE_TABLE_ATIVIDADE =
             "CREATE TABLE " + AtividadeDAO.ATIVIDADE_TABLE_NAME + " ( " +
@@ -41,8 +41,8 @@ public class DBAdapter extends SQLiteOpenHelper {
             "CREATE TABLE " + MapaDAO.MAPA_COORDENADAS_TABLE_NAME + " ( " +
                     MapaDAO.MAPA_COORDENADAS_COLUMN_MAPA + " INTEGER, " +
                     MapaDAO.MAPA_COORDENADAS_COLUMN_NR_COORDENADA + " INTEGER, " +
-                    MapaDAO.MAPA_COORDENADAS_COLUMN_LATITUDE + " FLOAT NOT NULL, " +
-                    MapaDAO.MAPA_COORDENADAS_COLUMN_LONGITUDE + " FLOAT NOT NULL, " +
+                    MapaDAO.MAPA_COORDENADAS_COLUMN_LATITUDE + " DOUBLE NOT NULL, " +
+                    MapaDAO.MAPA_COORDENADAS_COLUMN_LONGITUDE + " DOUBLE NOT NULL, " +
                     "PRIMARY KEY ( "+ MapaDAO.MAPA_COORDENADAS_COLUMN_MAPA + " , " + MapaDAO.MAPA_COORDENADAS_COLUMN_NR_COORDENADA + " ), " +
                     "FOREIGN KEY ( " + MapaDAO.MAPA_COORDENADAS_COLUMN_MAPA + " ) REFERENCES " + MapaDAO.MAPA_TABLE_NAME + " ( " + MapaDAO.MAPA_COLUMN_ATIVIDADE_ID + " ))";
 
@@ -52,8 +52,8 @@ public class DBAdapter extends SQLiteOpenHelper {
                     NotaDAO.NOTA_COLUMN_ATIVIDADE + " INTEGER NOT NULL, " +
                     NotaDAO.NOTA_COLUMN_NOTA_TEXTUAL + " TEXT, " +
                     NotaDAO.NOTA_COLUMN_AUDIO + " BLOB, " +
-                    NotaDAO.NOTA_COLUMN_LATITUDE + " FLOAT NOT NULL, " +
-                    NotaDAO.NOTA_COLUMN_LONGITUDE + " FLOAT NOT NULL, " +
+                    NotaDAO.NOTA_COLUMN_LATITUDE + " DOUBLE NOT NULL, " +
+                    NotaDAO.NOTA_COLUMN_LONGITUDE + " DOUBLE NOT NULL, " +
                     "PRIMARY KEY(" + NotaDAO.NOTA_COLUMN_ID_NOTA + " , " + NotaDAO.NOTA_COLUMN_ATIVIDADE + " ), " +
                     "FOREIGN KEY (" + NotaDAO.NOTA_COLUMN_ATIVIDADE + ") REFERENCES " + AtividadeDAO.ATIVIDADE_TABLE_NAME + " ( " + AtividadeDAO.ATIVIDADE_COLUMN_ID + "))";
 
