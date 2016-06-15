@@ -8,10 +8,10 @@
         Title="Menu" Height="242.222" Width="525.334" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" FontFamily="Arial">
     <Grid Margin="0,0,0,4">
         <Label x:Name="labelIP" Content="IP" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,10,0,0" Height="27" Width="30" FontSize="14" FontWeight="Bold"/>
-        <TextBox x:Name="textBoxIP" HorizontalAlignment="Left" Height="27" Margin="35,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="216" IsEnabled="False"/>
+        <TextBox x:Name="textBoxIP" HorizontalAlignment="Left" Height="27" Margin="35,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="216" IsEnabled="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="16"/>
         <Label x:Name="labelPorta" Content="Porta" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="256,10,0,0" Height="27" Width="45" FontSize="14" FontWeight="Bold"/>
-        <TextBox x:Name="textBoxPorta" HorizontalAlignment="Left" Height="27" Margin="306,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="72" IsEnabled="False"/>
-        <Button x:Name="buttonServer" Content="START" Height="27" Margin="392,9,56,0" VerticalAlignment="Top" FontSize="14" FontWeight="Bold" Click="buttonServer_Click"/>
+        <TextBox x:Name="textBoxPorta" HorizontalAlignment="Left" Height="27" Margin="306,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="72" IsEnabled="False" FontSize="16" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+        <Button x:Name="buttonServer" Content="Start" Height="27" Margin="392,9,56,0" VerticalAlignment="Top" FontSize="14" FontWeight="Bold" Click="buttonServer_Click"/>
         <Ellipse x:Name="ellipse" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="15" Margin="480,15,0,0" Stroke="Black" VerticalAlignment="Top" Width="15" RenderTransformOrigin="0.489,1.911"/>
         <Button x:Name="buttonRegistaAtividade" Content="Registar Atividade" HorizontalAlignment="Left" Height="29" Margin="12,63,0,0" VerticalAlignment="Top" Width="241" FontSize="14" FontWeight="Bold" Click="buttonRegistaAtividade_Click"/>
         <Button x:Name="buttonConsultaAtividade" Content="Consultar Atividade Terminada" HorizontalAlignment="Left" Height="29" Margin="263,63,0,0" VerticalAlignment="Top" Width="241" FontSize="14" FontWeight="Bold" Click="buttonConsultaAtividade_Click"/>

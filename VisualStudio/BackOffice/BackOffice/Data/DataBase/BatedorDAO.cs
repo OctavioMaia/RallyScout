@@ -20,13 +20,13 @@ namespace BackOffice.Data.DataBase
         }
 
 
-        internal Batedor get(string mail, SqlConnection connection)
+        internal Batedor get(string mail, SqlConnection connection,SqlTransaction tr)
         {
             Batedor b = null;
             DataTable results = new DataTable();
 
             string queryString = "select * from dbo.batedor Where Email='" + mail + "';";
-            SqlCommand command = new SqlCommand(queryString, connection);
+            SqlCommand command = new SqlCommand(queryString, connection,tr);
             command.CommandTimeout = 60;
             SqlDataReader reader = command.ExecuteReader();
             if (reader.Read())
@@ -49,9 +49,14 @@ namespace BackOffice.Data.DataBase
             Batedor b = null;
             SqlConnection con = new SqlConnection(this.dbConf);
             con.Open();
+            SqlTransaction tr = con.BeginTransaction();
             try
             {
-                b = this.get(mail, con);
+                b = this.get(mail, con,tr);
+                tr.Commit();
+            }catch(Exception e)
+            {
+                tr.Rollback();
             }
             finally
             {
@@ -61,13 +66,13 @@ namespace BackOffice.Data.DataBase
             return b;
         }
 
-        internal List<String> keySet(SqlConnection connection)
+        internal List<String> keySet(SqlConnection connection,SqlTransaction tr)
         {
             List<String> r = new List<string>();
             DataTable results = new DataTable();
 
             string queryString = "select Email from dbo.batedor ;";
-            SqlCommand command = new SqlCommand(queryString, connection);
+            SqlCommand command = new SqlCommand(queryString, connection,tr);
             command.CommandTimeout = 60;
             SqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
@@ -88,10 +93,14 @@ namespace BackOffice.Data.DataBase
             List <String> l= null;
             SqlConnection con = new SqlConnection(this.dbConf);
             con.Open();
-            //con.BeginTransaction();
+            SqlTransaction tr =  con.BeginTransaction();
             try
             {
-                l = this.keySet(con);
+                l = this.keySet(con,tr);
+                tr.Commit();
+            }catch(Exception e)
+            {
+                tr.Rollback();
             }
             finally
             {
@@ -105,36 +114,40 @@ namespace BackOffice.Data.DataBase
             List<Batedor> l = null;
             SqlConnection con = new SqlConnection(this.dbConf);
             con.Open();
-           // con.BeginTransaction();
+            SqlTransaction tr = con.BeginTransaction();
             try
             {
-                l = this.Values(con);
+                l = this.Values(con,tr);
+                tr.Commit();
+            }
+            catch (Exception e)
+            {
+                tr.Rollback();
             }
             finally
             {
-
                 con.Close();
             }
             return l;
         }
 
-        public List<Batedor> Values(SqlConnection connection)
+        internal List<Batedor> Values(SqlConnection connection,SqlTransaction tr)
         {
             List < Batedor > b = new List<Batedor>();
-            List<String> k = keySet(connection);
+            List<String> k = keySet(connection,tr);
             foreach(string s in k)
             {
-                b.Add(this.get(s, connection));
+                b.Add(this.get(s, connection,tr));
             }
             return b;
         }
 
 
 
-        internal Boolean containsKey(string mail, SqlConnection connection)
+        internal Boolean containsKey(string mail, SqlConnection connection,SqlTransaction tr)
         {
             Boolean ret = false;
-            Batedor b = this.get(mail, connection);
+            Batedor b = this.get(mail, connection,tr);
             ret = (b != null);
             return ret;
         }
@@ -144,10 +157,15 @@ namespace BackOffice.Data.DataBase
             Boolean b = false;
             SqlConnection con = new SqlConnection(this.dbConf);
             con.Open();
-            //con.BeginTransaction();
+            SqlTransaction tr = con.BeginTransaction();
             try
             {
-                b = this.containsKey(mail,con);
+                b = this.containsKey(mail,con,tr);
+                tr.Commit();
+            }
+            catch (Exception e)
+            {
+                tr.Rollback();
             }
             finally
             {
@@ -158,9 +176,9 @@ namespace BackOffice.Data.DataBase
 
 
 
-        internal Batedor put(Batedor novo, SqlConnection connection)
+        internal Batedor put(Batedor novo, SqlConnection connection,SqlTransaction tr)
         {
-            Batedor b = this.get(novo.email, connection);
+            Batedor b = this.get(novo.email, connection,tr);
             String queryString;
             if (b == null) //inserie
             {
@@ -186,7 +204,7 @@ namespace BackOffice.Data.DataBase
                     " WHERE Email = '{4}' ",
                           novo.nome, novo.password, novo.ficha.horasEmReConhecimento, novo.ficha.nAtividades,novo.email);
             }
-            SqlCommand command = new SqlCommand(queryString, connection);
+            SqlCommand command = new SqlCommand(queryString, connection,tr);
             command.CommandTimeout = 60;
             command.ExecuteNonQuery();
             return b;
@@ -199,10 +217,14 @@ namespace BackOffice.Data.DataBase
 
             SqlConnection con = new SqlConnection(this.dbConf);
             con.Open();
-            //con.BeginTransaction();
+            SqlTransaction tr =  con.BeginTransaction();
             try
             {
-                b = this.put(novo, con);
+                b = this.put(novo, con,tr);
+                tr.Commit();
+            }catch(Exception e)
+            {
+                tr.Rollback();
             }
             finally
             {
