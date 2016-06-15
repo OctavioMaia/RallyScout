@@ -53,7 +53,8 @@
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyBsBoSA7rWLSGqibQEOa3ipnZUDYA5zOfI" />
 
-        <activity android:name=".activity.ShowVeiculos"></activity>
+        <activity android:name=".activity.ShowVeiculos" />
+        <activity android:name=".activity.NotaDetails"></activity>
     </application>
 
 </manifest>

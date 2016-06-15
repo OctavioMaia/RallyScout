@@ -71,6 +71,7 @@ public class GerirAtividade extends AppCompatActivity {
     public void verNotas(View v){
 
         Intent vernotas = new Intent(GerirAtividade.this, Notas.class);
+
         GerirAtividade.this.startActivity(vernotas);
 
 
