@@ -12,21 +12,16 @@
     android:touchscreenBlocksFocus="false"
     android:visibility="visible">
 
-    <Button
+    <SearchView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Ver Percurso"
-        android:id="@+id/button_VerPercurso"
-        android:clickable="true"
-        android:focusable="true"
-        android:onClick="verPercurso"
-        android:layout_below="@+id/button"
+        android:id="@+id/searchView"
+        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="10dp" />
+        android:layout_alignParentStart="true" />
 
     <Button
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Registar Nota"
         android:id="@+id/button_RegistarNota"
@@ -34,13 +29,14 @@
         android:focusable="true"
         android:layout_alignParentStart="true"
         android:onClick="registarNota"
-        android:layout_below="@+id/button_VerPercurso"
         android:layout_alignParentLeft="true"
-        android:layout_marginTop="10dp">
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/button">
      </Button>
 
     <Button
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Ver Notas"
         android:id="@+id/button_VerNotas"
@@ -50,63 +46,41 @@
         android:onClick="verNotas"
         android:layout_below="@+id/button_RegistarNota"
         android:layout_alignParentLeft="true"
-        android:layout_marginTop="10dp">
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true">
     </Button>
 
-    <View
+
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@android:color/darker_gray"
-        android:layout_alignBottom="@+id/nAtividade"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/view" />
-
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Atividade"
-        android:id="@+id/nAtividade"
-        android:textSize="35dp"
-        android:layout_below="@+id/searchView"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <SearchView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/searchView"
-        android:layout_alignParentTop="true"
-        android:layout_alignLeft="@+id/button_RegistarNota"
-        android:layout_alignStart="@+id/button_RegistarNota" />
-
-    <TextView
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Equipa:"
         android:id="@+id/id_Equipa"
-        android:layout_below="@+id/view"
-        android:layout_alignLeft="@+id/button_VerPercurso"
-        android:layout_alignStart="@+id/button_VerPercurso"
-        android:layout_marginTop="31dp"
         android:textSize="20dp"
-        android:layout_alignRight="@+id/nAtividade"
-        android:layout_alignEnd="@+id/nAtividade" />
+        android:layout_below="@+id/searchView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Ver Veiculos"
         android:id="@+id/button"
         android:layout_below="@+id/id_Equipa"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/button_VerPercurso"
-        android:layout_alignEnd="@+id/button_VerPercurso"
         android:layout_marginTop="10dp"
         android:onClick="verVeiculos"/>
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.MapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button_VerNotas"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true" />
 
 </RelativeLayout>

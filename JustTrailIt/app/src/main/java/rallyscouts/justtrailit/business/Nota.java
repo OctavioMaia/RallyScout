@@ -22,6 +22,8 @@ public class Nota implements Serializable{
     public Nota(Integer idNota, Location localRegisto) {
         this.idNota = idNota;
         this.localRegisto = localRegisto;
+        this.notaTextual="";
+        this.imagens = new ArrayList<>();
     }
 
     public Nota(Integer idNota, ArrayList<Bitmap> imagens, Location localRegisto, String notaTextual, byte[] voice) {

@@ -18,16 +18,21 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import rallyscouts.justtrailit.R;
+import rallyscouts.justtrailit.business.Nota;
 import rallyscouts.justtrailit.data.NotaDAO;
 
 public class RegistarNota extends AppCompatActivity {
 
-    public static final int CAMARA_REQUEST = 10;
+
+    private Nota notaToSave;
     private NotaDAO notas;
+
+
+    public static final int CAMARA_REQUEST = 10;
     //Resposavel por guardar o texto do utilizador;
     String guardarTexto = new String();
     //Resposavel por guardar as imagens do utilizador;
-    ArrayList<Bitmap> imagens = new ArrayList<Bitmap>() ;
+    ArrayList<Bitmap> imagens = new ArrayList<>() ;
     //Resposavel por guardar a voz do utilizador;
     private byte[] voz;
     Location l;
@@ -38,6 +43,11 @@ public class RegistarNota extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registar_nota);
         this.setTitle("Registar Nota");
+
+
+        this.notas = new NotaDAO(RegistarNota.this);
+        //this.notaToSave = new Nota( notas.getMaiorNota() , new Location(""));
+
 
         LocationManager myManager;
         LocationListener myListener;
@@ -67,34 +77,14 @@ public class RegistarNota extends AppCompatActivity {
 
             }
         };
+
         myManager.requestLocationUpdates("gps",0,0,myListener);
 
         this.notas = new NotaDAO(RegistarNota.this);
-        TextView nNota;
-        nNota = (TextView) findViewById(R.id.id_RegistoNota);
-        nNota.setText("RegistoNota " + (int)getIntent().getExtras().get("idNota"));;
 
         final EditText mensagem = (EditText)findViewById(R.id.id_InserirTexto);
-        Button botaoInserir = (Button)findViewById(R.id.button_RegistarTexto);
 
-        if (botaoInserir != null)
-        {
-            botaoInserir.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    if(mensagem != null)
-                    {
-                        if(!mensagem.getText().toString().equals(""))
-                        {
-                            Toast.makeText(getApplicationContext(), "Texto guardado com sucesso", Toast.LENGTH_SHORT).show();
-                            guardarTexto += mensagem.getText().toString();
-                        }
-                    }
-                }
-            });
-        }
+
     }
 
 
