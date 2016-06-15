@@ -12,10 +12,10 @@ namespace BackOffice.Business
     public class Nota
     {
         public int idNota { get; set; }
-        private string notaTextual { get; set; }
-        private GeoCoordinate localRegisto { get; set; }
-        private List<Image> imagens { get; set; }
-        private byte[] voice { get; set; }
+        public string notaTextual { get; set; }
+        public GeoCoordinate localRegisto { get; set; }
+        public List<Image> imagens { get; set; }
+        public byte[] voice { get; set; }
         public Voz notasVoz { get; set; }
 
         public Nota(int id, string texto, double lat, double longt, List<Image> imgs, byte[] voz)
