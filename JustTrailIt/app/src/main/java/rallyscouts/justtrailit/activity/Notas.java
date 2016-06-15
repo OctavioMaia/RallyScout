@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -39,6 +40,9 @@ public class Notas extends AppCompatActivity implements OnMapReadyCallback,Adapt
     private  Map<Integer,Location> mapaCoords;
     private Marker mak;
 
+    private Button analisarNota;
+    private Spinner spinner;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +54,8 @@ public class Notas extends AppCompatActivity implements OnMapReadyCallback,Adapt
         this.mapas = new MapaDAO(Notas.this);
         this.notasShow = notas.getAllNotas(getIntent().getExtras().getInt("idAtividade"));
 
-        Spinner spinner = (Spinner) findViewById(R.id.notas_spinner);
+        this.analisarNota = (Button) findViewById(R.id.button_AnalisarNota);
+        this.spinner = (Spinner) findViewById(R.id.notas_spinner);
 
         // Spinner click listener
         spinner.setOnItemSelectedListener(this);
@@ -138,6 +143,7 @@ public class Notas extends AppCompatActivity implements OnMapReadyCallback,Adapt
 
         // Showing selected spinner item
         Toast.makeText(parent.getContext(), "Selected: " + item, Toast.LENGTH_LONG).show();
+
 
     }
 
