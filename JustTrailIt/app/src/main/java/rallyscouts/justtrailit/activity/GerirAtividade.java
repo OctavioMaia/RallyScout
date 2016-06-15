@@ -2,9 +2,12 @@ package rallyscouts.justtrailit.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 import rallyscouts.justtrailit.R;
 import rallyscouts.justtrailit.business.Batedor;
@@ -71,7 +74,8 @@ public class GerirAtividade extends AppCompatActivity {
     public void verNotas(View v){
 
         Intent vernotas = new Intent(GerirAtividade.this, Notas.class);
-
+        //vernotas.putParcelableArrayListExtra("notas",(ArrayList<? extends Parcelable>) notas.getAllNotas(batedorLogin.getAtividade()));
+        vernotas.putExtra("idAtividade",batedorLogin.getAtividade());
         GerirAtividade.this.startActivity(vernotas);
 
 
