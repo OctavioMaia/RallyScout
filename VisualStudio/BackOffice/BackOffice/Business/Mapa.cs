@@ -25,6 +25,13 @@ namespace BackOffice.Business
             this.cords = new Dictionary<int, GeoCoordinate>();
             lerMAPFILE(path);
         }
+
+        public Mapa(string nome, int id, Dictionary<int, GeoCoordinate> d)
+        {
+            this.nomeProva = nome;
+            this.idMapa = id;
+            this.cords = d;
+        }
         private void lerMAPFILE(string path)
         {
             LoadGPXWaypoints(path);

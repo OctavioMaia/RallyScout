@@ -21,23 +21,96 @@ namespace BackOffice.Presentation
     public partial class ConsultarAtividadeConcluida : Window
     {
         BackOfficeAPP backoffice;
+        List<Atividade> atividades;
+        Atividade selecionada;
 
         public ConsultarAtividadeConcluida(BackOfficeAPP b)
         {
             this.backoffice = b;
             InitializeComponent();
             UpdateComboBox();
+            this.atividades = this.backoffice.getAtividadesTerminas();
         }
 
         private void UpdateComboBox()
         {
-            List<Atividade> l = this.backoffice.getAtividadesTerminadas();//.getVeiculos();
-
-            foreach (Atividade v in l)
+            foreach (Atividade a in atividades)
             {
-                comboBox.Items.Add(v);
+                int id = a.idAtividade;
+                String nome = a.percurso.nomeProva;
+                comboBox.Items.Add("ID: " +id+" Nome Prova: "+nome);
             }
 
         }
+
+        private void comboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)  
+        {
+            List<Veiculo> veiculos;
+            listViewVeiculos.Items.Clear();
+            string Atividade = (comboBox.SelectedItem as string);
+            string split = Atividade.Split(new string[] { " " }, StringSplitOptions.None)[0];
+
+            MessageBox.Show(split);
+
+            foreach (Atividade a in atividades)
+            {
+                int id = a.idAtividade;
+
+                if (split.Equals(id))
+                {
+                    this.selecionada = a; 
+                    veiculos = a.veiculos;
+                    this.textBoxNomeEquipa.Text = a.nomeEquipa;
+                    this.textBoxNomeBatedor.Text = a.batedor.nome + " | " + a.batedor.email;
+                    this.textBoxDataInicio.Text = a.inicioReconhecimento.ToString();
+                    this.textBoxDataFim.Text = a.fimReconhecimento.ToString();
+
+                    foreach (Veiculo veic in veiculos)
+                    {
+                        String chassi = veic.chassi;
+                        String marca = veic.marca;
+                        String modelo = veic.modelo;
+                        
+                        var lista = new String[] { chassi, marca, modelo };
+                        this.listViewVeiculos.Items.Add(new MyItem { Chassi = chassi, Marca = marca, Modelo = modelo });
+                    }
+                    break;
+                }
+            }
+
+
+        }
+
+        private void listView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            List<Veiculo> veiculos = this.selecionada.veiculos;
+
+            listViewCarateristicas.Items.Clear();
+
+            if (listViewVeiculos.SelectedItems.Count > 0)
+            {
+                var selectedItem = (dynamic)listViewVeiculos.SelectedItems[0];
+                string chassi = selectedItem.Chassi;
+                foreach (Veiculo v in veiculos)
+                {
+                    if (v.chassi.Equals(chassi))
+                    {
+                        List<String> carateristicas = v.caracteristicas;
+                        foreach(String s in carateristicas)
+                        {
+                            var lista = new String[] { s };
+                            this.listViewCarateristicas.Items.Add(new MyItem2 { Carateristica = s });
+                        }
+                    }
+                }
+                
+            }
+        }
     }
+
+    class MyItem2
+    {
+        public string Carateristica { get; set; }
+    }
+
 }
