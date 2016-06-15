@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/imageViewThumb"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_marginRight="20dp"
+    android:adjustViewBounds="true"
+    android:background="@android:color/transparent"
+    android:cropToPadding="true"
+    android:maxHeight="200dp"
+    android:maxWidth="240dp"
+    android:scaleType="centerCrop" />

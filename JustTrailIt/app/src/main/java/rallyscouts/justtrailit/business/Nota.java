@@ -4,13 +4,14 @@ import android.graphics.Bitmap;
 import android.location.Location;
 import android.media.Image;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
  * Created by rjaf on 09/06/16.
  */
-public class Nota {
+public class Nota implements Serializable{
 
     private int idNota;
     private String notaTextual;

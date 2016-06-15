@@ -135,8 +135,9 @@ public class JsonRC {
                     JSONObject coord =  percurso.getJSONObject(i);
 
                     Location loc = new Location("");
-                    loc.setLatitude(coord.getLong("lat"));
-                    loc.setLongitude(coord.getLong("log"));
+                    Log.i("COORDMAPA","lat: " + coord.getLong("lat") + " log: " + coord.getLong("log"));
+                    loc.setLatitude(coord.getDouble("lat"));
+                    loc.setLongitude(coord.getDouble("log"));
 
                     coords.put(i,loc);
                 }catch (JSONException e){
@@ -182,7 +183,9 @@ public class JsonRC {
 
                 try {
                     JSONArray caract = veiculo.getJSONArray("caracteristicas");
+                    Log.w(TAG, "Numero de caracteristicas " + caract.length() + " - " + vec.getChassi());
                     for (int j = 0; j < caract.length(); j++) {
+                        Log.w(TAG, "caracteristicas " + caract.getString(j));
                         vec.addCaract(caract.getString(j));
                     }
                 } catch (JSONException e) {
