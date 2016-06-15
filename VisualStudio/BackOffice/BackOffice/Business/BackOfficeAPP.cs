@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Speech.Recognition;
 using System.IO;
@@ -15,6 +16,7 @@ using System.Drawing;
 using System.Net.Sockets;
 using System.Net;
 using BackOffice.Data.DataBase;
+using System.Threading;
 
 namespace BackOffice.Business
 {
@@ -33,6 +35,7 @@ namespace BackOffice.Business
         public int port { get; set; }
         public string IP { get; set; }
         public string database { get; set; }
+        private ServerComunication comunica;
 
 
         //é para apagar 
@@ -115,6 +118,7 @@ namespace BackOffice.Business
                 BackOfficeAPP.simbolos.Add(key, valor);
             }
 
+            this.comunica = new ServerComunication(this.port, this.database); 
 
             //TODO BD dos 
             this.atividades = new AtividadeDAO(this.database);
@@ -129,12 +133,12 @@ namespace BackOffice.Business
 
         public void startReceive()
         {
-
+            this.comunica.Start();
         }
 
         public void stopReceive()
         {
-
+            this.comunica.Stop();
         }
         private static string GetLocalIPAddress()
         {
@@ -316,16 +320,6 @@ namespace BackOffice.Business
             return b;
         }
 
-        public void receberAtividade()
-        {
-            //TODO
-        }
-
-
-        public void enviarAtividade()
-        {
-            //TODO
-        }
 
         public JustToBack formJson(string json) //atividade parcial atençap 
         {
