@@ -15,7 +15,7 @@ public class DBAdapter extends SQLiteOpenHelper {
 
     public static final String TAG = "DBAdapter";
     public static final String DATABASE_NAME = "JustTrailIt";
-    public static final int DATABASE_VERSION = 14;
+    public static final int DATABASE_VERSION = 21;
 
     private static final String CREATE_TABLE_ATIVIDADE =
             "CREATE TABLE " + AtividadeDAO.ATIVIDADE_TABLE_NAME + " ( " +
@@ -41,8 +41,8 @@ public class DBAdapter extends SQLiteOpenHelper {
             "CREATE TABLE " + MapaDAO.MAPA_COORDENADAS_TABLE_NAME + " ( " +
                     MapaDAO.MAPA_COORDENADAS_COLUMN_MAPA + " INTEGER, " +
                     MapaDAO.MAPA_COORDENADAS_COLUMN_NR_COORDENADA + " INTEGER, " +
-                    MapaDAO.MAPA_COORDENADAS_COLUMN_LATITUDE + " FLOAT NOT NULL, " +
-                    MapaDAO.MAPA_COORDENADAS_COLUMN_LONGITUDE + " FLOAT NOT NULL, " +
+                    MapaDAO.MAPA_COORDENADAS_COLUMN_LATITUDE + " DOUBLE NOT NULL, " +
+                    MapaDAO.MAPA_COORDENADAS_COLUMN_LONGITUDE + " DOUBLE NOT NULL, " +
                     "PRIMARY KEY ( "+ MapaDAO.MAPA_COORDENADAS_COLUMN_MAPA + " , " + MapaDAO.MAPA_COORDENADAS_COLUMN_NR_COORDENADA + " ), " +
                     "FOREIGN KEY ( " + MapaDAO.MAPA_COORDENADAS_COLUMN_MAPA + " ) REFERENCES " + MapaDAO.MAPA_TABLE_NAME + " ( " + MapaDAO.MAPA_COLUMN_ATIVIDADE_ID + " ))";
 
@@ -52,8 +52,8 @@ public class DBAdapter extends SQLiteOpenHelper {
                     NotaDAO.NOTA_COLUMN_ATIVIDADE + " INTEGER NOT NULL, " +
                     NotaDAO.NOTA_COLUMN_NOTA_TEXTUAL + " TEXT, " +
                     NotaDAO.NOTA_COLUMN_AUDIO + " BLOB, " +
-                    NotaDAO.NOTA_COLUMN_LATITUDE + " FLOAT NOT NULL, " +
-                    NotaDAO.NOTA_COLUMN_LONGITUDE + " FLOAT NOT NULL, " +
+                    NotaDAO.NOTA_COLUMN_LATITUDE + " DOUBLE NOT NULL, " +
+                    NotaDAO.NOTA_COLUMN_LONGITUDE + " DOUBLE NOT NULL, " +
                     "PRIMARY KEY(" + NotaDAO.NOTA_COLUMN_ID_NOTA + " , " + NotaDAO.NOTA_COLUMN_ATIVIDADE + " ), " +
                     "FOREIGN KEY (" + NotaDAO.NOTA_COLUMN_ATIVIDADE + ") REFERENCES " + AtividadeDAO.ATIVIDADE_TABLE_NAME + " ( " + AtividadeDAO.ATIVIDADE_COLUMN_ID + "))";
 
@@ -69,10 +69,11 @@ public class DBAdapter extends SQLiteOpenHelper {
 
     private static final String CREATE_TABLE_VEICULO =
             " CREATE TABLE " + VeiculoDAO.VEICULO_TABLE_NAME + " ( " +
-                    VeiculoDAO.VEICULO_COLUMN_CHASSI + " VARCHAR(50) PRIMARY KEY, " +
+                    VeiculoDAO.VEICULO_COLUMN_CHASSI + " VARCHAR(50) NOT NULL, " +
                     VeiculoDAO.VEICULO_COLUMN_MARCA + " VARCHAR(50), " +
                     VeiculoDAO.VEICULO_COLUMN_MODELO + " VARCHAR(50), " +
                     VeiculoDAO.VEICULO_COLUMN_ATIVIDADE + " INTEGER NOT NULL, " +
+                    "PRIMARY KEY ( " + VeiculoDAO.VEICULO_COLUMN_CHASSI + " , " + VeiculoDAO.VEICULO_COLUMN_ATIVIDADE +"),"+
                     "FOREIGN KEY ( " + VeiculoDAO.VEICULO_COLUMN_CHASSI + " ) REFERENCES " + AtividadeDAO.ATIVIDADE_TABLE_NAME + "( " + AtividadeDAO.ATIVIDADE_COLUMN_ID + " ))";
 
     private static final String CREATE_TABLE_VEICULO_CARACTERISTICAS =

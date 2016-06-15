@@ -127,6 +127,15 @@ namespace BackOffice.Business
         }
 
 
+        public void startReceive()
+        {
+
+        }
+
+        public void stopReceive()
+        {
+
+        }
         private static string GetLocalIPAddress()
         {
             var host = Dns.GetHostEntry(Dns.GetHostName());
@@ -191,8 +200,8 @@ namespace BackOffice.Business
             Atividade a = new Atividade(idAtividade, mailEquipa, nomeprova, mapPath, lv, new Equipa(nomeEquipa, mailEquipa), b);
             this.guardaNovaAtividade(a);
             //depois apagar
-            String s = this.jsonFrom(idAtividade);
-            System.IO.File.WriteAllText("C:\\Users\\Octávio\\Desktop\\novo.json", s);
+            //String s = this.jsonFrom(idAtividade);
+            //System.IO.File.WriteAllText("C:\\Users\\Octávio\\Desktop\\novo.json", s);
         }
 
 

@@ -53,20 +53,41 @@ namespace BackOffice.Business
             Batedor bat)
         {
             this.idAtividade = id;
-            this.inicioReconhecimento = new DateTime(); //nao deixa meter nulo
-            this.fimReconhecimento= new DateTime(); //nao deixa meter nulo
+            this.inicioReconhecimento = DateTime.Now; //nao deixa meter nulo
+            this.fimReconhecimento= DateTime.Now; //nao deixa meter nulo
             this.nomeEquipa = equip.nome;
             this.inprogress = false;
             this.done = false;
-            this.notas = null; //quando uma atividade é inserida nao tem notas
+            this.notas = new List<Nota>(); //quando uma atividade é inserida nao tem notas
             this.percurso = new Mapa(nomeProva, id, mapPath);
             this.veiculos = veicls;
+            if (this.veiculos == null)
+            {
+                this.veiculos = new List<Veiculo>();
+            }
             this.equipa = equip;
             this.batedor = bat;
 
 
         }
 
+        public Atividade( int idAtividade,  DateTime inicioReconhecimento ,
+         DateTime fimReconhecimento , string nomeEquipa , Boolean inprogress ,
+         Boolean done , List<Nota> notas , Mapa percurso ,List<Veiculo> veiculos ,
+         Equipa equipa , Batedor batedor )
+        {
+            this.idAtividade = idAtividade;
+            this.inicioReconhecimento = inicioReconhecimento;
+            this.fimReconhecimento = fimReconhecimento;
+            this.nomeEquipa = nomeEquipa;
+            this.inprogress = inprogress;
+            this.done = done;
+            this.notas = notas;
+            this.percurso = percurso;
+            this.veiculos = veiculos;
+            this.equipa = equipa;
+            this.batedor = batedor;
+        }
 
         public void addNota(Nota n)
         {

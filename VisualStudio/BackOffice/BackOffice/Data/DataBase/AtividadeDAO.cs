@@ -4,10 +4,13 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Device.Location;
+using System.Drawing;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace BackOffice.Data.DataBase
 {
@@ -26,10 +29,14 @@ namespace BackOffice.Data.DataBase
             List<int> l = null;
             SqlConnection con = new SqlConnection(this.dbConf);
             con.Open();
-            //con.BeginTransaction();
+            SqlTransaction tr =  con.BeginTransaction();
             try
             {
-                l = this.keySet(con);
+                l = this.keySet(con,tr);
+                tr.Commit();
+            }catch(Exception e)
+            {
+                tr.Rollback();
             }
             finally
             {
@@ -44,9 +51,14 @@ namespace BackOffice.Data.DataBase
             Atividade a = null;
             SqlConnection con = new SqlConnection(this.dbConf);
             con.Open();
+            SqlTransaction tr = con.BeginTransaction();
             try
             {
-                a = this.get(id, con);
+                a = this.get(id, con,tr);
+                tr.Commit();
+            }catch(Exception e)
+            {
+                tr.Rollback();
             }
             finally
             {
@@ -61,10 +73,14 @@ namespace BackOffice.Data.DataBase
             List<Atividade> l = null;
             SqlConnection con = new SqlConnection(this.dbConf);
             con.Open();
-            // con.BeginTransaction();
+            SqlTransaction tr =  con.BeginTransaction();
             try
             {
-                l = this.Values(con);
+                l = this.Values(con,tr);
+                tr.Commit();
+            }catch(Exception e)
+            {
+                tr.Rollback();
             }
             finally
             {
@@ -79,10 +95,14 @@ namespace BackOffice.Data.DataBase
             Boolean b = false;
             SqlConnection con = new SqlConnection(this.dbConf);
             con.Open();
-            //con.BeginTransaction();
+            SqlTransaction tr =  con.BeginTransaction();
             try
             {
-                b = this.containsKey(id, con);
+                b = this.containsKey(id, con,tr);
+                tr.Commit();
+            }catch(Exception e)
+            {
+                tr.Rollback();
             }
             finally
             {
@@ -96,31 +116,37 @@ namespace BackOffice.Data.DataBase
             return this.keySet().Count;
         }
 
+
+        //TODO VER aui
         public Atividade put(Atividade novo)
         {
             Atividade b = null;
 
             SqlConnection con = new SqlConnection(this.dbConf);
             con.Open();
-            //con.BeginTransaction();
-            try
+            SqlTransaction  tr = con.BeginTransaction();
+            /*try
+            {*/
+                b = this.put(novo, con,tr);
+                tr.Commit();
+            /*}catch(Exception e)
             {
-                b = this.put(novo, con);
+                tr.Rollback();
             }
             finally
-            {
+            {*/
                 con.Close();
-            }
+           // }
             return b;
         }
 
-        private List<int> keySet(SqlConnection connection)
+        private List<int> keySet(SqlConnection connection,SqlTransaction tr)
         {
             List<int> r = new List<int>();
             DataTable results = new DataTable();
 
             string queryString = "select id_Atividade from dbo.Atividade ;";
-            SqlCommand command = new SqlCommand(queryString, connection);
+            SqlCommand command = new SqlCommand(queryString, connection,tr);
             command.CommandTimeout = 60;
             SqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
@@ -136,47 +162,77 @@ namespace BackOffice.Data.DataBase
         }
 
 
-        private Boolean containsKey(int id, SqlConnection connection)
+        private Boolean containsKey(int id, SqlConnection connection , SqlTransaction tr)
         {
             Boolean ret = false;
-            Atividade b = this.get(id, connection);
+            Atividade b = this.get(id, connection,tr);
             ret = (b != null);
             return ret;
         }
 
-        private List<Atividade> Values(SqlConnection connection)
+        private List<Atividade> Values(SqlConnection connection, SqlTransaction tr)
         {
             List<Atividade> b = new List<Atividade>();
-            List<int> k = this.keySet(connection);
+            List<int> k = this.keySet(connection,tr);
             foreach (int i in k)
             {
-                b.Add(this.get(i, connection));
+                b.Add(this.get(i, connection,tr));
             }
             return b;
         }
 
         //TODO daqui para baixo
 
-        private Atividade put(Atividade novo, SqlConnection connection)
+        private Atividade put(Atividade novo, SqlConnection connection,SqlTransaction tr)
         {
-            Atividade b = this.get(novo.idAtividade, connection);
+            Atividade b = this.get(novo.idAtividade, connection,tr);
             String queryString=null;
+            BatedorDAO bd = new BatedorDAO(this.dbConf);
+            bd.put(novo.batedor, connection,tr);
             if (b == null) //inserie
             {
-                
+                queryString = String.Format("INSERT INTO dbo.Atividade " +
+                    "(id_Atividade, InicioReconhecimento, FimReconhecimento, InProgress,Equipa_Email,Equipa_Nome,Batedor,Done) " +
+                    " VALUES " +
+                    " ({0}, '{1}', '{2}', {3},'{4}','{5}','{6}',{7}); ",
+                          novo.idAtividade, novo.inicioReconhecimento.Date.ToString("yyyy-MM-dd HH:mm:ss"), 
+                          novo.fimReconhecimento.Date.ToString("yyyy-MM-dd HH:mm:ss"), Convert.ToInt32(novo.inprogress),
+                          novo.equipa.email,novo.equipa.nome,
+                          novo.batedor.email, Convert.ToInt32(novo.done));
+
             }
             else//update
             {
-                
+                queryString = String.Format("UPDATE dbo.Atividade " +
+                    " SET InicioReconhecimento = '{0}' , FimReconhecimento= '{1}' , InProgress= {2} ,Equipa_Email= '{3}' ,Equipa_Nome= '{4}' ,Batedor= '{5}' ,Done= {6}" +
+                    " WHERE id_Atividade= {7} ;",
+                          novo.inicioReconhecimento.Date.ToString("yyyy-MM-dd HH:mm:ss"), novo.fimReconhecimento.Date.ToString("yyyy-MM-dd HH:mm:ss"), Convert.ToInt32(novo.inprogress), novo.equipa.email,novo.equipa.nome,novo.batedor.email, Convert.ToInt32(novo.done),novo.idAtividade);
+
             }
-            SqlCommand command = new SqlCommand(queryString, connection);
+            SqlCommand command = new SqlCommand(queryString, connection,tr);
             command.CommandTimeout = 60;
             command.ExecuteNonQuery();
+
+            VeiculosDAO vd = new VeiculosDAO(novo.idAtividade);
+            foreach(Veiculo v in novo.veiculos)
+            {
+                vd.put(v,connection,tr);
+            }
+            
+            MapaDAO md = new MapaDAO();
+            md.put(novo.percurso, connection,tr);
+            NotaDAO nd = new NotaDAO(novo.idAtividade);
+            foreach (Nota n in novo.notas)
+            {
+                nd.put(n, connection,tr);
+            }
+
+           
             return b;
         }
 
 
-        private Atividade get(int id, SqlConnection connection)
+        private Atividade get(int id, SqlConnection connection,SqlTransaction tr)
         {
 
             Atividade a = null;
@@ -185,21 +241,37 @@ namespace BackOffice.Data.DataBase
             VeiculosDAO vd = new VeiculosDAO(id);
             MapaDAO md = new MapaDAO();
             NotaDAO nd = new NotaDAO(id);
+            BatedorDAO bd = new BatedorDAO(this.dbConf);
             
            
-            List<Veiculo> veiculos = vd.Values(connection);
-            Mapa mapa = md.get(id,connection);
-            List<Nota> notas = nd.Values(connection);
-            
+            List<Veiculo> veiculos = vd.Values(connection,tr);
+            Mapa mapa = md.get(id,connection,tr);
+            List<Nota> notas = nd.Values(connection,tr);
+            Batedor bate = null;
 
             //buscar merdas a tabela de atvidades
+            DataTable results = new DataTable();
 
-            a = new Atividade()
+            string queryString = String.Format("SELECT * from dbo.Atividade " +
+                    "WHERE id_Atividade = {0};",id);
 
+            SqlCommand command = new SqlCommand(queryString, connection,tr);
+            command.CommandTimeout = 60;
+            SqlDataReader reader = command.ExecuteReader();
+            if (reader.Read())
+            {
+                DateTime inicioR = Convert.ToDateTime(reader["InicioReconhecimento"]);
+                DateTime fimR = Convert.ToDateTime(reader["FimReconhecimento"]);
+                bool inProg = (bool)reader["InProgress"];
+                bool done = (bool)reader["Done"];
+                string mailEquipa = reader["Equipa_Email"] as string;
+                string nomeEquipa = reader["Equipa_Nome"] as string;
+                string mailbate = reader["Batedor"] as string;
+                bate = bd.get(mailbate, connection,tr);
+                a = new Atividade(id, inicioR, fimR, nomeEquipa, inProg, done, notas, mapa, veiculos, new Equipa(nomeEquipa, mailEquipa), bate);
+            }
+            reader.Close();
             return a;
-            
-
-
         }
 
     }
@@ -213,7 +285,7 @@ namespace BackOffice.Data.DataBase
             this.idatividade = atividade;
         }
 
-        internal Veiculo get(string chassi, SqlConnection connection)
+        internal Veiculo get(string chassi, SqlConnection connection, SqlTransaction tr)
         {
             Veiculo b = null;
             DataTable results = new DataTable();
@@ -222,7 +294,7 @@ namespace BackOffice.Data.DataBase
                     "WHERE Chassi = '{0}' AND Atividade = {1};",
                           chassi,this.idatividade);
 
-            SqlCommand command = new SqlCommand(queryString, connection);
+            SqlCommand command = new SqlCommand(queryString, connection,tr);
             command.CommandTimeout = 60;
             SqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
@@ -237,7 +309,7 @@ namespace BackOffice.Data.DataBase
                     "WHERE Chassi = '{0}';",
                           chass);
 
-                SqlCommand commandVC = new SqlCommand(queryStringCarac, connection);
+                SqlCommand commandVC = new SqlCommand(queryStringCarac, connection,tr);
                 commandVC.CommandTimeout = 60;
                 SqlDataReader readerVC = command.ExecuteReader();
                 while (readerVC.Read())
@@ -252,15 +324,17 @@ namespace BackOffice.Data.DataBase
             return b;
         }
 
-        internal List<String> keySet(SqlConnection connection)
+        internal List<String> keySet(SqlConnection connection,SqlTransaction tr)
         {
             List<String> r = new List<string>();
             DataTable results = new DataTable();
 
             string queryString = String.Format("SELECT Chassi from dbo.Veiculo WHERE Atividade = {0} ;",
                           this.idatividade);
-            SqlCommand command = new SqlCommand(queryString, connection);
+            SqlCommand command = new SqlCommand(queryString, connection,tr);
             command.CommandTimeout = 60;
+            //command.Transaction = connection.
+            MessageBox.Show(connection.State.ToString());
             SqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
@@ -274,21 +348,21 @@ namespace BackOffice.Data.DataBase
             return r;
         }
 
-        internal List<Veiculo> Values(SqlConnection connection)
+        internal List<Veiculo> Values(SqlConnection connection,SqlTransaction tr)
         {
             List<Veiculo> b = new List<Veiculo>();
-            List<String> k = this.keySet(connection);
+            List<String> k = this.keySet(connection,tr);
             foreach (string s in k)
             {
-                b.Add(this.get(s, connection));
+                b.Add(this.get(s, connection,tr));
             }
             return b;
         }
 
 
-        internal Veiculo put(Veiculo novo, SqlConnection connection)
+        internal Veiculo put(Veiculo novo, SqlConnection connection,SqlTransaction tr)
         {
-            Veiculo v = this.get(novo.chassi, connection);
+            Veiculo v = this.get(novo.chassi, connection,tr);
             String queryString;
             if (v == null) //inserie
             {
@@ -298,7 +372,7 @@ namespace BackOffice.Data.DataBase
                     " ('{0}', '{1}', '{2}', {3}); ",
                           novo.chassi,novo.marca,novo.modelo,this.idatividade);
 
-                SqlCommand command = new SqlCommand(queryString, connection);
+                SqlCommand command = new SqlCommand(queryString, connection,tr);
                 command.CommandTimeout = 60;
                 command.ExecuteNonQuery();
                 List<String> cara = novo.caracteristicas;
@@ -310,7 +384,7 @@ namespace BackOffice.Data.DataBase
                     " VALUES " +
                     " ('{0}', '{1}'); ",
                           c,novo.chassi);
-                    command = new SqlCommand(queryString, connection);
+                    command = new SqlCommand(queryString, connection,tr);
                     command.CommandTimeout = 60;
                     command.ExecuteNonQuery();
                 }
@@ -324,7 +398,7 @@ namespace BackOffice.Data.DataBase
                     " SET Marca = '{0}', Modelo = '{1}' " +
                     " WHERE Chassi = '{3}'  AND Atividade = {4} ;",
                           novo.marca, novo.modelo, novo.chassi, this.idatividade);
-                SqlCommand command = new SqlCommand(queryString, connection);
+                SqlCommand command = new SqlCommand(queryString, connection,tr);
                 command.CommandTimeout = 60;
                 command.ExecuteNonQuery();
                 //esta update aos veiculos
@@ -337,7 +411,7 @@ namespace BackOffice.Data.DataBase
                     "WHERE Chassi = '{0}' AND Caracteristica = '{1}';",
                           novo.chassi, c);
 
-                    SqlCommand commandVC = new SqlCommand(queryStringCarac, connection);
+                    SqlCommand commandVC = new SqlCommand(queryStringCarac, connection,tr);
                     commandVC.CommandTimeout = 60;
                     SqlDataReader readerVC = command.ExecuteReader();
                     if (!readerVC.Read())
@@ -347,7 +421,7 @@ namespace BackOffice.Data.DataBase
                             " VALUES " +
                             " ('{0}', '{1}'); ",
                           c, novo.chassi);
-                        command = new SqlCommand(queryString, connection);
+                        command = new SqlCommand(queryString, connection,tr);
                         command.CommandTimeout = 60;
                         command.ExecuteNonQuery();
                     } 
@@ -362,15 +436,15 @@ namespace BackOffice.Data.DataBase
 
     internal class MapaDAO
     {
-        internal Mapa get(int id, SqlConnection connection)
+        internal Mapa get(int id, SqlConnection connection, SqlTransaction tr)
         {
             Mapa m = null;
             DataTable results = new DataTable();
 
-            string queryString = String.Format("SELECT * dbo.Mapa " +
-                    "WHERE Id_Mapa = '{0};",id);
+            string queryString = String.Format("SELECT * from dbo.Mapa " +
+                    "WHERE id_Mapa = {0} ;",id);
 
-            SqlCommand command = new SqlCommand(queryString, connection);
+            SqlCommand command = new SqlCommand(queryString, connection,tr);
             command.CommandTimeout = 60;
             SqlDataReader reader = command.ExecuteReader();
             if (reader.Read())
@@ -383,7 +457,7 @@ namespace BackOffice.Data.DataBase
                     "WHERE Mapa = '{0}';",
                           id);
 
-                SqlCommand commandVC = new SqlCommand(queryStringCarac, connection);
+                SqlCommand commandVC = new SqlCommand(queryStringCarac, connection,tr);
                 commandVC.CommandTimeout = 60;
                 SqlDataReader readerC = command.ExecuteReader();
                 while (readerC.Read())
@@ -402,14 +476,14 @@ namespace BackOffice.Data.DataBase
             return m;
         }
 
-        internal List<int> keySet(SqlConnection connection)
+        internal List<int> keySet(SqlConnection connection, SqlTransaction tr)
         {
             List<int> r = new List<int>();
             DataTable results = new DataTable();
 
-            string queryString = "SELECT idMapa from dbo.Mapa;";
+            string queryString = "SELECT id_Mapa from dbo.Mapa;";
             
-            SqlCommand command = new SqlCommand(queryString, connection);
+            SqlCommand command = new SqlCommand(queryString, connection,tr);
             command.CommandTimeout = 60;
             SqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
@@ -424,31 +498,31 @@ namespace BackOffice.Data.DataBase
             return r;
         }
 
-        internal List<Mapa> Values(SqlConnection connection)
+        internal List<Mapa> Values(SqlConnection connection,SqlTransaction tr)
         {
             List<Mapa> b = new List<Mapa>();
-            List<int> k = this.keySet(connection);
+            List<int> k = this.keySet(connection,tr);
             foreach (int s in k)
             {
-                b.Add(this.get(s, connection));
+                b.Add(this.get(s, connection,tr));
             }
             return b;
         }
 
 
-        internal Mapa put(Mapa novo, SqlConnection connection)
+        internal Mapa put(Mapa novo, SqlConnection connection,SqlTransaction tr)
         {
-            Mapa m = this.get(novo.idMapa, connection);
+            Mapa m = this.get(novo.idMapa, connection,tr);
             String queryString;
             if (m == null) //inserie
             {
                 queryString = String.Format("INSERT INTO dbo.Mapa " +
-                    "(idMapa, NomeProva) " +
+                    "(id_Mapa, NomeProva) " +
                     " VALUES " +
                     " ({0}, '{1}'); ",
                           novo.idMapa, novo.nomeProva);
 
-                SqlCommand command = new SqlCommand(queryString, connection);
+                SqlCommand command = new SqlCommand(queryString, connection,tr);
                 command.CommandTimeout = 60;
                 command.ExecuteNonQuery();
                 Dictionary<int,GeoCoordinate> cords = novo.cords;
@@ -459,8 +533,8 @@ namespace BackOffice.Data.DataBase
                     "(NrCoordenada, Longitude,Latitude,Mapa) " +
                     " VALUES " +
                     " ({0}, {1},{2}, {3}); ",
-                          key,cords[key].Latitude,cords[key].Latitude,novo.idMapa);
-                    command = new SqlCommand(queryString, connection);
+                          key,cords[key].Latitude.ToString().Replace(',','.'),cords[key].Latitude.ToString().Replace(',', '.'), novo.idMapa);
+                    command = new SqlCommand(queryStringC, connection,tr);
                     command.CommandTimeout = 60;
                     command.ExecuteNonQuery();
                 }
@@ -519,53 +593,67 @@ namespace BackOffice.Data.DataBase
             this.idAtividade = atividade;
         }
 
-        internal Nota get(int id, SqlConnection connection)
+        internal Nota get(int id, SqlConnection connection,SqlTransaction tr)
         {
             Nota n = null;
             DataTable results = new DataTable();
 
-            string queryString = String.Format("SELECT * dbo.Veiculo " +
-                    "WHERE Chassi = '{0}' AND Atividade = {1};",
-                          chassi, this.idatividade);
+            string queryString = String.Format("SELECT * dbo.Nota " +
+                    "WHERE id_Nota = '{0}' AND Atividade = {1};",
+                          id, this.idAtividade);
 
-            SqlCommand command = new SqlCommand(queryString, connection);
+            SqlCommand command = new SqlCommand(queryString, connection,tr);
             command.CommandTimeout = 60;
             SqlDataReader reader = command.ExecuteReader();
-            while (reader.Read())
+            if (reader.Read())
             {
-                var chass = reader[0];
-                var marca = reader[1];
-                var modelo = reader[2];
-                int ativ = this.idatividade;
+                string notaText = reader["NotaTextual"] as string;
+                byte[] audio = (byte[])reader["Audio"];
+                string textoConvert = reader["TextoConvertido"] as string;
+                double longitude = (double)reader["Latitude"];
+                double latitude = (double)reader["Longitude"];
 
-                List<string> caract = new List<string>();
-                string queryStringCarac = String.Format("SELECT * dbo.VeiculoCaracteristicas " +
-                    "WHERE Chassi = '{0}';",
-                          chass);
+                GeoCoordinate local = new GeoCoordinate(latitude, longitude);
 
-                SqlCommand commandVC = new SqlCommand(queryStringCarac, connection);
-                commandVC.CommandTimeout = 60;
-                SqlDataReader readerVC = command.ExecuteReader();
-                while (readerVC.Read())
+                //ir buscar as imagens
+                List<Image> images = new List<Image>();
+                Dictionary<int, Image> d = new Dictionary<int, Image>();
+                string queryStringImagem = String.Format("SELECT * dbo.Imagem " +
+                    "WHERE Atividade = '{0}' AND Nota = {1};",
+                          this.idAtividade,id);
+
+                SqlCommand commandIM = new SqlCommand(queryStringImagem, connection,tr);
+                commandIM.CommandTimeout = 60;
+                SqlDataReader readerIM = command.ExecuteReader();
+                //vai buscar cada imagem
+                while (readerIM.Read())
                 {
-                    caract.Add(reader[0] as string);
+                    byte[] imagem  = (byte[])reader["Image"];
+                    int num = reader.GetInt32(reader.GetOrdinal("id_Image"));
+                    var ms = new MemoryStream(imagem);
+                    d.Add(num, Image.FromStream(ms));
                 }
-                readerVC.Close();
-
-                b = new Veiculo(modelo as string, marca as string, chass as string, caract);
+                readerIM.Close();
+                //meter as imagens por ordem
+                foreach(int i in d.Keys)
+                {
+                    images.Add(d[i]);
+                }
+                n = new Nota(id, notaText, local, images, audio,new Voz(audio, textoConvert));
+               // b = new Veiculo(modelo as string, marca as string, chass as string, caract);
             }
             reader.Close();
             return n;
         }
 
-        internal List<int> keySet(SqlConnection connection)
+        internal List<int> keySet(SqlConnection connection,SqlTransaction tr)
         {
             List<int> r = new List<int>();
             DataTable results = new DataTable();
 
             string queryString = String.Format("SELECT id_Nota from dbo.Nota WHERE Atividade = {0} ;",
                           this.idAtividade);
-            SqlCommand command = new SqlCommand(queryString, connection);
+            SqlCommand command = new SqlCommand(queryString, connection,tr);
             command.CommandTimeout = 60;
             SqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
@@ -580,47 +668,59 @@ namespace BackOffice.Data.DataBase
             return r;
         }
 
-        internal List<Nota> Values(SqlConnection connection)
+        internal List<Nota> Values(SqlConnection connection,SqlTransaction tr)
         {
             List<Nota> b = new List<Nota>();
-            List<int> k = this.keySet(connection);
+            List<int> k = this.keySet(connection,tr);
             foreach (int i in k)
             {
-                b.Add(this.get(i, connection));
+                b.Add(this.get(i, connection,tr));
             }
             return b;
         }
 
-
-        internal Nota put(Nota novo, SqlConnection connection)
+        private byte[] imageToByteArray(Image imageIn)
         {
-            Nota n = this.get(novo.idNota, connection);
-            String queryString;
-            if (v == null) //inserie
+            using (var ms = new MemoryStream())
             {
-                queryString = String.Format("INSERT INTO dbo.Veiculo " +
-                    "(Chassi, Marca, Modelo, Atividade) " +
-                    " VALUES " +
-                    " ('{0}', '{1}', '{2}', {3}); ",
-                          novo.chassi, novo.marca, novo.modelo, this.idatividade);
+                imageIn.Save(ms, System.Drawing.Imaging.ImageFormat.Gif);
+                return ms.ToArray();
+            }
+        }
 
-                SqlCommand command = new SqlCommand(queryString, connection);
+        internal Nota put(Nota novo, SqlConnection connection,SqlTransaction tr)
+        {
+            Nota n = this.get(novo.idNota, connection,tr);
+            String queryString;
+            if (n == null) //inserie
+            {
+                queryString = String.Format("INSERT INTO dbo.Nota " +
+                    "(idNota, NotaTextual, Audio, TextoConvertido,Latidude,Longitude,Atividade) " +
+                    " VALUES " +
+                    " ({0}, '{1}', {2}, '{3}', {4}, {5}, {6}); ",
+                          novo.idNota,novo.notaTextual,novo.voice,novo.notasVoz.texto,
+                          novo.localRegisto.Latitude,novo.localRegisto.Longitude,
+                          this.idAtividade);
+
+                SqlCommand command = new SqlCommand(queryString, connection,tr);
                 command.CommandTimeout = 60;
                 command.ExecuteNonQuery();
-                List<String> cara = novo.caracteristicas;
+                List<Image> images = novo.imagens;
                 String queryStringC;
-                foreach (string c in cara)
+                int i = 0;
+                foreach (Image c in images)
                 {
-                    queryStringC = String.Format("INSERT INTO dbo.VeiculoCaracteristicas " +
-                    "(Caracteristica, Chassi) " +
+                    queryStringC = String.Format("INSERT INTO dbo.Imagem " +
+                    "(Imagem, Nota,Atividade,id_Image) " +
                     " VALUES " +
-                    " ('{0}', '{1}'); ",
-                          c, novo.chassi);
-                    command = new SqlCommand(queryString, connection);
+                    " ({0}, {1} , {2} , {3}); ",
+                          imageToByteArray(c), novo.idNota,this.idAtividade,i);
+                    command = new SqlCommand(queryString, connection,tr);
                     command.CommandTimeout = 60;
                     command.ExecuteNonQuery();
+                    i++;
                 }
-            }
+            }/*
             else//update
             {
                 // UPDATE dbo.Batedor
@@ -659,7 +759,7 @@ namespace BackOffice.Data.DataBase
                     }
 
                 }
-            }
+            }*/
             return n;
         }
     }
