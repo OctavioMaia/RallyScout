@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.util.Log;
 
 import java.nio.ByteBuffer;
@@ -88,15 +89,11 @@ public class NotaDAO {
         return true;
     }
 
-    public int getMaiorNota()
-    {
-        int maiorNota;
+    public int getMaiorNota() {
         Cursor nota = mDatabase.rawQuery(
                 "SELECT MAX( " + NOTA_COLUMN_ID_NOTA +" )" + "FROM " + NOTA_TABLE_NAME,null);
-        maiorNota = nota.getInt(1);
+        return nota.getInt(0);
     }
-
-
 
 
     public Nota getNota(int idNota, int idAtividade){
@@ -107,13 +104,12 @@ public class NotaDAO {
                 new String[]{ ""+idNota,""+idAtividade }
         );
 
-        Cursor resImagens = mDatabase.rawQuery(
-                "SELECT * FROM " + IMAGEM_TABLE_NAME +
-                        " WHERE " + IMAGEM_COLUMN_NOTA + " = ? AND " + IMAGEM_COLUMN_ATIVIDADE + " = ?",
-                new String[]{ ""+idNota,""+idAtividade }
-        );
-        /* Ver isto que ainda falata */
-        List<Bitmap> imagens = new ArrayList<>();
+        if(resNota.getCount()>0){
+            Location loc = new Location("");
+            loc.setLatitude(resNota.getLong(resNota.getColumnIndex(NOTA_COLUMN_LATITUDE)));
+            loc.setLongitude(resNota.getLong(resNota.getColumnIndex(NOTA_COLUMN_LONGITUDE)));
+            not = new Nota(idNota,loc);
+        }
         return not;
     }
 

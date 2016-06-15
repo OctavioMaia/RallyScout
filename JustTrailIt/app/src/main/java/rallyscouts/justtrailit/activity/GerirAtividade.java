@@ -45,6 +45,12 @@ public class GerirAtividade extends AppCompatActivity {
 
     }
 
+    public void verVeiculos(View v){
+        Intent verVeiculos = new Intent(GerirAtividade.this, ShowVeiculos.class);
+        verVeiculos.putExtra("idAtividade",atividadeAProcess.getIdAtividade());
+        GerirAtividade.this.startActivity(verVeiculos);
+    }
+
     public void verPercurso(View v){
         Intent verpercurso = new Intent(GerirAtividade.this, MapaPercurso.class);
         verpercurso.putExtra("idAtividade",atividadeAProcess.getIdAtividade());

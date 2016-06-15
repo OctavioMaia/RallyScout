@@ -38,7 +38,7 @@ public class RegistarNota extends AppCompatActivity {
             if(requestCode==CAMARA_REQUEST)
             {
                 Bitmap camaraImage = (Bitmap) data.getExtras().get("data");
-                notas.insertImagem(notas.getMaiorNota()+1, (int)getIntent().getExtras().get("idAtividade"), camaraImage)
+                notas.insertImagem(notas.getMaiorNota()+1, (int)getIntent().getExtras().get("idAtividade"), camaraImage);
 
             }
         }

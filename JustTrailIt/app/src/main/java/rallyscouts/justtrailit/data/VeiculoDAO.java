@@ -130,9 +130,40 @@ public class VeiculoDAO {
      *  Method getAllVeiculos que retira da base de dados todos os veiculos nela presente
      * @return
      */
-    public ArrayList<Veiculo> getAllVeiculos() {
+    public List<Veiculo> getAllVeiculos() {
         ArrayList<Veiculo> veiculos = new ArrayList<>();
         Cursor resVeiculos =  mDatabase.rawQuery("SELECT * FROM " + VEICULO_TABLE_NAME, null);
+        resVeiculos.moveToFirst();
+
+        while(resVeiculos.isAfterLast() == false){
+            ArrayList<String> caracteristicas = new ArrayList<>();
+            String chassi = resVeiculos.getString(resVeiculos.getColumnIndex(VEICULO_COLUMN_CHASSI));
+
+            Cursor resCaracteristicas =  mDatabase.rawQuery( "SELECT " + VEICULO_CARACTERISTICAS_COLUMN_CARACTERISTICA + " FROM " + VEICULO_CARACTERISTICAS_TABLE_NAME +
+                    " WHERE " + VEICULO_CARACTERISTICAS_COLUMN_CHASSI + " = ? ", new String[] { chassi } );
+
+            resCaracteristicas.moveToFirst();
+            while (resCaracteristicas.isAfterLast() == false){
+                caracteristicas.add(resCaracteristicas.getString(resCaracteristicas.getColumnIndex(VEICULO_CARACTERISTICAS_COLUMN_CARACTERISTICA)));
+                resCaracteristicas.moveToNext();
+            }
+
+            Veiculo v = new Veiculo(
+                    resVeiculos.getString(resVeiculos.getColumnIndex(VEICULO_COLUMN_CHASSI)),
+                    resVeiculos.getString(resVeiculos.getColumnIndex(VEICULO_COLUMN_MARCA)),
+                    resVeiculos.getString(resVeiculos.getColumnIndex(VEICULO_COLUMN_MODELO)),
+                    caracteristicas
+            );
+
+            veiculos.add(v);
+            resVeiculos.moveToNext();
+        }
+        return veiculos;
+    }
+
+    public List<Veiculo> getAllVeiculos(int idAtividade){
+        ArrayList<Veiculo> veiculos = new ArrayList<>();
+        Cursor resVeiculos =  mDatabase.rawQuery("SELECT * FROM " + VEICULO_TABLE_NAME + " WHERE " + VEICULO_COLUMN_ATIVIDADE + " = ?", new String[]{ ""+idAtividade});
         resVeiculos.moveToFirst();
 
         while(resVeiculos.isAfterLast() == false){
