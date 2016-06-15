@@ -34,7 +34,7 @@ namespace BackOffice.Presentation
             string pathJ = "C:\\Users\\Joao\\Documents\\GitHub\\RallyScout\\ExemplosJson\\config.json";
 
 
-            BackOfficeAPP b = new BackOfficeAPP(pathJ);
+            BackOfficeAPP b = new BackOfficeAPP(pathO);
             backoffice = b;
             InitializeComponent();
         }
