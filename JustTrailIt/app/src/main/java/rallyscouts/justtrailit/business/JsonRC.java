@@ -55,6 +55,7 @@ public class JsonRC {
         try {
             JSONObject recive = new JSONObject(jsonString);
             int idAtividade = recive.getInt("idAtividade");
+            Log.i(TAG,"Atividade: " + idAtividade);
             if (idAtividade >= 0) {
                 //não é codigo de erro
                 batedorLogin.setAtividade(idAtividade);

@@ -166,6 +166,10 @@ namespace BackOffice.Business
             doc.Close();
         }
 
+        public void generateReportGlobal(string path)
+        {
+            //TODO 
+        }
     }
 
 
