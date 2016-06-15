@@ -92,8 +92,10 @@ public class NotaDAO {
     {
         int maiorNota;
         Cursor nota = mDatabase.rawQuery(
-                "SELECT MAX( " + NOTA_COLUMN_ID_NOTA +" )" + "FROM " + NOTA_TABLE_NAME,null);
+                "SELECT NVL(MAX( " + NOTA_COLUMN_ID_NOTA +" ),0)" + "FROM " + NOTA_TABLE_NAME,null);
         maiorNota = nota.getInt(1);
+        if(maiorNota==0) {return maiorNota;}
+            else {return maiorNota+1;}
     }
 
 
