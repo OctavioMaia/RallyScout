@@ -127,6 +127,15 @@ namespace BackOffice.Business
         }
 
 
+        public void startReceive()
+        {
+
+        }
+
+        public void stopReceive()
+        {
+
+        }
         private static string GetLocalIPAddress()
         {
             var host = Dns.GetHostEntry(Dns.GetHostName());
