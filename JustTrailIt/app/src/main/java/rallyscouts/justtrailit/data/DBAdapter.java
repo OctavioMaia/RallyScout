@@ -15,7 +15,7 @@ public class DBAdapter extends SQLiteOpenHelper {
 
     public static final String TAG = "DBAdapter";
     public static final String DATABASE_NAME = "JustTrailIt";
-    public static final int DATABASE_VERSION = 20;
+    public static final int DATABASE_VERSION = 21;
 
     private static final String CREATE_TABLE_ATIVIDADE =
             "CREATE TABLE " + AtividadeDAO.ATIVIDADE_TABLE_NAME + " ( " +
@@ -69,10 +69,11 @@ public class DBAdapter extends SQLiteOpenHelper {
 
     private static final String CREATE_TABLE_VEICULO =
             " CREATE TABLE " + VeiculoDAO.VEICULO_TABLE_NAME + " ( " +
-                    VeiculoDAO.VEICULO_COLUMN_CHASSI + " VARCHAR(50) PRIMARY KEY, " +
+                    VeiculoDAO.VEICULO_COLUMN_CHASSI + " VARCHAR(50) NOT NULL, " +
                     VeiculoDAO.VEICULO_COLUMN_MARCA + " VARCHAR(50), " +
                     VeiculoDAO.VEICULO_COLUMN_MODELO + " VARCHAR(50), " +
                     VeiculoDAO.VEICULO_COLUMN_ATIVIDADE + " INTEGER NOT NULL, " +
+                    "PRIMARY KEY ( " + VeiculoDAO.VEICULO_COLUMN_CHASSI + " , " + VeiculoDAO.VEICULO_COLUMN_ATIVIDADE +"),"+
                     "FOREIGN KEY ( " + VeiculoDAO.VEICULO_COLUMN_CHASSI + " ) REFERENCES " + AtividadeDAO.ATIVIDADE_TABLE_NAME + "( " + AtividadeDAO.ATIVIDADE_COLUMN_ID + " ))";
 
     private static final String CREATE_TABLE_VEICULO_CARACTERISTICAS =
