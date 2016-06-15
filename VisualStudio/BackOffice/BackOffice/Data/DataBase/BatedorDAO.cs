@@ -20,7 +20,7 @@ namespace BackOffice.Data.DataBase
         }
 
 
-        private Batedor get(string mail, SqlConnection connection)
+        internal Batedor get(string mail, SqlConnection connection)
         {
             Batedor b = null;
             DataTable results = new DataTable();
@@ -61,7 +61,7 @@ namespace BackOffice.Data.DataBase
             return b;
         }
 
-        private List<String> keySet(SqlConnection connection)
+        internal List<String> keySet(SqlConnection connection)
         {
             List<String> r = new List<string>();
             DataTable results = new DataTable();
@@ -131,7 +131,7 @@ namespace BackOffice.Data.DataBase
 
 
 
-        private Boolean containsKey(string mail, SqlConnection connection)
+        internal Boolean containsKey(string mail, SqlConnection connection)
         {
             Boolean ret = false;
             Batedor b = this.get(mail, connection);
@@ -158,7 +158,7 @@ namespace BackOffice.Data.DataBase
 
 
 
-        private Batedor put(Batedor novo, SqlConnection connection)
+        internal Batedor put(Batedor novo, SqlConnection connection)
         {
             Batedor b = this.get(novo.email, connection);
             String queryString;
