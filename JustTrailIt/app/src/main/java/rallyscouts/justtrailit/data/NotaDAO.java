@@ -26,9 +26,9 @@ public class NotaDAO {
 
     public static final String TAG = "NotaDAO";
 
-    public static final String NOTA_TABLE_NAME = "Mapa";
+    public static final String NOTA_TABLE_NAME = "Nota";
     public static final String NOTA_COLUMN_ID_NOTA = "id_Nota";
-    public static final String NOTA_COLUMN_ATIVIDADE = "Atividade";
+    public static final String NOTA_COLUMN_ATIVIDADE = "idAtividade";
     public static final String NOTA_COLUMN_NOTA_TEXTUAL = "NotaTextual";
     public static final String NOTA_COLUMN_AUDIO = "Audio";
     public static final String NOTA_COLUMN_LATITUDE = "Latitude";
@@ -38,7 +38,7 @@ public class NotaDAO {
     public static final String IMAGEM_COLUMN_ID = "idImagem";
     public static final String IMAGEM_COLUMN_IMAGE = "Imagem";
     public static final String IMAGEM_COLUMN_NOTA = "Nota";
-    public static final String IMAGEM_COLUMN_ATIVIDADE = "Atividade";
+    public static final String IMAGEM_COLUMN_ATIVIDADE = "idAtividade";
 
     public NotaDAO(Context mContext) {
         this.mContext = mContext;
@@ -88,6 +88,17 @@ public class NotaDAO {
         return true;
     }
 
+    public int getMaiorNota()
+    {
+        int maiorNota;
+        Cursor nota = mDatabase.rawQuery(
+                "SELECT MAX( " + NOTA_COLUMN_ID_NOTA +" )" + "FROM " + NOTA_TABLE_NAME,null);
+        maiorNota = nota.getInt(1);
+    }
+
+
+
+
     public Nota getNota(int idNota, int idAtividade){
         Nota not = null;
         Cursor resNota = mDatabase.rawQuery(
@@ -101,7 +112,7 @@ public class NotaDAO {
                         " WHERE " + IMAGEM_COLUMN_NOTA + " = ? AND " + IMAGEM_COLUMN_ATIVIDADE + " = ?",
                 new String[]{ ""+idNota,""+idAtividade }
         );
-
+        /* Ver isto que ainda falata */
         List<Bitmap> imagens = new ArrayList<>();
         return not;
     }

@@ -8,16 +8,19 @@ import android.os.Bundle;
 import android.view.View;
 
 import rallyscouts.justtrailit.R;
+import rallyscouts.justtrailit.data.NotaDAO;
 
 public class RegistarNota extends AppCompatActivity {
 
     public static final int CAMARA_REQUEST = 10;
+    private NotaDAO notas;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registar_nota);
+        this.notas = new NotaDAO(RegistarNota.this);
     }
 
     public void registarImagem(View v)
@@ -35,6 +38,8 @@ public class RegistarNota extends AppCompatActivity {
             if(requestCode==CAMARA_REQUEST)
             {
                 Bitmap camaraImage = (Bitmap) data.getExtras().get("data");
+                notas.insertImagem(notas.getMaiorNota()+1, (int)getIntent().getExtras().get("idAtividade"), camaraImage)
+
             }
         }
     }
