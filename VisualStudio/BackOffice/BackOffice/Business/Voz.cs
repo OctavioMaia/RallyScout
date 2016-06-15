@@ -36,18 +36,21 @@ namespace BackOffice.Business
 
         public void convertAudio()
         {
-            string path  = Path.GetTempPath();
-            path = path + string.Format("HH_mm_ss", DateTime.Now)+".wav";
+        //    string path  = Path.GetTempPath();
+         //   path = path + string.Format("HH_mm_ss", DateTime.Now)+".wav";
             //cria o ficheiro temporario com audio
-            File.WriteAllBytes(path, audio);
+         //   File.WriteAllBytes(path, audio);
             SpeechRecognitionEngine recognizer = new SpeechRecognitionEngine();
             recognizer.LoadGrammar(BackOfficeAPP.gramatica);
 
             // Configure the input to the recognizer.
-            recognizer.SetInputToAudioStream(
+            recognizer.SetInputToAudioStream(new MemoryStream(this.audio),
+                 new SpeechAudioFormatInfo(
+                44100, AudioBitsPerSample.Sixteen, AudioChannel.Mono));
+          /*  recognizer.SetInputToAudioStream(
               File.OpenRead(path),
               new SpeechAudioFormatInfo(
-                44100, AudioBitsPerSample.Sixteen, AudioChannel.Mono));
+                44100, AudioBitsPerSample.Sixteen, AudioChannel.Mono));*/
 
             recognizer.SpeechRecognized +=
               new EventHandler<SpeechRecognizedEventArgs>(sre_SpeechRecognized);
@@ -56,7 +59,7 @@ namespace BackOffice.Business
             recognizer.Recognize();
 
             //elimina o ficheiro temporario com audio
-            File.Delete(path);
+         //   File.Delete(path);
 
 
         }
