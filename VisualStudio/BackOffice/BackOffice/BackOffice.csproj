@@ -34,9 +34,35 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>BackOffice.App</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="GMap.NET.Core">
+      <HintPath>DLL\GMap.NET.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="GMap.NET.WindowsForms">
+      <HintPath>DLL\GMap.NET.WindowsForms.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp">
+      <HintPath>DLL\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp.pdfa">
+      <HintPath>DLL\itextsharp.pdfa.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp.xtra">
+      <HintPath>DLL\itextsharp.xtra.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Device" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Speech" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -46,29 +72,100 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="UIAutomationProvider" />
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Business\Atividade.cs" />
+    <Compile Include="Business\BackOfficeAPP.cs" />
+    <Compile Include="Business\Batedor.cs" />
+    <Compile Include="Business\Equipa.cs" />
+    <Compile Include="Business\Exceptions\AtividadeJaIniciadaException.cs" />
+    <Compile Include="Business\Exceptions\AtividadeNaoIniciadaException.cs" />
+    <Compile Include="Business\Exceptions\AtividadeNaoTerminadaExeption.cs" />
+    <Compile Include="Business\Exceptions\CaracteristicaExistenteException.cs" />
+    <Compile Include="Business\Exceptions\NaoExisteAtividadeExeption.cs" />
+    <Compile Include="Business\Exceptions\NaoExisteBatedorExeption.cs" />
+    <Compile Include="Business\FichaBatedor.cs" />
+    <Compile Include="Data\DataBase\AtividadeDAO.cs" />
+    <Compile Include="Data\DataBase\BatedorDAO.cs" />
+    <Compile Include="Data\Json\BackToJust.cs" />
+    <Compile Include="Business\Mapa.cs" />
+    <Compile Include="Business\Nota.cs" />
+    <Compile Include="Business\Exceptions\NotaRepetidaException.cs" />
+    <Compile Include="Business\Veiculo.cs" />
+    <Compile Include="Business\Exceptions\VeiculoRepetidoException.cs" />
+    <Compile Include="Business\Voz.cs" />
+    <Compile Include="Data\Json\JustToBack.cs" />
+    <Compile Include="Data\Json\StartConfig.cs" />
+    <Page Include="Presentation\ConsultaBatedor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presentation\ConsultarAtividadeConcluida.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presentation\InserirVeiculo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presentation\Login.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presentation\MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presentation\RegistaBatedor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presentation\RegistoAtividade.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Presentation\ConsultaBatedor.xaml.cs">
+      <DependentUpon>ConsultaBatedor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\ConsultarAtividadeConcluida.xaml.cs">
+      <DependentUpon>ConsultarAtividadeConcluida.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\InserirVeiculo.xaml.cs">
+      <DependentUpon>InserirVeiculo.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Login.xaml.cs">
+      <DependentUpon>Login.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\RegistaBatedor.xaml.cs">
+      <DependentUpon>RegistaBatedor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\RegistoAtividade.xaml.cs">
+      <DependentUpon>RegistoAtividade.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\VisualizadorMap.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Presentation\VisualizadorMap.Designer.cs">
+      <DependentUpon>VisualizadorMap.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -82,10 +179,14 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <EmbeddedResource Include="Presentation\VisualizadorMap.resx">
+      <DependentUpon>VisualizadorMap.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -95,6 +196,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
