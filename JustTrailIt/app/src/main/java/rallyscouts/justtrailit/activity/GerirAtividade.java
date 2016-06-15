@@ -10,12 +10,14 @@ import rallyscouts.justtrailit.R;
 import rallyscouts.justtrailit.business.Batedor;
 import rallyscouts.justtrailit.data.AtividadeDAO;
 import rallyscouts.justtrailit.data.BatedorDAO;
+import rallyscouts.justtrailit.data.NotaDAO;
 
 public class GerirAtividade extends AppCompatActivity {
 
 
     private BatedorDAO batedores;
     private AtividadeDAO atividades;
+    private NotaDAO notas;
 
     private rallyscouts.justtrailit.business.Atividade atividadeAProcess;
     private Batedor batedorLogin;
@@ -54,6 +56,7 @@ public class GerirAtividade extends AppCompatActivity {
 
         Intent registarnota = new Intent(GerirAtividade.this, RegistarNota.class);
         registarnota.putExtra("idAtividade",batedorLogin.getAtividade());
+        registarnota.putExtra("idNota",notas.getMaiorNota());
         GerirAtividade.this.startActivity(registarnota);
 
     }
