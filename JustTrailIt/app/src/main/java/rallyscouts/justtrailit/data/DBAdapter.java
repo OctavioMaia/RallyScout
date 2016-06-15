@@ -15,7 +15,7 @@ public class DBAdapter extends SQLiteOpenHelper {
 
     public static final String TAG = "DBAdapter";
     public static final String DATABASE_NAME = "JustTrailIt";
-    public static final int DATABASE_VERSION = 5;
+    public static final int DATABASE_VERSION = 14;
 
     private static final String CREATE_TABLE_ATIVIDADE =
             "CREATE TABLE " + AtividadeDAO.ATIVIDADE_TABLE_NAME + " ( " +
@@ -44,18 +44,18 @@ public class DBAdapter extends SQLiteOpenHelper {
                     MapaDAO.MAPA_COORDENADAS_COLUMN_LATITUDE + " FLOAT NOT NULL, " +
                     MapaDAO.MAPA_COORDENADAS_COLUMN_LONGITUDE + " FLOAT NOT NULL, " +
                     "PRIMARY KEY ( "+ MapaDAO.MAPA_COORDENADAS_COLUMN_MAPA + " , " + MapaDAO.MAPA_COORDENADAS_COLUMN_NR_COORDENADA + " ), " +
-                    "FOREIGN KEY ( " + MapaDAO.MAPA_COLUMN_ATIVIDADE_ID + " ) REFERENCES " + AtividadeDAO.ATIVIDADE_TABLE_NAME + " ( " + AtividadeDAO.ATIVIDADE_COLUMN_ID + " ))";
+                    "FOREIGN KEY ( " + MapaDAO.MAPA_COORDENADAS_COLUMN_MAPA + " ) REFERENCES " + MapaDAO.MAPA_TABLE_NAME + " ( " + MapaDAO.MAPA_COLUMN_ATIVIDADE_ID + " ))";
 
     private static final String CREATE_TABLE_NOTA =
             "CREATE TABLE " + NotaDAO.NOTA_TABLE_NAME + " ( " +
-                    NotaDAO.NOTA_COLUMN_ID_NOTA + " INTEGER, " +
-                    NotaDAO.NOTA_COLUMN_ATIVIDADE + " INTEGER, " +
-                    NotaDAO.NOTA_COLUMN_NOTA_TEXTUAL + " TEXT," +
+                    NotaDAO.NOTA_COLUMN_ID_NOTA + " INTEGER NOT NULL, " +
+                    NotaDAO.NOTA_COLUMN_ATIVIDADE + " INTEGER NOT NULL, " +
+                    NotaDAO.NOTA_COLUMN_NOTA_TEXTUAL + " TEXT, " +
                     NotaDAO.NOTA_COLUMN_AUDIO + " BLOB, " +
                     NotaDAO.NOTA_COLUMN_LATITUDE + " FLOAT NOT NULL, " +
                     NotaDAO.NOTA_COLUMN_LONGITUDE + " FLOAT NOT NULL, " +
-                    "PRIMARY KEY ( " + NotaDAO.NOTA_COLUMN_ID_NOTA + " , " + NotaDAO.NOTA_COLUMN_ATIVIDADE + " ), " +
-                    "FOREIGN KEY " + NotaDAO.NOTA_COLUMN_ATIVIDADE + " REFERENCES " + AtividadeDAO.ATIVIDADE_TABLE_NAME + " ( " + AtividadeDAO.ATIVIDADE_COLUMN_ID + "))";
+                    "PRIMARY KEY(" + NotaDAO.NOTA_COLUMN_ID_NOTA + " , " + NotaDAO.NOTA_COLUMN_ATIVIDADE + " ), " +
+                    "FOREIGN KEY (" + NotaDAO.NOTA_COLUMN_ATIVIDADE + ") REFERENCES " + AtividadeDAO.ATIVIDADE_TABLE_NAME + " ( " + AtividadeDAO.ATIVIDADE_COLUMN_ID + "))";
 
     private static final String CREATE_TABLE_IMAGEM =
             "CREATE TABLE " + NotaDAO.IMAGEM_TABLE_NAME + " ( " +
@@ -90,46 +90,49 @@ public class DBAdapter extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         Log.v(TAG,"merda2");
+
+
+        db.execSQL(CREATE_TABLE_ATIVIDADE);
+        db.execSQL(CREATE_TABLE_BATEDOR);
+        db.execSQL(CREATE_TABLE_MAPA);
+        db.execSQL(CREATE_TABLE_MAPA_COORDENADAS);
+        db.execSQL(CREATE_TABLE_NOTA);
+        db.execSQL(CREATE_TABLE_IMAGEM);
+        db.execSQL(CREATE_TABLE_VEICULO);
+        db.execSQL(CREATE_TABLE_VEICULO_CARACTERISTICAS);
+/*
         try {
-            db.execSQL(CREATE_TABLE_ATIVIDADE);
         }catch (android.database.SQLException eSQL){
             Log.e(TAG, "Error creating table " + AtividadeDAO.ATIVIDADE_TABLE_NAME);
         }
         try {
-            db.execSQL(CREATE_TABLE_BATEDOR);
         }catch (android.database.SQLException eSQL){
             Log.e(TAG, "Error creating table " + BatedorDAO.BATEDOR_TABLE_NAME);
         }
         try {
-            db.execSQL(CREATE_TABLE_MAPA);
         }catch (android.database.SQLException eSQL){
             Log.e(TAG, "Error creating the table " + MapaDAO.MAPA_TABLE_NAME);
         }
         try {
-            db.execSQL(CREATE_TABLE_MAPA_COORDENADAS);
         }catch (android.database.SQLException eSQL){
             Log.e(TAG, "Error creating the table " + MapaDAO.MAPA_COORDENADAS_TABLE_NAME);
         }
         try {
-            db.execSQL(CREATE_TABLE_NOTA);
         }catch (android.database.SQLException eSQL){
             Log.e(TAG, "Error creating the table " + NotaDAO.NOTA_TABLE_NAME);
         }
         try {
-            db.execSQL(CREATE_TABLE_IMAGEM);
         }catch (android.database.SQLException eSQL){
             Log.e(TAG, "Error creating the table " + NotaDAO.IMAGEM_TABLE_NAME);
         }
         try {
-            db.execSQL(CREATE_TABLE_VEICULO);
         }catch (android.database.SQLException eSQL){
             Log.e(TAG, "Error creating the table " + VeiculoDAO.VEICULO_CARACTERISTICAS_TABLE_NAME);
         }
         try {
-            db.execSQL(CREATE_TABLE_VEICULO_CARACTERISTICAS);
         }catch (android.database.SQLException eSQL){
             Log.e(TAG, "Error creating the table " + VeiculoDAO.VEICULO_TABLE_NAME);
-        }
+        }*/
     }
 
     @Override
