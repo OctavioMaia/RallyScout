@@ -20,6 +20,13 @@ namespace BackOffice.Business
             this.texto = null;
         }
 
+
+        public Voz(byte[] audio, string texto)
+        {
+            this.audio = audio;
+            this.texto = texto;
+        }
+
         public Voz(byte[] voice)
         {
             this.audio = voice;

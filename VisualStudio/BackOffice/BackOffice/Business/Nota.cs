@@ -12,10 +12,10 @@ namespace BackOffice.Business
     public class Nota
     {
         public int idNota { get; set; }
-        private string notaTextual { get; set; }
-        private GeoCoordinate localRegisto { get; set; }
-        private List<Image> imagens { get; set; }
-        private byte[] voice { get; set; }
+        public string notaTextual { get; set; }
+        public GeoCoordinate localRegisto { get; set; }
+        public List<Image> imagens { get; set; }
+        public byte[] voice { get; set; }
         public Voz notasVoz { get; set; }
 
         public Nota(int id, string texto, double lat, double longt, List<Image> imgs, byte[] voz)
@@ -32,6 +32,17 @@ namespace BackOffice.Business
             }
 
         }
+        public Nota( int idNota , string notaTextual , GeoCoordinate localRegisto ,
+         List<Image> imagens, byte[] voice, Voz notasVoz)
+        {
+            this.idNota = idNota;
+            this.notaTextual = notaTextual;
+            this.localRegisto = localRegisto;
+            this.imagens = imagens;
+            this.voice = voice;
+            this.notasVoz = notasVoz;
+        }
+
         public bool asVoice()
         {
             return this.notasVoz != null;
