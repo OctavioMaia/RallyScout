@@ -29,7 +29,7 @@ namespace BackOffice.Presentation
             this.backoffice = b;
             InitializeComponent();
             UpdateComboBox();
-            this.atividades = this.backoffice.getAtividadesTerminas();
+            this.atividades = this.backoffice.getAtividadesTerminadas();
         }
 
         private void UpdateComboBox()
@@ -105,6 +105,13 @@ namespace BackOffice.Presentation
                 }
                 
             }
+        }
+
+        private void buttonVerMapa_Click(object sender, RoutedEventArgs e)
+        {
+            VisualizadorMap vm = new VisualizadorMap();
+            vm.carregaMapa(this.selecionada);
+            vm.Visible = true;
         }
     }
 
