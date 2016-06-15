@@ -27,89 +27,17 @@ namespace BackOffice.Business
         public String passMail { get; set; }
         public BatedorDAO batedores { get; set; }
         public AtividadeDAO atividades { get; set; }
-        public Dictionary<int,Atividade> atividadeFE { get; set; }
-        public Dictionary<int,Atividade> atividadeTERM { get; set; }
+        
 
+        //isto é novo nao esta no VP
         public int port { get; set; }
         public string IP { get; set; }
         public string database { get; set; }
-       /* private BackOfficeAPP(String confJSON)
-        {
-
-            //Console.WriteLine("Inicio");
-            Connection.GetConnection();
-
-            using (StreamReader r = new StreamReader(confJSON))
-            {
-                string json = r.ReadToEnd();
-                var results = JsonConvert.DeserializeObject<dynamic>(json);
-                String mail = results.email;
-                String pass = results.password;
-
-                this.email = mail;
-                this.passMail = pass;
-                JArray dic = results.dicionario;
-                string[] arr = dic.ToObject<string[]>();
-                Choices escolhas = new Choices();
-                for (int i = 0; i < arr.Length; i++)
-                 {
-                     string s = arr[i];
-                    // MessageBox.Show(s);
-                    escolhas.Add(s);
-                 }
-                GrammarBuilder gb = new GrammarBuilder();
-                gb.Append(escolhas);
-                BackOfficeAPP.gramatica = new Grammar(gb);
-
-                BackOfficeAPP.simbolos = new Dictionary<string, string>();
-
-                JObject simbolos = results.simbolos;
-                JObject corner = results.simbolos.corner;
-                string root = "corner";
-                JObject grade = results.simbolos.corner.grade;
-                string bas = root + " grade";
-                foreach (KeyValuePair<String, JToken> item in grade)
-                {
-                    String key = bas +" " +item.Key;
-                    String value = item.Value.ToString();
-                    BackOfficeAPP.simbolos.Add(key, value);
-                }
 
 
-                JObject duration = results.simbolos.corner.duration;
-                bas = root + " duration";
-
-                foreach (KeyValuePair<String, JToken> item in duration)
-                {
-                    String key = bas + " " + item.Key;
-                    String value = item.Value.ToString();
-                    BackOfficeAPP.simbolos.Add(key, value);
-                }
-
-                JObject further = results.simbolos.corner.further;
-                bas = root + " further";
-
-                foreach (KeyValuePair<String, JToken> item in further)
-                {
-                    String key = bas + " " + item.Key;
-                    String value = item.Value.ToString();
-                    BackOfficeAPP.simbolos.Add(key, value);
-                }
-
-                JObject road = results.simbolos.road;
-                bas = "road";
-                foreach (KeyValuePair<String, JToken> item in road)
-                {
-                    String key = item.Key;
-                    String value = item.Value.ToString();
-                    BackOfficeAPP.simbolos.Add(key, value);
-                }   
-            }
-            //esta tudo lido que vem do json falta o resto
-            //TODO
-            this.atividadeFE = new Dictionary<int, Atividade>();
-        }
-        */
+        //é para apagar 
+        public Dictionary<int, Atividade> atividadeFE { get; set; }
+        public Dictionary<int, Atividade> atividadeTERM { get; set; }
 
         public BackOfficeAPP(String confJSON)
         {
@@ -191,10 +119,11 @@ namespace BackOffice.Business
             //TODO BD dos 
             this.atividades = new AtividadeDAO(this.database);
             this.batedores = new BatedorDAO(this.database);
+
+            //Isto é para apagar
             this.atividadeFE = new Dictionary<int, Atividade>();
-
-
-            //return u;
+            this.atividadeTERM = new Dictionary<int, Atividade>();
+            //
         }
 
 
@@ -228,19 +157,22 @@ namespace BackOffice.Business
             return this.batedores.get(mail);
         }
 
+
+
         private void guardaNovaAtividade(Atividade a)
         {
+            //Isto é para apagar
             this.atividadeFE.Add(a.idAtividade, a);
-            //this.atividades.put(a);
-            //TODO ir a BD
+            //
+            this.atividades.put(a);
         }
 
-        private int getNextAtividadeID()
+        private int getNextAtividadeID() //pode dar merda
         {
             List<Int32> l = this.atividades.keySet();
             if (l.Count == 0) return 0;
             l.Sort();
-            return l[l.Count - 1];
+            return l[l.Count - 1]+1;
         }
 
         public void registarAtividade(string mailBatedor, string mapPath, string nomeprova,
@@ -267,45 +199,78 @@ namespace BackOffice.Business
 
         private Atividade getAtividade(int id)
         {
-            //TODO ir a BD
-            return null;
+            return this.atividades.get(id);
         }
 
-        public List<Atividade> getAtividadesTerminas()
+        public List<Atividade> getAtividadesTerminadas()
         {
-            //TODO
-            return null;
+            List<Atividade> l = this.getAtividades();
+            List<Atividade> ret = new List<Atividade>();
+            foreach(Atividade a in l)
+            {
+                if (a.done)
+                {
+                    ret.Add(a);
+                }
+            }
+            return ret;
+
         }
 
         public List<Atividade> getAtividadesPorTerminar()
         {
-            //TODO
-            return null;
+            List<Atividade> l = this.getAtividades();
+            List<Atividade> ret = new List<Atividade>();
+            foreach (Atividade a in l)
+            {
+                if (!a.done)
+                {
+                    ret.Add(a);
+                }
+            }
+            return ret;
         }
 
         public List<Atividade> getAtividades()
         {
-            //TODO
-            return null;
+            return this.atividades.Values();
         }
 
-        public List<int> getAtividadesTerminasID()
+        public List<int> getAtividadesTerminadasID()
         {
-            //TODO
-            return null;
+            List<Atividade> l = this.getAtividadesTerminadas();
+            List<int> ret = new List<int>();
+            foreach (Atividade a in l)
+            {
+                if (a.done)
+                {
+                    ret.Add(a.idAtividade);
+                }
+            }
+            return ret;
         }
 
         public List<int> getAtividadesPorTerminarID()
         {
-            //TODO
-            return null;
+            List<Atividade> l = this.getAtividadesPorTerminar();
+            List<int> ret = new List<int>();
+            foreach (Atividade a in l)
+            {
+                if (!a.done)
+                {
+                    ret.Add(a.idAtividade);
+                }
+            }
+            return ret;
         }
 
         public List<int> getAtividadesID()
         {
-            //TODO
-            return null;
+            return this.atividades.keySet();
         }
+
+
+
         public Atividade consultarAtividadeTerm(int id)
         {
             Atividade a = this.getAtividade(id);
@@ -344,13 +309,13 @@ namespace BackOffice.Business
 
         public void receberAtividade()
         {
-
+            //TODO
         }
 
 
         public void enviarAtividade()
         {
-
+            //TODO
         }
 
         public JustToBack formJson(string json) //atividade parcial atençap 
@@ -401,7 +366,7 @@ namespace BackOffice.Business
 
         private string jsonFrom(int idAtividade) //retorna string do json par enviar 
         {
-            Atividade a = this.atividadeFE[idAtividade];
+            Atividade a = this.getAtividade(idAtividade);
             BackToJust jsonClass = new BackToJust(a);
             string json = JsonConvert.SerializeObject(jsonClass, Formatting.Indented);
             return json;
@@ -412,12 +377,16 @@ namespace BackOffice.Business
         {
             string pathPiloto = path + "copilot.pdf";
             Atividade a = this.getAtividade(atividade_id);
-            if (!this.atividadeTERM.ContainsKey(atividade_id))
+            if (this.getAtividadesPorTerminarID().Contains(atividade_id))
             {
                 throw new AtividadeNaoIniciadaException("Atividade " + atividade_id + " Nao Terminada");
             }
             a.generateReportCopiloto(pathPiloto);
-            //TODO relatorio geral
+            string pathGlobal = path + "general.pdf";
+
+            //TODO este metodo ainda nao faz nada
+            a.generateReportGlobal(pathGlobal);
+            
         }
 
 

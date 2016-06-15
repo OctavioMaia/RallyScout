@@ -28,6 +28,17 @@ namespace BackOffice.Presentation
             InitializeComponent();
         }
 
+        public Login()
+        {
+            string pathO = "C:\\Users\\Octávio\\Documents\\GitHub\\RallyScout\\ExemplosJson\\config.json";
+            string pathJ = "C:\\Users\\Joao\\Documents\\GitHub\\RallyScout\\ExemplosJson\\config.json";
+
+
+            BackOfficeAPP b = new BackOfficeAPP(pathO);
+            backoffice = b;
+            InitializeComponent();
+        }
+
         private void buttonLogin_Click(object sender, RoutedEventArgs e)
         {
 

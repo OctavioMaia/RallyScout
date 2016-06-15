@@ -40,7 +40,8 @@
         android:layout_marginTop="10dp"
         android:layout_below="@+id/view"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:onClick="registarVoz"/>
 
 
     <Button
@@ -50,8 +51,9 @@
         android:id="@+id/button_RegistarTexto"
         android:clickable="true"
         android:focusable="true"
-        android:layout_below="@+id/button_RegistarImagem"
-        android:layout_centerHorizontal="true" />
+        android:layout_below="@+id/id_InserirTexto"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
 
     <Button
@@ -64,5 +66,31 @@
         android:layout_below="@+id/button_RegistarVoz"
         android:layout_centerHorizontal="true"
         android:onClick="registarImagem"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:id="@+id/id_InserirTexto"
+        android:layout_below="@+id/button_RegistarImagem"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:autoText="false"
+        android:hint="Introduza aqui o seu texto"
+        android:textAlignment="center"
+        android:textSize="20dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Confirmar submissão nota "
+        android:id="@+id/button_SubmissaoNota"
+        android:layout_below="@+id/button_RegistarTexto"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:onClick="confirmarSubmissao"/>
 
 </RelativeLayout>
