@@ -67,6 +67,23 @@ namespace BackOffice.Business
 
         }
 
+        public Atividade( int idAtividade,  DateTime inicioReconhecimento ,
+         DateTime fimReconhecimento , string nomeEquipa , Boolean inprogress ,
+         Boolean done , List<Nota> notas , Mapa percurso ,List<Veiculo> veiculos ,
+         Equipa equipa , Batedor batedor )
+        {
+            this.idAtividade = idAtividade;
+            this.inicioReconhecimento = inicioReconhecimento;
+            this.fimReconhecimento = fimReconhecimento;
+            this.nomeEquipa = nomeEquipa;
+            this.inprogress = inprogress;
+            this.done = done;
+            this.notas = notas;
+            this.percurso = percurso;
+            this.veiculos = veiculos;
+            this.equipa = equipa;
+            this.batedor = batedor;
+        }
 
         public void addNota(Nota n)
         {

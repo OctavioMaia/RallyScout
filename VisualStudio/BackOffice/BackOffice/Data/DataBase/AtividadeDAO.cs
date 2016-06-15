@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Device.Location;
+using System.Drawing;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -102,10 +104,14 @@ namespace BackOffice.Data.DataBase
 
             SqlConnection con = new SqlConnection(this.dbConf);
             con.Open();
-            //con.BeginTransaction();
+            SqlTransaction  tr = con.BeginTransaction();
             try
             {
                 b = this.put(novo, con);
+                tr.Commit();
+            }catch(Exception e)
+            {
+                tr.Rollback();
             }
             finally
             {
@@ -161,17 +167,47 @@ namespace BackOffice.Data.DataBase
         {
             Atividade b = this.get(novo.idAtividade, connection);
             String queryString=null;
+            BatedorDAO bd = new BatedorDAO(this.dbConf);
+            bd.put(novo.batedor, connection);
             if (b == null) //inserie
             {
-                
+                queryString = String.Format("INSERT INTO dbo.Atividade " +
+                    "(id_Atividade, InicioReconhecimento, FimReconhecimento, InProgress,Equipa_Email,Equipa_Nome,Batedor,Done) " +
+                    " VALUES " +
+                    " ({0}, {1}, {2}, {3},'{4}','{5}','{6}',{7}); ",
+                          novo.idAtividade, novo.inicioReconhecimento, 
+                          novo.fimReconhecimento, novo.inprogress,
+                          novo.equipa.email,novo.equipa.nome,
+                          novo.batedor.email,novo.done);
+
             }
             else//update
             {
-                
+                queryString = String.Format("UPDATE dbo.Atividade " +
+                    " SET InicioReconhecimento = {0} , FimReconhecimento= {1} , InProgress= {2} ,Equipa_Email= '{3}' ,Equipa_Nome= '{4}' ,Batedor= '{5}' ,Done= {6}" +
+                    " WHERE id_Atividade= {7} ;",
+                          novo.inicioReconhecimento, novo.fimReconhecimento, novo.inprogress, novo.equipa.email,novo.equipa.nome,novo.batedor.email,novo.done,novo.idAtividade);
+
             }
             SqlCommand command = new SqlCommand(queryString, connection);
             command.CommandTimeout = 60;
             command.ExecuteNonQuery();
+
+            VeiculosDAO vd = new VeiculosDAO(novo.idAtividade);
+            foreach(Veiculo v in novo.veiculos)
+            {
+                vd.put(v,connection);
+            }
+            
+            MapaDAO md = new MapaDAO();
+            md.put(novo.percurso, connection);
+            NotaDAO nd = new NotaDAO(novo.idAtividade);
+            foreach (Nota n in novo.notas)
+            {
+                nd.put(n, connection);
+            }
+
+           
             return b;
         }
 
@@ -185,21 +221,37 @@ namespace BackOffice.Data.DataBase
             VeiculosDAO vd = new VeiculosDAO(id);
             MapaDAO md = new MapaDAO();
             NotaDAO nd = new NotaDAO(id);
+            BatedorDAO bd = new BatedorDAO(this.dbConf);
             
            
             List<Veiculo> veiculos = vd.Values(connection);
             Mapa mapa = md.get(id,connection);
             List<Nota> notas = nd.Values(connection);
-            
+            Batedor bate = null;
 
             //buscar merdas a tabela de atvidades
+            DataTable results = new DataTable();
 
-            a = new Atividade()
+            string queryString = String.Format("SELECT * dbo.Atividade " +
+                    "WHERE id_Atividade = {0};",id);
 
+            SqlCommand command = new SqlCommand(queryString, connection);
+            command.CommandTimeout = 60;
+            SqlDataReader reader = command.ExecuteReader();
+            if (reader.Read())
+            {
+                DateTime inicioR = Convert.ToDateTime(reader["InicioReconhecimento"]);
+                DateTime fimR = Convert.ToDateTime(reader["FimReconhecimento"]);
+                bool inProg = (bool)reader["InProgress"];
+                bool done = (bool)reader["Done"];
+                string mailEquipa = reader["Equipa_Email"] as string;
+                string nomeEquipa = reader["Equipa_Nome"] as string;
+                string mailbate = reader["Batedor"] as string;
+                bate = bd.get(mailbate, connection);
+                a = new Atividade(id, inicioR, fimR, nomeEquipa, inProg, done, notas, mapa, veiculos, new Equipa(nomeEquipa, mailEquipa), bate);
+            }
+            reader.Close();
             return a;
-            
-
-
         }
 
     }
@@ -524,35 +576,49 @@ namespace BackOffice.Data.DataBase
             Nota n = null;
             DataTable results = new DataTable();
 
-            string queryString = String.Format("SELECT * dbo.Veiculo " +
-                    "WHERE Chassi = '{0}' AND Atividade = {1};",
-                          chassi, this.idatividade);
+            string queryString = String.Format("SELECT * dbo.Nota " +
+                    "WHERE id_Nota = '{0}' AND Atividade = {1};",
+                          id, this.idAtividade);
 
             SqlCommand command = new SqlCommand(queryString, connection);
             command.CommandTimeout = 60;
             SqlDataReader reader = command.ExecuteReader();
-            while (reader.Read())
+            if (reader.Read())
             {
-                var chass = reader[0];
-                var marca = reader[1];
-                var modelo = reader[2];
-                int ativ = this.idatividade;
+                string notaText = reader["NotaTextual"] as string;
+                byte[] audio = (byte[])reader["Audio"];
+                string textoConvert = reader["TextoConvertido"] as string;
+                double longitude = (double)reader["Latitude"];
+                double latitude = (double)reader["Longitude"];
 
-                List<string> caract = new List<string>();
-                string queryStringCarac = String.Format("SELECT * dbo.VeiculoCaracteristicas " +
-                    "WHERE Chassi = '{0}';",
-                          chass);
+                GeoCoordinate local = new GeoCoordinate(latitude, longitude);
 
-                SqlCommand commandVC = new SqlCommand(queryStringCarac, connection);
-                commandVC.CommandTimeout = 60;
-                SqlDataReader readerVC = command.ExecuteReader();
-                while (readerVC.Read())
+                //ir buscar as imagens
+                List<Image> images = new List<Image>();
+                Dictionary<int, Image> d = new Dictionary<int, Image>();
+                string queryStringImagem = String.Format("SELECT * dbo.Imagem " +
+                    "WHERE Atividade = '{0}' AND Nota = {1};",
+                          this.idAtividade,id);
+
+                SqlCommand commandIM = new SqlCommand(queryStringImagem, connection);
+                commandIM.CommandTimeout = 60;
+                SqlDataReader readerIM = command.ExecuteReader();
+                //vai buscar cada imagem
+                while (readerIM.Read())
                 {
-                    caract.Add(reader[0] as string);
+                    byte[] imagem  = (byte[])reader["Image"];
+                    int num = reader.GetInt32(reader.GetOrdinal("id_Image"));
+                    var ms = new MemoryStream(imagem);
+                    d.Add(num, Image.FromStream(ms));
                 }
-                readerVC.Close();
-
-                b = new Veiculo(modelo as string, marca as string, chass as string, caract);
+                readerIM.Close();
+                //meter as imagens por ordem
+                foreach(int i in d.Keys)
+                {
+                    images.Add(d[i]);
+                }
+                n = new Nota(id, notaText, local, images, audio,new Voz(audio, textoConvert));
+               // b = new Veiculo(modelo as string, marca as string, chass as string, caract);
             }
             reader.Close();
             return n;
@@ -591,36 +657,48 @@ namespace BackOffice.Data.DataBase
             return b;
         }
 
+        private byte[] imageToByteArray(Image imageIn)
+        {
+            using (var ms = new MemoryStream())
+            {
+                imageIn.Save(ms, System.Drawing.Imaging.ImageFormat.Gif);
+                return ms.ToArray();
+            }
+        }
 
         internal Nota put(Nota novo, SqlConnection connection)
         {
             Nota n = this.get(novo.idNota, connection);
             String queryString;
-            if (v == null) //inserie
+            if (n == null) //inserie
             {
-                queryString = String.Format("INSERT INTO dbo.Veiculo " +
-                    "(Chassi, Marca, Modelo, Atividade) " +
+                queryString = String.Format("INSERT INTO dbo.Nota " +
+                    "(idNota, NotaTextual, Audio, TextoConvertido,Latidude,Longitude,Atividade) " +
                     " VALUES " +
-                    " ('{0}', '{1}', '{2}', {3}); ",
-                          novo.chassi, novo.marca, novo.modelo, this.idatividade);
+                    " ({0}, '{1}', {2}, '{3}', {4}, {5}, {6}); ",
+                          novo.idNota,novo.notaTextual,novo.voice,novo.notasVoz.texto,
+                          novo.localRegisto.Latitude,novo.localRegisto.Longitude,
+                          this.idAtividade);
 
                 SqlCommand command = new SqlCommand(queryString, connection);
                 command.CommandTimeout = 60;
                 command.ExecuteNonQuery();
-                List<String> cara = novo.caracteristicas;
+                List<Image> images = novo.imagens;
                 String queryStringC;
-                foreach (string c in cara)
+                int i = 0;
+                foreach (Image c in images)
                 {
-                    queryStringC = String.Format("INSERT INTO dbo.VeiculoCaracteristicas " +
-                    "(Caracteristica, Chassi) " +
+                    queryStringC = String.Format("INSERT INTO dbo.Imagem " +
+                    "(Imagem, Nota,Atividade,id_Image) " +
                     " VALUES " +
-                    " ('{0}', '{1}'); ",
-                          c, novo.chassi);
+                    " ({0}, {1} , {2} , {3}); ",
+                          imageToByteArray(c), novo.idNota,this.idAtividade,i);
                     command = new SqlCommand(queryString, connection);
                     command.CommandTimeout = 60;
                     command.ExecuteNonQuery();
+                    i++;
                 }
-            }
+            }/*
             else//update
             {
                 // UPDATE dbo.Batedor
@@ -659,7 +737,7 @@ namespace BackOffice.Data.DataBase
                     }
 
                 }
-            }
+            }*/
             return n;
         }
     }
