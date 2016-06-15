@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Device.Location;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -177,12 +179,22 @@ namespace BackOffice.Data.DataBase
         private Atividade get(int id, SqlConnection connection)
         {
 
-            VeiculosDAO vd = new VeiculosDAO(id);
             Atividade a = null;
 
+
+            VeiculosDAO vd = new VeiculosDAO(id);
+            MapaDAO md = new MapaDAO();
+            NotaDAO nd = new NotaDAO(id);
+            
+           
             List<Veiculo> veiculos = vd.Values(connection);
+            Mapa mapa = md.get(id,connection);
+            List<Nota> notas = nd.Values(connection);
+            
 
+            //buscar merdas a tabela de atvidades
 
+            a = new Atividade()
 
             return a;
             
@@ -352,41 +364,42 @@ namespace BackOffice.Data.DataBase
     {
         internal Mapa get(int id, SqlConnection connection)
         {
-            Veiculo b = null;
+            Mapa m = null;
             DataTable results = new DataTable();
 
-            string queryString = String.Format("SELECT * dbo.Veiculo " +
-                    "WHERE Chassi = '{0}' AND Atividade = {1};",
-                          chassi, this.idatividade);
+            string queryString = String.Format("SELECT * dbo.Mapa " +
+                    "WHERE Id_Mapa = '{0};",id);
 
             SqlCommand command = new SqlCommand(queryString, connection);
             command.CommandTimeout = 60;
             SqlDataReader reader = command.ExecuteReader();
-            while (reader.Read())
+            if (reader.Read())
             {
-                var chass = reader[0];
-                var marca = reader[1];
-                var modelo = reader[2];
-                int ativ = this.idatividade;
+                var NomeProva = reader[1];
 
-                List<string> caract = new List<string>();
-                string queryStringCarac = String.Format("SELECT * dbo.VeiculoCaracteristicas " +
-                    "WHERE Chassi = '{0}';",
-                          chass);
+
+                Dictionary<int,GeoCoordinate> cords = new Dictionary<int, GeoCoordinate>();
+                string queryStringCarac = String.Format("SELECT * dbo.Cordenadas " +
+                    "WHERE Mapa = '{0}';",
+                          id);
 
                 SqlCommand commandVC = new SqlCommand(queryStringCarac, connection);
                 commandVC.CommandTimeout = 60;
-                SqlDataReader readerVC = command.ExecuteReader();
-                while (readerVC.Read())
+                SqlDataReader readerC = command.ExecuteReader();
+                while (readerC.Read())
                 {
-                    caract.Add(reader[0] as string);
+                    var idC = readerC[0];
+                    var longit = readerC[1];
+                    var lat = readerC[2];
+                    GeoCoordinate gnew = new GeoCoordinate(Double.Parse(lat.ToString(), CultureInfo.InvariantCulture), Double.Parse(longit.ToString(), CultureInfo.InvariantCulture));
+                    cords.Add(Int32.Parse(idC.ToString()), gnew);
                 }
-                readerVC.Close();
+                readerC.Close();
 
-                b = new Veiculo(modelo as string, marca as string, chass as string, caract);
+                m = new Mapa(NomeProva as string, id, cords);
             }
             reader.Close();
-            return b;
+            return m;
         }
 
         internal List<int> keySet(SqlConnection connection)
@@ -423,9 +436,165 @@ namespace BackOffice.Data.DataBase
         }
 
 
-        internal Veiculo put(Veiculo novo, SqlConnection connection)
+        internal Mapa put(Mapa novo, SqlConnection connection)
         {
-            Veiculo v = this.get(novo.chassi, connection);
+            Mapa m = this.get(novo.idMapa, connection);
+            String queryString;
+            if (m == null) //inserie
+            {
+                queryString = String.Format("INSERT INTO dbo.Mapa " +
+                    "(idMapa, NomeProva) " +
+                    " VALUES " +
+                    " ({0}, '{1}'); ",
+                          novo.idMapa, novo.nomeProva);
+
+                SqlCommand command = new SqlCommand(queryString, connection);
+                command.CommandTimeout = 60;
+                command.ExecuteNonQuery();
+                Dictionary<int,GeoCoordinate> cords = novo.cords;
+                String queryStringC;
+                foreach (int key in cords.Keys)
+                {
+                    queryStringC = String.Format("INSERT INTO dbo.Coordenadasmapa " +
+                    "(NrCoordenada, Longitude,Latitude,Mapa) " +
+                    " VALUES " +
+                    " ({0}, {1},{2}, {3}); ",
+                          key,cords[key].Latitude,cords[key].Latitude,novo.idMapa);
+                    command = new SqlCommand(queryString, connection);
+                    command.CommandTimeout = 60;
+                    command.ExecuteNonQuery();
+                }
+            }
+            /*else//update
+            {
+                // UPDATE dbo.Batedor
+                // SET Nome = 'ze', Password = 'novo', HorasDeReconhecimento = 10, N_Atividades = 10
+                // WHERE Email = 'a@a.pt';
+                queryString = String.Format("UPDATE dbo.VeiculoCaracteristicas " +
+                    " SET Marca = '{0}', Modelo = '{1}' " +
+                    " WHERE Chassi = '{3}'  AND Atividade = {4} ;",
+                          novo.marca, novo.modelo, novo.chassi, this.idatividade);
+                SqlCommand command = new SqlCommand(queryString, connection);
+                command.CommandTimeout = 60;
+                command.ExecuteNonQuery();
+                //esta update aos veiculos
+                List<String> cara = novo.caracteristicas;
+                String queryStringC;
+                foreach (string c in cara)
+                {
+
+                    string queryStringCarac = String.Format("SELECT * dbo.VeiculoCaracteristicas " +
+                    "WHERE Chassi = '{0}' AND Caracteristica = '{1}';",
+                          novo.chassi, c);
+
+                    SqlCommand commandVC = new SqlCommand(queryStringCarac, connection);
+                    commandVC.CommandTimeout = 60;
+                    SqlDataReader readerVC = command.ExecuteReader();
+                    if (!readerVC.Read())
+                    {//novo
+                        queryStringC = String.Format("INSERT dbo.VeiculoCaracteristicas " +
+                            "(Caracteristica, Chassi) " +
+                            " VALUES " +
+                            " ('{0}', '{1}'); ",
+                          c, novo.chassi);
+                        command = new SqlCommand(queryString, connection);
+                        command.CommandTimeout = 60;
+                        command.ExecuteNonQuery();
+                    }
+                    
+                }
+            }*/
+            return m;
+        }
+
+    }
+
+
+    internal class NotaDAO
+    {
+        public int idAtividade { get; set; }
+        
+        public NotaDAO(int atividade)
+        {
+            this.idAtividade = atividade;
+        }
+
+        internal Nota get(int id, SqlConnection connection)
+        {
+            Nota n = null;
+            DataTable results = new DataTable();
+
+            string queryString = String.Format("SELECT * dbo.Veiculo " +
+                    "WHERE Chassi = '{0}' AND Atividade = {1};",
+                          chassi, this.idatividade);
+
+            SqlCommand command = new SqlCommand(queryString, connection);
+            command.CommandTimeout = 60;
+            SqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                var chass = reader[0];
+                var marca = reader[1];
+                var modelo = reader[2];
+                int ativ = this.idatividade;
+
+                List<string> caract = new List<string>();
+                string queryStringCarac = String.Format("SELECT * dbo.VeiculoCaracteristicas " +
+                    "WHERE Chassi = '{0}';",
+                          chass);
+
+                SqlCommand commandVC = new SqlCommand(queryStringCarac, connection);
+                commandVC.CommandTimeout = 60;
+                SqlDataReader readerVC = command.ExecuteReader();
+                while (readerVC.Read())
+                {
+                    caract.Add(reader[0] as string);
+                }
+                readerVC.Close();
+
+                b = new Veiculo(modelo as string, marca as string, chass as string, caract);
+            }
+            reader.Close();
+            return n;
+        }
+
+        internal List<int> keySet(SqlConnection connection)
+        {
+            List<int> r = new List<int>();
+            DataTable results = new DataTable();
+
+            string queryString = String.Format("SELECT id_Nota from dbo.Nota WHERE Atividade = {0} ;",
+                          this.idAtividade);
+            SqlCommand command = new SqlCommand(queryString, connection);
+            command.CommandTimeout = 60;
+            SqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                var id_Nota = reader[0];
+
+
+                r.Add(Int32.Parse(id_Nota as string));
+
+            }
+            reader.Close();
+            return r;
+        }
+
+        internal List<Nota> Values(SqlConnection connection)
+        {
+            List<Nota> b = new List<Nota>();
+            List<int> k = this.keySet(connection);
+            foreach (int i in k)
+            {
+                b.Add(this.get(i, connection));
+            }
+            return b;
+        }
+
+
+        internal Nota put(Nota novo, SqlConnection connection)
+        {
+            Nota n = this.get(novo.idNota, connection);
             String queryString;
             if (v == null) //inserie
             {
@@ -491,8 +660,7 @@ namespace BackOffice.Data.DataBase
 
                 }
             }
-            return v;
+            return n;
         }
-
     }
 }
