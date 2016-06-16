@@ -22,8 +22,11 @@ namespace BackOffice.Presentation
     {
         BackOfficeAPP backoffice;
         List<Batedor> lista;
-        public ConsultaBatedor(BackOfficeAPP b)
+        Window anterior;
+
+        public ConsultaBatedor(BackOfficeAPP b,Window w)
         {
+            this.anterior = w;
             this.backoffice = b;
             InitializeComponent();
             UpdateComboBox();
@@ -64,7 +67,8 @@ namespace BackOffice.Presentation
 
         private void button_Click(object sender, RoutedEventArgs e)
         {
-            this.Visibility = Visibility.Hidden;
+            this.Close();
+            this.anterior.Visibility = Visibility.Visible;
         }
     }
 }

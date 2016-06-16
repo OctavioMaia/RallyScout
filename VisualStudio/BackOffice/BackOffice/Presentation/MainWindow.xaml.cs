@@ -29,13 +29,10 @@ namespace BackOffice.Presentation
             this.textBoxIP.Text = b.IP;
             this.textBoxPorta.Text = b.port.ToString();
             this.ellipse.Fill = new SolidColorBrush(Colors.Red);
-
-
         }
 
         private void buttonServer_Click(object sender, RoutedEventArgs e)
         {
-            
             if (!started)
             {
                 this.backoffice.startReceive();
@@ -55,16 +52,25 @@ namespace BackOffice.Presentation
 
         private void buttonRegistaAtividade_Click(object sender, RoutedEventArgs e)
         {
-            RegistoAtividade ra = new RegistoAtividade(this.backoffice);
-            ra.Visibility = Visibility.Visible;
+            if (this.backoffice.getBatedores().Count > 0)
+            {
+                RegistoAtividade ra = new RegistoAtividade(this.backoffice,this);
+                ra.Visibility = Visibility.Visible;
+                this.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                MessageBox.Show("Não existem batedores no sistema!");
+            }
         }
 
         private void buttonConsultaAtividade_Click(object sender, RoutedEventArgs e)
         {
             if (this.backoffice.getAtividadesTerminadas().Count > 0)
             {
-                ConsultarAtividadeConcluida cac = new ConsultarAtividadeConcluida(this.backoffice);
+                ConsultarAtividadeConcluida cac = new ConsultarAtividadeConcluida(this.backoffice,this);
                 cac.Visibility = Visibility.Visible;
+                this.Visibility = Visibility.Hidden;
             }
             else
             {
@@ -74,15 +80,17 @@ namespace BackOffice.Presentation
 
         private void buttonRegistaBatedir_Click(object sender, RoutedEventArgs e)
         {
-            RegistaBatedor rb = new RegistaBatedor(this.backoffice);
+            RegistaBatedor rb = new RegistaBatedor(this.backoffice,this);
             rb.Visibility = Visibility.Visible;
+            this.Visibility = Visibility.Hidden;
         }
 
         private void buttonConsultaBatedor_Click(object sender, RoutedEventArgs e)
         {
             if (this.backoffice.getBatedores().Count > 0) {
-                ConsultaBatedor cb = new ConsultaBatedor(this.backoffice);
+                ConsultaBatedor cb = new ConsultaBatedor(this.backoffice,this);
                 cb.Visibility = Visibility.Visible;
+                this.Visibility = Visibility.Hidden;
             }
             else
             {
@@ -92,7 +100,6 @@ namespace BackOffice.Presentation
 
         private void buttonLogout_Click(object sender, RoutedEventArgs e)
         {
-            // Login l = new Login(this.backoffice);
             this.Visibility = Visibility.Hidden;
             this.anterior.Visibility = Visibility.Visible;
         }
