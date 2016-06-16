@@ -142,6 +142,7 @@ namespace BackOffice.Business
             this.inprogress = false;
             this.done = true;
             this.fimReconhecimento = DateTime.Now;
+            this.batedor.updateHorasAndActiv(((fimReconhecimento.Millisecond - inicioReconhecimento.Millisecond) *1.0) / (1000 * 60 * 60.0));
         }
 
         public void stopReconhecimento(Atividade toUpdateFrom)

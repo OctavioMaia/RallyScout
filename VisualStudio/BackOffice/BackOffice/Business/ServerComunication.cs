@@ -171,6 +171,8 @@ namespace BackOffice.Business
             this.readStream.Close();
             this.netstream.Close();
             this.mySocket.Close();
+            Console.WriteLine(" Saiu Cliente");
+
         }
 
 
@@ -187,6 +189,7 @@ namespace BackOffice.Business
             }
             old.stopReconhecimento(nova);
             atDAO.put(old);
+            //isto dixz que foi ok
             BackToJust atOK = new BackToJust(-2);
             this.writeData(this.jsonFrom(atOK));
 
