@@ -272,6 +272,17 @@ namespace BackOffice.Business
                 return;
             }
             paraBatedor.Sort();
+
+            foreach(Atividade a in paraBatedor)
+            {
+                if (a.isPendent())
+                {
+                    BackToJust wrongPass = new BackToJust(-6);
+                    this.writeData(this.jsonFrom(wrongPass));
+                    return;
+                }
+            }
+
             Atividade escolhidaA = paraBatedor[0] as Atividade; //proxima atividade para aquele batedor
             this.writeData(this.jsonFrom(escolhidaA));
             //enviada, começar reconhecimento
