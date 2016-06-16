@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -34,9 +35,15 @@ namespace BackOffice.Presentation
         private void buttonProcurar_Click(object sender, RoutedEventArgs e)
         {
             gerado = false;
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            if (openFileDialog.ShowDialog() == true)
-                textBoxPath.Text = openFileDialog.FileName;
+            try {
+                FolderBrowserDialog fbd = new FolderBrowserDialog();
+                System.Windows.Forms.DialogResult dr = fbd.ShowDialog();
+                if (dr == System.Windows.Forms.DialogResult.OK)
+                {
+                    textBoxPath.Text = fbd.SelectedPath;
+                }
+            } catch (Exception) {
+            }
         }
 
         private void buttonGerarRelatorio_Click(object sender, RoutedEventArgs e)
@@ -59,16 +66,18 @@ namespace BackOffice.Presentation
                 String piloto = path + "copiloto.pdf";
                 String general = path + "general.pdf";
 
+                System.Windows.MessageBox.Show("piloto path: " + piloto + " general path: " + general);
+
                 List<String> anexos = new List<String>();
                 anexos.Add(piloto);
                 anexos.Add(general);
 
                 this.backoffice.email_send(current.equipa.email, assunto, texto,anexos);
-                MessageBox.Show("Email enviado com sucesso.");
+                System.Windows.MessageBox.Show("Email enviado com sucesso.");
             }
             else
             {
-                MessageBox.Show("Por favor preencha todos os campos.");
+                System.Windows.MessageBox.Show("Por favor preencha todos os campos.");
             }
             
         }

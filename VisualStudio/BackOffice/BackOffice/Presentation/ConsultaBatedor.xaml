@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BackOffice.Presentation"
         mc:Ignorable="d"
-        Title="Consulta Batedor" Height="254.743" Width="430.286" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+        Title="Consultar Batedor" Height="254.743" Width="430.286" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
