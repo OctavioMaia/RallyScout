@@ -134,28 +134,33 @@ namespace BackOffice.Business
             //this.writeData("OLA");
             String jsonCheg = this.readData();
             //Console.WriteLine(" jsonCheg: " + jsonCheg);
-
-            this.writeData("REcebi " + jsonCheg);
+            
+            //this.writeData("REcebi " + jsonCheg);
 
 
 
             try
             {
                 JustToBack content = this.fromString(jsonCheg);
+                //MessageBox.Show("pass");
                 if (content.password != null)//veio a pass quero uma atividade para ele
                 {
+                    //MessageBox.Show("sendANtes");
                     this.sendAtividade(content);
-
+                    //MessageBox.Show("sendDepois");
                 }
                 else //veio uma atividade completa
                 {
+                    //MessageBox.Show("processaBatidaAntes");
                     this.processaBatida(content);
+                    // MessageBox.Show("processaBatidaDepois");
                 }
             }
             catch (Exception e)
             {
                 BackToJust atOK = new BackToJust(-3);
                 this.writeData(this.jsonFrom(atOK));
+               // MessageBox.Show("estourei");
             }
 
 
