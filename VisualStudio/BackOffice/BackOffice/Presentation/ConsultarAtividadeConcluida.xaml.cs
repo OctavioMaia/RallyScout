@@ -53,19 +53,20 @@ namespace BackOffice.Presentation
             List<Veiculo> veiculos;
             listViewVeiculos.Items.Clear();
             string Atividade = (comboBox.SelectedItem as string);
-            string split = Atividade.Split(new string[] { " " }, StringSplitOptions.None)[0];
+            string split = Atividade.Split(new string[] { " " }, StringSplitOptions.None)[1];
 
-            //MessageBox.Show(split);
+            int idparse = Int32.Parse(split);
 
             foreach (Atividade a in atividades)
             {
                 int id = a.idAtividade;
 
-                if (split.Equals(id))
+                if (idparse==id)
                 {
                     this.selecionada = a; 
                     veiculos = a.veiculos;
                     this.textBoxNomeEquipa.Text = a.nomeEquipa;
+                    this.textBoxEmailEquipa.Text = a.equipa.email;
                     this.textBoxNomeBatedor.Text = a.batedor.nome + " | " + a.batedor.email;
                     this.textBoxDataInicio.Text = a.inicioReconhecimento.ToString();
                     this.textBoxDataFim.Text = a.fimReconhecimento.ToString();
@@ -104,7 +105,7 @@ namespace BackOffice.Presentation
                         foreach(String s in carateristicas)
                         {
                             var lista = new String[] { s };
-                            this.listViewCarateristicas.Items.Add(new MyItem2 { Carateristica = s });
+                            this.listViewCarateristicas.Items.Add(new MyItem2 { Carateristicas = s });
                         }
                     }
                 }
@@ -121,7 +122,7 @@ namespace BackOffice.Presentation
 
         private void buttonGerar_Click(object sender, RoutedEventArgs e)
         {
-            GerirRelatorio gr = new GerirRelatorio(this.backoffice);
+            GerirRelatorio gr = new GerirRelatorio(this.backoffice,this.selecionada);
             gr.Visibility = Visibility.Visible;
         }
 
@@ -134,7 +135,7 @@ namespace BackOffice.Presentation
 
     class MyItem2
     {
-        public string Carateristica { get; set; }
+        public string Carateristicas { get; set; }
     }
 
 }

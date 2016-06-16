@@ -25,6 +25,9 @@ namespace BackOffice.Presentation
         public VisualizadorMap()
         {
             InitializeComponent();
+            this.button1.Enabled = false;
+            this.button2.Enabled = false;
+            this.button3.Enabled = false;
         }
 
         public void updateComboBox(Atividade a)
@@ -40,6 +43,9 @@ namespace BackOffice.Presentation
         {
             if (comboBox1.SelectedItem != null)
             {
+                this.button1.Enabled = true;
+                this.button2.Enabled = true;
+                this.button3.Enabled = true;
                 int id = int.Parse(comboBox1.SelectedItem.ToString());
                 List<Nota> l = ativ.notas;
 

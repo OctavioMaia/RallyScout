@@ -383,15 +383,17 @@ namespace BackOffice.Business
 
         public void gerarRelatorios(string path, int atividade_id)
         {
-            string pathPiloto = path + "copilot.pdf";
+
+            String pathPiloto = System.IO.Path.Combine(path, "copiloto.pdf");
+            String pathGlobal = System.IO.Path.Combine(path, "general.pdf");
+
             Atividade a = this.getAtividade(atividade_id);
             if (this.getAtividadesPorTerminarID().Contains(atividade_id))
             {
                 throw new AtividadeNaoIniciadaException("Atividade " + atividade_id + " Nao Terminada");
             }
             a.generateReportCopiloto(pathPiloto);
-            string pathGlobal = path + "general.pdf";
-
+            
             //TODO este metodo ainda nao faz nada
             a.generateReportGlobal(pathGlobal);
             
