@@ -127,8 +127,8 @@ public class GerirAtividade extends AppCompatActivity implements OnMapReadyCallb
             Location locGPS = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
 
             if(locGPS!=null){
-                Toast.makeText(getApplicationContext(),""+  locGPS.getLatitude() , Toast.LENGTH_LONG).show();
-                Toast.makeText(getApplicationContext(),""+  locGPS.getLongitude() , Toast.LENGTH_LONG).show();
+               // Toast.makeText(getApplicationContext(),""+  locGPS.getLatitude() , Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(),""+  locGPS.getLongitude() , Toast.LENGTH_LONG).show();
 
 
                 //verificar se está muito longe de alguma posição do mapa

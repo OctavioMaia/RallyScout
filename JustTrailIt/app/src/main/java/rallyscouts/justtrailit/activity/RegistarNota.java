@@ -76,19 +76,6 @@ public class RegistarNota extends AppCompatActivity {
 
         this.mensagem = (EditText)findViewById(R.id.id_InserirTexto);
 
-        mensagem.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                //tinha o focus e ficou sem ele
-                if(!hasFocus){
-                    notaToSave.setNotaTextual(mensagem.getText().toString());
-                }else{
-                    mensagem.setText(notaToSave.getNotaTextual());
-                }
-            }
-        });
-
-
         this.registarImagem = (Button) findViewById(R.id.button_RegistarImagem);
         this.analisarNota = (Button) findViewById(R.id.button_AnalisarNota);
         this.submit = (Button) findViewById(R.id.button_SubmissaoNota);
@@ -123,6 +110,7 @@ public class RegistarNota extends AppCompatActivity {
 
     public void confirmarSubmissao(View v) {
         //Falta definir a voz a latitude e a longitude.
+        notaToSave.setNotaTextual(mensagem.getText().toString());
         notas.insertNota(idAtividade,notaToSave);
         finish();
     }
@@ -157,6 +145,11 @@ public class RegistarNota extends AppCompatActivity {
             if(requestCode==CAMARA_REQUEST)
             {
                 Bitmap camaraImage = (Bitmap) data.getExtras().get("data");
+
+                if (camaraImage.getByteCount()>0){
+                    Toast.makeText(getApplicationContext(), "Recebi a imagem com alguma coisa" , Toast.LENGTH_LONG).show();
+
+                }
                 notaToSave.addImagem(camaraImage);
             }
         }

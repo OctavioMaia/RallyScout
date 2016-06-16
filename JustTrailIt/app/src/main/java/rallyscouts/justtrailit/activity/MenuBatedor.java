@@ -92,126 +92,84 @@ public class MenuBatedor extends AppCompatActivity {
         if(ipServer!=null && portServer!=-1){
             //Toast.makeText(getApplicationContext(), "Comunicação ainda não está a funcionar" + portServer , Toast.LENGTH_LONG).show();
 
-            JSONObject request = JsonRC.downloadAtividade(batedorLogin.getEmail(),batedorLogin.getPassword());
+            Thread thread = new Thread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    try {
+                        JSONObject request = JsonRC.downloadAtividade(batedorLogin.getEmail(),batedorLogin.getPassword());
 
-            Toast.makeText(getApplicationContext(), request.toString() , Toast.LENGTH_LONG).show();
+                        Log.i(TAG,request.toString());
+                        //Toast.makeText(getApplicationContext(), request.toString() , Toast.LENGTH_LONG).show();
 
-            String json = "{\n" +
-                    "  \"idAtividade\": 1,\n" +
-                    "  \"email\": \"rui@gmail.com\",\n" +
-                    "  \"nomeEquipa\": \"KTM\",\n" +
-                    "  \"mapa\": {\n" +
-                    "    \"nomeProva\": \"1234\",\n" +
-                    "    \"percurso\": [\n" +
-                    "      {\n" +
-                    "        \"lat\": 41.825178,\n" +
-                    "        \"log\": -7.791377\n" +
-                    "      },\n" +
-                    "      {\n" +
-                    "        \"lat\": 41.825378,\n" +
-                    "        \"log\": -7.790517\n" +
-                    "      },\n" +
-                    "      {\n" +
-                    "        \"lat\": 41.825928,\n" +
-                    "        \"log\": -7.789952\n" +
-                    "      },\n" +
-                    "      {\n" +
-                    "        \"lat\": 41.825724,\n" +
-                    "        \"log\": -7.789437\n" +
-                    "      },\n" +
-                    "      {\n" +
-                    "        \"lat\": 41.825559,\n" +
-                    "        \"log\": -7.788663\n" +
-                    "      },\n" +
-                    "      {\n" +
-                    "        \"lat\": 41.825463,\n" +
-                    "        \"log\": -7.788519\n" +
-                    "      },\n" +
-                    "      {\n" +
-                    "        \"lat\": 41.82561,\n" +
-                    "        \"log\": -7.788276\n" +
-                    "      },\n" +
-                    "      {\n" +
-                    "        \"lat\": 41.825765,\n" +
-                    "        \"log\": -7.788507\n" +
-                    "      },\n" +
-                    "      {\n" +
-                    "        \"lat\": 41.826891,\n" +
-                    "        \"log\": -7.788432\n" +
-                    "      }\n" +
-                    "    ]\n" +
-                    "  },\n" +
-                    "  \"veiculos\": [\n" +
-                    "    {\n" +
-                    "      \"chassi\": \"a\",\n" +
-                    "      \"caracteristicas\": [\n" +
-                    "        \"d\"\n" +
-                    "      ]\n" +
-                    "    },\n" +
-                    "    {\n" +
-                    "      \"chassi\": \"312\",\n" +
-                    "      \"caracteristicas\": [\n" +
-                    "        \"d1\"\n" +
-                    "      ]\n" +
-                    "    },\n" +
-                    "    {\n" +
-                    "      \"chassi\": \"das\",\n" +
-                    "      \"caracteristicas\": [\n" +
-                    "        \"d11231\"\n" +
-                    "      ]\n" +
-                    "    }\n" +
-                    "  ]\n" +
-                    "}";
+                        Socket socket = new Socket(ipServer,portServer);
+                        BufferedReader br = new BufferedReader( new InputStreamReader(socket.getInputStream()));
+                        BufferedWriter bw =  new BufferedWriter( new OutputStreamWriter(socket.getOutputStream()));
+
+                        bw.write(request.toString());
+                        bw.newLine();
+                        bw.flush();
 
 
-            String res = JsonRC.reciveAtividade(MenuBatedor.this,json,batedorLogin);
+                        String json = br.readLine();
+                        String res = JsonRC.reciveAtividade(MenuBatedor.this,json,batedorLogin);
 
-            if(batedorLogin.getAtividade()!=-1){
-                this.button_gerirAtividade.setEnabled(true);
-                this.button_download.setEnabled(false);
-            }else{
-                Toast.makeText(getApplicationContext(), res , Toast.LENGTH_LONG).show();
-            }
+                        if(batedorLogin.getAtividade()!=-1){
+                            ((Button) findViewById(R.id.button_gerirAtividade)).setEnabled(true);
+                            ((Button) findViewById(R.id.button_DownloadAtividade)).setEnabled(false);
+                            ((Button) findViewById(R.id.button_uploadAtividade)).setEnabled(true);
+                        }else{
+                            Toast.makeText(getApplicationContext(), res , Toast.LENGTH_LONG).show();
+
+                        }
+
+                        socket.close();
+                    } catch (IOException e) {
+
+                    }
+                }
+            });
+
+            thread.start();
         }
-        /*    try {
-                Socket socket = new Socket(ipServer,portServer);
-
-                // ler do socket a atividade
-                BufferedReader br = new BufferedReader( new InputStreamReader(socket.getInputStream()));
-                br.readLine();
-
-            } catch (IOException e) {
-                Log.e(TAG,"Application can not connect to Server");
-            }
-        }
-        */
-
     }
-
-    /*
-        Falta colocar aqui toda a interação com a tividade dos buttons
-    */
+    
     public void uploadAtividade(View v){
+
+
         Toast.makeText(getApplicationContext(), "Comunicação ainda não está a funcionar" + portServer , Toast.LENGTH_LONG).show();
         if(ipServer!=null && portServer!=-1) {
 
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
 
-            JSONObject send = JsonRC.sendAtividade(batedorLogin,notas.getAllNotas(batedorLogin.getAtividade()));
+                    JSONObject send = JsonRC.sendAtividade(batedorLogin, notas.getAllNotas(batedorLogin.getAtividade()));
 
-            Toast.makeText(getApplicationContext(), send.toString() , Toast.LENGTH_LONG).show();
+                    Log.i(TAG, send.toString());
+                    //Toast.makeText(getApplicationContext(), send.toString() , Toast.LENGTH_LONG).show();
 
-            /*
-            try {
-                Socket socket = new Socket(ipServer,portServer);
+                    try {
+                        Socket socket = new Socket(ipServer, portServer);
+                        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
-                BufferedWriter bw = new BufferedWriter( new OutputStreamWriter(socket.getOutputStream()));
-                bw.write("ola");
-                bw.newLine();
-                bw.flush();
-            } catch (IOException e) {
-                Log.e(TAG,"Application can not connect to Server");
-            }
-        */
+                        bw.write(send.toString());
+                        bw.newLine();
+                        bw.flush();
+
+                        ((Button) findViewById(R.id.button_DownloadAtividade)).setEnabled(true);
+                        ((Button) findViewById(R.id.button_gerirAtividade)).setEnabled(false);
+                        ((Button) findViewById(R.id.button_uploadAtividade)).setEnabled(false);
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+            thread.start();
+
         }
 
     }
