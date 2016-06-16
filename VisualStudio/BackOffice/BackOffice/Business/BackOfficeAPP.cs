@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Speech.Recognition;
 using System.IO;
@@ -15,6 +16,9 @@ using System.Drawing;
 using System.Net.Sockets;
 using System.Net;
 using BackOffice.Data.DataBase;
+using System.Threading;
+using System.Windows.Shapes;
+using System.Windows.Controls;
 
 namespace BackOffice.Business
 {
@@ -33,6 +37,8 @@ namespace BackOffice.Business
         public int port { get; set; }
         public string IP { get; set; }
         public string database { get; set; }
+        private ServerComunication comunica;
+        private Thread comuTrhead;
 
 
         //é para apagar 
@@ -115,7 +121,8 @@ namespace BackOffice.Business
                 BackOfficeAPP.simbolos.Add(key, valor);
             }
 
-
+            this.comunica = new ServerComunication(this.port, this.database);
+            this.comuTrhead = null;
             //TODO BD dos 
             this.atividades = new AtividadeDAO(this.database);
             this.batedores = new BatedorDAO(this.database);
@@ -129,12 +136,20 @@ namespace BackOffice.Business
 
         public void startReceive()
         {
-
+            if (this.comuTrhead == null || !this.comuTrhead.IsAlive)
+            {
+                this.comuTrhead = this.comunica.Start();
+                this.comuTrhead.Start();
+            }
         }
 
         public void stopReceive()
         {
-
+            if(this.comuTrhead != null && this.comuTrhead.IsAlive)
+            {
+                this.comunica.Stop();
+                this.comuTrhead.Abort();
+            }
         }
         private static string GetLocalIPAddress()
         {
@@ -316,16 +331,6 @@ namespace BackOffice.Business
             return b;
         }
 
-        public void receberAtividade()
-        {
-            //TODO
-        }
-
-
-        public void enviarAtividade()
-        {
-            //TODO
-        }
 
         public JustToBack formJson(string json) //atividade parcial atençap 
         {
@@ -350,14 +355,14 @@ namespace BackOffice.Business
                 {
                     voice = null;
                 }
-                List<Image> li = new List<Image>();
+                List<System.Drawing.Image> li = new List<System.Drawing.Image>();
                 foreach(String s in no.imagem)
                 {
                     byte[] ia = Encoding.ASCII.GetBytes(s);
-                    Image i;
+                    System.Drawing.Image i;
                     using (var ms = new MemoryStream(ia)) 
                     {
-                        i= Image.FromStream(ms);
+                        i= System.Drawing.Image.FromStream(ms);
                     }
                     li.Add(i);
                     

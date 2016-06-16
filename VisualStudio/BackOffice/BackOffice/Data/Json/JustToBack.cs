@@ -10,6 +10,7 @@ namespace BackOffice.Data.Json
     {
         public int idAtividade { get; set; }
         public string email { get; set; }
+        public string password { get; set; }
         public Note[] notas { get; set; }
     }
     public class Note

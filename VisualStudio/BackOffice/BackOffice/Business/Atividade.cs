@@ -18,7 +18,7 @@ using System.IO;
 
 namespace BackOffice.Business
 {
-    public class Atividade
+    public class Atividade : IComparable
     {
         public int idAtividade { get; set; }
         public DateTime inicioReconhecimento { get; set; }
@@ -144,6 +144,18 @@ namespace BackOffice.Business
             this.fimReconhecimento = DateTime.Now;
         }
 
+        public void stopReconhecimento(Atividade toUpdateFrom)
+        {
+            if (this.inprogress == false)
+            {
+                throw new AtividadeNaoIniciadaException("Atividade Não Foi Iniciada");
+            }
+            this.notas = toUpdateFrom.notas;
+            this.inprogress = false;
+            this.done = true;
+            this.fimReconhecimento = DateTime.Now;
+        }
+
         public void addVeiculo(string mod, string marc, string chassie, List<string> carac)
         {
             Veiculo v = new Veiculo(mod, marc, chassie, carac);
@@ -191,6 +203,19 @@ namespace BackOffice.Business
         {
             //TODO 
         }
+
+        public int CompareTo(object obj)
+        {
+            if (obj == null) return 1;
+
+            Atividade otherActividade = obj as Atividade;
+            if (otherActividade != null)
+                return this.idAtividade.CompareTo(otherActividade.idAtividade);
+            else
+                throw new ArgumentException("Object is not a Temperature");
+        }
+
+
     }
 
 

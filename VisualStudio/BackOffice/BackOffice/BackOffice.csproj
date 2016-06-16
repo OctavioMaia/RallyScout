@@ -98,6 +98,7 @@
     <Compile Include="Business\Exceptions\NaoExisteAtividadeExeption.cs" />
     <Compile Include="Business\Exceptions\NaoExisteBatedorExeption.cs" />
     <Compile Include="Business\FichaBatedor.cs" />
+    <Compile Include="Business\ServerComunication.cs" />
     <Compile Include="Data\DataBase\AtividadeDAO.cs" />
     <Compile Include="Data\DataBase\BatedorDAO.cs" />
     <Compile Include="Data\Json\BackToJust.cs" />

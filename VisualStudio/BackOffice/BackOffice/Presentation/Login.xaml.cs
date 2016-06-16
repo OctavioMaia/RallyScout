@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -31,12 +32,25 @@ namespace BackOffice.Presentation
 
         public Login()
         {
-            string pathO = "C:\\Users\\Octávio\\Documents\\GitHub\\RallyScout\\ExemplosJson\\config.json";
-            string pathJ = "C:\\Users\\Joao\\Documents\\GitHub\\RallyScout\\ExemplosJson\\config.json";
+            string localFolder = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            string path = localFolder + "\\Config\\config.json";
+            //path = "C:\\Users\\Documents\\GitHub\\RallyScout\\ExemplosJson\\config.json";
+            try
+            {
+               /* System.Diagnostics.Debug.WriteLine(" Comecar 0....");
+                Console.Error.WriteLine(" Comecar 1....");*/
+              //  Console.WriteLine(" Comecar 2....");
 
-
-            this.backoffice = new BackOfficeAPP(pathO);
-            InitializeComponent();
+                this.backoffice = new BackOfficeAPP(path);
+                InitializeComponent();
+            }
+            catch(Exception e)
+            {
+                System.Windows.Forms.MessageBox.Show(e.Message.ToString(), "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.Close();
+                
+            }
         }
 
         private void buttonLogin_Click(object sender, RoutedEventArgs e)
@@ -51,8 +65,11 @@ namespace BackOffice.Presentation
             }
             else
             {
-                MessageBox.Show("Credenciais incorretas!");
+                System.Windows.Forms.MessageBox.Show("Credenciais incorretas!", "Warning",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
             }*/
+
             /* Atividade a = new Atividade(1, "equipateste", "teste", "C:\\Users\\Joao\\Desktop\\Mapas\\map.gpx", new List<Veiculo>(), new Equipa("equipa1","mail1"), new Batedor("mailbatedor","batedor","123"));
              a.addNota(new Nota(1,"abc", 41.478254,-8.300161,null,null));
              a.addNota(new Nota(2, "abc", 41.443217,-8.2916261, null, null));
@@ -75,6 +92,10 @@ namespace BackOffice.Presentation
             if (this.mainW != null)
             {
                 this.mainW.Close();
+            }
+            if (this.backoffice != null)
+            {
+                this.backoffice.stopReceive();
             }
             this.Close();
            // this.Visibility = Visibility.Hidden;

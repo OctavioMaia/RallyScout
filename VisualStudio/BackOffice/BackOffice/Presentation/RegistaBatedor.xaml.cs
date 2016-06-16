@@ -21,9 +21,11 @@ namespace BackOffice.Presentation
     public partial class RegistaBatedor : Window
     {
         BackOfficeAPP backoffice;
+        Window anterior;
 
-        public RegistaBatedor(BackOfficeAPP b)
+        public RegistaBatedor(BackOfficeAPP b,Window w)
         {
+            this.anterior = w;
             this.backoffice = b;
             InitializeComponent();
         }
@@ -40,7 +42,8 @@ namespace BackOffice.Presentation
                 {
                     Batedor b = new Batedor(email, nome, password);
                     backoffice.registarBatedor(b);
-                    this.Visibility = Visibility.Hidden;
+                    this.Close();
+                    this.anterior.Visibility = Visibility.Visible;
                 }
                 else
                 {
@@ -57,7 +60,8 @@ namespace BackOffice.Presentation
 
         private void button_Copy_Click(object sender, RoutedEventArgs e)
         {
-            this.Visibility = Visibility.Hidden;
+            this.Close();
+            this.anterior.Visibility = Visibility.Visible;
         }
     }
 }
