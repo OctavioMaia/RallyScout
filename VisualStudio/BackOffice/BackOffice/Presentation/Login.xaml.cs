@@ -46,8 +46,7 @@ namespace BackOffice.Presentation
             }
             catch(Exception e)
             {
-                System.Windows.Forms.MessageBox.Show(e.Message.ToString(), "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                System.Windows.Forms.MessageBox.Show(e.Message.ToString(), "Error",MessageBoxButtons.OK, MessageBoxIcon.Error);
                 this.Close();
                 
             }
@@ -65,8 +64,7 @@ namespace BackOffice.Presentation
             }
             else
             {
-                System.Windows.Forms.MessageBox.Show("Credenciais incorretas!", "Warning",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                System.Windows.Forms.MessageBox.Show("Credenciais incorretas!", "Warning",MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
             }*/
 

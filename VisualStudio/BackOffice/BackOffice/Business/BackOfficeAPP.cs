@@ -35,7 +35,7 @@ namespace BackOffice.Business
 
         //isto é novo nao esta no VP
         public int port { get; set; }
-        public string IP { get; set; }
+        public List<String> IP { get; set; }
         public string database { get; set; }
         private ServerComunication comunica;
         private Thread comuTrhead;
@@ -61,14 +61,7 @@ namespace BackOffice.Business
 
             }
             //Ja tenho as configuraçoes
-            try
-            {
-                this.IP = GetLocalIPAddress();
-            }
-            catch(Exception e)
-            {
-                this.IP = "0.0.0.0";
-            }
+            this.IP = GetLocalIPAddress();
             this.port = Int32.Parse( s.port);
             this.passMail = s.password;
             this.email = s.email;
@@ -151,17 +144,18 @@ namespace BackOffice.Business
                 this.comuTrhead.Abort();
             }
         }
-        private static string GetLocalIPAddress()
+        private static List<String> GetLocalIPAddress()
         {
+            List<String> ips = new List<string>();
             var host = Dns.GetHostEntry(Dns.GetHostName());
             foreach (var ip in host.AddressList)
             {
                 if (ip.AddressFamily == AddressFamily.InterNetwork)
                 {
-                    return ip.ToString();
+                    ips.Add(ip.ToString());
                 }
             }
-            throw new Exception("Local IP Address Not Found!");
+            return ips;
         }
 
 
@@ -389,15 +383,17 @@ namespace BackOffice.Business
 
         public void gerarRelatorios(string path, int atividade_id)
         {
-            string pathPiloto = path + "copilot.pdf";
+
+            String pathPiloto = System.IO.Path.Combine(path, "copiloto.pdf");
+            String pathGlobal = System.IO.Path.Combine(path, "general.pdf");
+
             Atividade a = this.getAtividade(atividade_id);
             if (this.getAtividadesPorTerminarID().Contains(atividade_id))
             {
                 throw new AtividadeNaoIniciadaException("Atividade " + atividade_id + " Nao Terminada");
             }
             a.generateReportCopiloto(pathPiloto);
-            string pathGlobal = path + "general.pdf";
-
+            
             //TODO este metodo ainda nao faz nada
             a.generateReportGlobal(pathGlobal);
             

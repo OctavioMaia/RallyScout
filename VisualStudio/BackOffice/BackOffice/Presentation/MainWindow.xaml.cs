@@ -22,14 +22,36 @@ namespace BackOffice.Presentation
         Boolean started = false;
         BackOfficeAPP backoffice;
         Window anterior;
+
         public MainWindow(BackOfficeAPP b, Window w)
         {
             this.backoffice = b;
             this.anterior = w;
             InitializeComponent();
-            this.textBoxIP.Text = b.IP;
+            List<String> li = b.IP;
+            updateComboBox(li);
             this.textBoxPorta.Text = b.port.ToString();
             this.ellipse.Fill = new SolidColorBrush(Colors.Red);
+        }
+
+        private void updateComboBox(List<String> l)
+        {
+            String aux = null;
+            if (l.Count > 0)
+            {
+                aux = l[0];
+                foreach (String s in l)
+                {
+                    comboBox.Items.Add(s);
+                }
+            }
+            else
+            {
+                aux = "IP Desconhecido";
+                comboBox.Items.Add(aux);
+                // comboBox.AllowDrop = false;
+            }
+            comboBox.SelectedItem = aux;
         }
 
         private void buttonServer_Click(object sender, RoutedEventArgs e)
@@ -115,6 +137,11 @@ namespace BackOffice.Presentation
         {
             this.Visibility = Visibility.Hidden;
             this.anterior.Visibility = Visibility.Visible;
+        }
+
+        private void comboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            
         }
     }
 }

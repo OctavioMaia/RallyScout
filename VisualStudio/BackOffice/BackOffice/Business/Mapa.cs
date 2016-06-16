@@ -8,6 +8,7 @@ using System.Windows;
 
 namespace BackOffice.Business
 {
+    using Exceptions;
     using System.Globalization;
     using System.Xml.Linq;
 
@@ -35,6 +36,10 @@ namespace BackOffice.Business
         private void lerMAPFILE(string path)
         {
             LoadGPXWaypoints(path);
+            if (this.cords == null || this.cords.Count==0)
+            {
+                throw new MapaVazioException("Não foi possível carregar as coordenadas do " + path);
+            }
         }
 
 

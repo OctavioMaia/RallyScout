@@ -1,4 +1,5 @@
 ﻿using BackOffice.Business;
+using BackOffice.Business.Exceptions;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -38,11 +40,10 @@ namespace BackOffice.Presentation
         {
             List<String> l = this.backoffice.getBatedoresMails();
 
-            foreach(String s in l)
+            foreach (String s in l)
             {
                 comboBox.Items.Add(s);
             }
-            
         }
 
         private void buttonAdicionarVeiculo_Click(object sender, RoutedEventArgs e)
@@ -55,7 +56,7 @@ namespace BackOffice.Presentation
 
         private void buttonProcurarFicheiro_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
+            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
             if (openFileDialog.ShowDialog() == true)
                 textBoxPath.Text = openFileDialog.FileName;
         }
@@ -77,16 +78,20 @@ namespace BackOffice.Presentation
                     }
                     else
                     {
-                        MessageBox.Show("Apenas são permitidos ficheiros .gpx!");
+                        System.Windows.Forms.MessageBox.Show("Apenas são permitidos ficheiros .gpx!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                 }
                 else
                 {
-                    MessageBox.Show("Verifique se introduziu todos os parâmetros.");
+                    System.Windows.Forms.MessageBox.Show("Verifique se introduziu todos os parâmetros.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }catch(System.Xml.XmlException)
             {
-                MessageBox.Show("Ficheiro .gpx inválido!");
+                System.Windows.Forms.MessageBox.Show("Ficheiro .gpx inválido!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                
+            }catch(MapaVazioException ex)
+            {
+                System.Windows.Forms.MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

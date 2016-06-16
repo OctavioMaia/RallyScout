@@ -134,38 +134,45 @@ namespace BackOffice.Business
             //this.writeData("OLA");
             String jsonCheg = this.readData();
             //Console.WriteLine(" jsonCheg: " + jsonCheg);
-
-            this.writeData("REcebi " + jsonCheg);
+            
+            //this.writeData("REcebi " + jsonCheg);
 
 
 
             try
             {
                 JustToBack content = this.fromString(jsonCheg);
+                //MessageBox.Show("pass");
                 if (content.password != null)//veio a pass quero uma atividade para ele
                 {
+                    //MessageBox.Show("sendANtes");
                     this.sendAtividade(content);
-
+                    //MessageBox.Show("sendDepois");
                 }
                 else //veio uma atividade completa
                 {
+                    //MessageBox.Show("processaBatidaAntes");
                     this.processaBatida(content);
+                    // MessageBox.Show("processaBatidaDepois");
                 }
             }
             catch (Exception e)
             {
                 BackToJust atOK = new BackToJust(-3);
                 this.writeData(this.jsonFrom(atOK));
+               // MessageBox.Show("estourei");
             }
 
 
 
             //fechar as comunicaçoes da tread para terminar
-            /*
+            
             this.writerStream.Close();
             this.readStream.Close();
             this.netstream.Close();
-            this.mySocket.Close();*/
+            this.mySocket.Close();
+            Console.WriteLine(" Saiu Cliente");
+
         }
 
 
@@ -182,6 +189,7 @@ namespace BackOffice.Business
             }
             old.stopReconhecimento(nova);
             atDAO.put(old);
+            //isto dixz que foi ok
             BackToJust atOK = new BackToJust(-2);
             this.writeData(this.jsonFrom(atOK));
 
@@ -267,6 +275,17 @@ namespace BackOffice.Business
                 return;
             }
             paraBatedor.Sort();
+
+            foreach(Atividade a in paraBatedor)
+            {
+                if (a.isPendent())
+                {
+                    BackToJust wrongPass = new BackToJust(-6);
+                    this.writeData(this.jsonFrom(wrongPass));
+                    return;
+                }
+            }
+
             Atividade escolhidaA = paraBatedor[0] as Atividade; //proxima atividade para aquele batedor
             this.writeData(this.jsonFrom(escolhidaA));
             //enviada, começar reconhecimento

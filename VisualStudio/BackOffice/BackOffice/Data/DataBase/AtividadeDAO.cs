@@ -125,18 +125,18 @@ namespace BackOffice.Data.DataBase
             SqlConnection con = new SqlConnection(this.dbConf);
             con.Open();
             SqlTransaction  tr = con.BeginTransaction();
-            /*try
-            {*/
+            try
+            {
                 b = this.put(novo, con,tr);
                 tr.Commit();
-            /*}catch(Exception e)
+            }catch(Exception e)
             {
                 tr.Rollback();
             }
             finally
-            {*/
+            {
                 con.Close();
-           // }
+            }
             return b;
         }
 
@@ -316,7 +316,7 @@ namespace BackOffice.Data.DataBase
                 SqlDataReader readerVC = commandVC.ExecuteReader();
                 while (readerVC.Read())
                 {
-                    caract.Add(reader[0] as string);
+                    caract.Add(readerVC[0] as string);
                 }
                 readerVC.Close();
 
@@ -396,9 +396,9 @@ namespace BackOffice.Data.DataBase
                 // UPDATE dbo.Batedor
                 // SET Nome = 'ze', Password = 'novo', HorasDeReconhecimento = 10, N_Atividades = 10
                 // WHERE Email = 'a@a.pt';
-                queryString = String.Format("UPDATE dbo.VeiculoCaracteristicas " +
+                queryString = String.Format("UPDATE dbo.Veiculo " +
                     " SET Marca = '{0}', Modelo = '{1}' " +
-                    " WHERE Chassi = '{3}'  AND Atividade = {4} ;",
+                    " WHERE Chassi = '{2}'  AND Atividade = {3} ;",
                           novo.marca, novo.modelo, novo.chassi, this.idatividade);
                 SqlCommand command = new SqlCommand(queryString, connection,tr);
                 command.CommandTimeout = 60;
@@ -409,7 +409,7 @@ namespace BackOffice.Data.DataBase
                 foreach (string c in cara)
                 {
 
-                    string queryStringCarac = String.Format("SELECT * dbo.VeiculoCaracteristicas " +
+                    string queryStringCarac = String.Format("SELECT * from dbo.VeiculoCaracteristicas " +
                     "WHERE Chassi = '{0}' AND Caracteristica = '{1}';",
                           novo.chassi, c);
 
@@ -418,7 +418,7 @@ namespace BackOffice.Data.DataBase
                     SqlDataReader readerVC = command.ExecuteReader();
                     if (!readerVC.Read())
                     {//novo
-                        queryStringC = String.Format("INSERT dbo.VeiculoCaracteristicas " +
+                        queryStringC = String.Format("INSERT into dbo.VeiculoCaracteristicas " +
                             "(Caracteristica, Chassi) " +
                             " VALUES " +
                             " ('{0}', '{1}'); ",
@@ -606,7 +606,7 @@ namespace BackOffice.Data.DataBase
             Nota n = null;
             DataTable results = new DataTable();
 
-            string queryString = String.Format("SELECT * dbo.Nota " +
+            string queryString = String.Format("SELECT * from dbo.Nota " +
                     "WHERE id_Nota = '{0}' AND Atividade = {1};",
                           id, this.idAtividade);
 
@@ -626,7 +626,7 @@ namespace BackOffice.Data.DataBase
                 //ir buscar as imagens
                 List<Image> images = new List<Image>();
                 Dictionary<int, Image> d = new Dictionary<int, Image>();
-                string queryStringImagem = String.Format("SELECT * dbo.Imagem " +
+                string queryStringImagem = String.Format("SELECT * from dbo.Imagem " +
                     "WHERE Atividade = '{0}' AND Nota = {1};",
                           this.idAtividade,id);
 
