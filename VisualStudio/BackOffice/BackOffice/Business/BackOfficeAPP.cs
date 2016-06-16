@@ -36,6 +36,7 @@ namespace BackOffice.Business
         public string IP { get; set; }
         public string database { get; set; }
         private ServerComunication comunica;
+        private Thread comuTrhead;
 
 
         //é para apagar 
@@ -118,8 +119,8 @@ namespace BackOffice.Business
                 BackOfficeAPP.simbolos.Add(key, valor);
             }
 
-            this.comunica = new ServerComunication(this.port, this.database); 
-
+            this.comunica = new ServerComunication(this.port, this.database);
+            this.comuTrhead = null;
             //TODO BD dos 
             this.atividades = new AtividadeDAO(this.database);
             this.batedores = new BatedorDAO(this.database);
@@ -133,12 +134,19 @@ namespace BackOffice.Business
 
         public void startReceive()
         {
-            this.comunica.Start();
+            if (this.comuTrhead == null || !this.comuTrhead.IsAlive)
+            {
+                this.comuTrhead = this.comunica.Start();
+            }
         }
 
         public void stopReceive()
         {
-            this.comunica.Stop();
+            if(this.comuTrhead != null && this.comuTrhead.IsAlive)
+            {
+                this.comunica.Stop();
+                this.comuTrhead.Abort();
+            }
         }
         private static string GetLocalIPAddress()
         {
