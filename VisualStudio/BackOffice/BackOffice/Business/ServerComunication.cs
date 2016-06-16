@@ -11,6 +11,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -23,12 +24,13 @@ namespace BackOffice.Business
         public String dbConf { get; set; }
         public System.Net.IPAddress listeningIP { get; set; }
         private Boolean on;
-
+        private CancellationTokenSource cancellation { get; set; } 
         public ServerComunication(int port, string db)
         {
             this.dbConf = db;
             this.listenigPort = port;
             this.listeningIP = Dns.Resolve("localhost").AddressList[0];
+            this.cancellation = new CancellationTokenSource();
             this.on = false;
         }
 
@@ -56,20 +58,26 @@ namespace BackOffice.Business
         public void Stop()
         {
              this.on = false;
+            this.cancellation.Cancel();
         }
 
-        private void Run()
+        private async void Run()
         {
-            TcpListener serverSocket=null;
+            TcpListener serverSocket = null;
             try
             {
-                serverSocket = new TcpListener(this.listeningIP, this.listenigPort);
+                serverSocket = new TcpListener(this.listenigPort);
                 serverSocket.Start();
                 Console.WriteLine(" Server Started ....");
 
                 while (this.on == true)
                 {
-                    TcpClient clientSocket = serverSocket.AcceptTcpClient();
+                    Console.WriteLine(" ESpera cliente ");
+
+                    // TcpClient clientSocket = serverSocket.AcceptTcpClient();
+                    TcpClient clientSocket = await Task.Run(
+                                                   () => serverSocket.AcceptTcpClientAsync(),
+                                               this.cancellation.Token);
 
                     Console.WriteLine(" Novo cliente ");
                     //System.Diagnostics.Debug.WriteLine("Novo cliente");
@@ -89,9 +97,9 @@ namespace BackOffice.Business
                 Console.WriteLine("FIM");
                 //System.Diagnostics.Debug.WriteLine("FIM");
             }
-            
 
-            
+
+
 
         }
     }
@@ -118,23 +126,42 @@ namespace BackOffice.Business
         public void Start()
         {
             Thread newThread = new Thread(new ThreadStart(Run));
+            newThread.Start();
         }
         private void Run()
         {
-            String jsonCheg = this.readData();
-            JustToBack content = this.fromString(jsonCheg);
-            if (content.password != null)//veio a pass quero uma atividade para ele
-            {
-                this.sendAtividade(content);
 
-            }
-            else //veio uma atividade completa
+            //this.writeData("OLA");
+            String jsonCheg = this.readData();
+            //Console.WriteLine(" jsonCheg: " + jsonCheg);
+
+            this.writeData("REcebi " + jsonCheg);
+
+
+
+            try
             {
-                this.processaBatida(content);
+                JustToBack content = this.fromString(jsonCheg);
+                if (content.password != null)//veio a pass quero uma atividade para ele
+                {
+                    this.sendAtividade(content);
+
+                }
+                else //veio uma atividade completa
+                {
+                    this.processaBatida(content);
+                }
             }
+            catch (Exception e)
+            {
+                BackToJust atOK = new BackToJust(-3);
+                this.writeData(this.jsonFrom(atOK));
+            }
+            
 
 
             //fechar as comunicaçoes da tread para terminar
+            
             this.writerStream.Close();
             this.readStream.Close();
             this.netstream.Close();
@@ -280,12 +307,15 @@ namespace BackOffice.Business
 
         private string readData()
         {
-            return this.readStream.ReadToEnd();
+            // return this.readStream.ReadToEnd()
+            return this.readStream.ReadLine();
         }
 
         private void writeData(string data)
         {
-            this.writerStream.Write(data);
+            string t = Regex.Replace(data, @"\t|\n|\r", "");
+            this.writerStream.Write(t);
+            this.writerStream.WriteLine();
             this.writerStream.Flush();
         }
 

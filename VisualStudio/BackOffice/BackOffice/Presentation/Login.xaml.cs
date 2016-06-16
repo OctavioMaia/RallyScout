@@ -92,6 +92,10 @@ namespace BackOffice.Presentation
             {
                 this.mainW.Close();
             }
+            if (this.backoffice != null)
+            {
+                this.backoffice.stopReceive();
+            }
             this.Close();
            // this.Visibility = Visibility.Hidden;
         }
