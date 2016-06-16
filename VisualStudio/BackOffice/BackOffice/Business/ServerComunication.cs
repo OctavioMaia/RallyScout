@@ -166,11 +166,11 @@ namespace BackOffice.Business
 
 
             //fechar as comunicaçoes da tread para terminar
-            /*
+            
             this.writerStream.Close();
             this.readStream.Close();
             this.netstream.Close();
-            this.mySocket.Close();*/
+            this.mySocket.Close();
         }
 
 

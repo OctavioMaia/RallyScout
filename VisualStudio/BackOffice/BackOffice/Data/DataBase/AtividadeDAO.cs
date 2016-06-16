@@ -125,18 +125,18 @@ namespace BackOffice.Data.DataBase
             SqlConnection con = new SqlConnection(this.dbConf);
             con.Open();
             SqlTransaction  tr = con.BeginTransaction();
-            /*try
-            {*/
+            try
+            {
                 b = this.put(novo, con,tr);
                 tr.Commit();
-            /*}catch(Exception e)
+            }catch(Exception e)
             {
                 tr.Rollback();
             }
             finally
-            {*/
+            {
                 con.Close();
-           // }
+            }
             return b;
         }
 
@@ -316,7 +316,7 @@ namespace BackOffice.Data.DataBase
                 SqlDataReader readerVC = commandVC.ExecuteReader();
                 while (readerVC.Read())
                 {
-                    caract.Add(reader[0] as string);
+                    caract.Add(readerVC[0] as string);
                 }
                 readerVC.Close();
 
@@ -606,7 +606,7 @@ namespace BackOffice.Data.DataBase
             Nota n = null;
             DataTable results = new DataTable();
 
-            string queryString = String.Format("SELECT * dbo.Nota " +
+            string queryString = String.Format("SELECT * from dbo.Nota " +
                     "WHERE id_Nota = '{0}' AND Atividade = {1};",
                           id, this.idAtividade);
 
@@ -626,7 +626,7 @@ namespace BackOffice.Data.DataBase
                 //ir buscar as imagens
                 List<Image> images = new List<Image>();
                 Dictionary<int, Image> d = new Dictionary<int, Image>();
-                string queryStringImagem = String.Format("SELECT * dbo.Imagem " +
+                string queryStringImagem = String.Format("SELECT * from dbo.Imagem " +
                     "WHERE Atividade = '{0}' AND Nota = {1};",
                           this.idAtividade,id);
 
