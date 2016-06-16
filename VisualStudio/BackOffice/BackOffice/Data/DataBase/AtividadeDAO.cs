@@ -264,7 +264,7 @@ namespace BackOffice.Data.DataBase
                 DateTime fimR = Convert.ToDateTime(reader["FimReconhecimento"]);
                 bool inProg = (bool)reader["InProgress"];
                 var v =  Convert.ToBoolean(reader["Done"]);
-                MessageBox.Show(v.GetType().ToString());
+                //MessageBox.Show(v.GetType().ToString());
                 bool done = (bool)v;
                 string mailEquipa = reader["Equipa_Email"] as string;
                 string nomeEquipa = reader["Equipa_Nome"] as string;
@@ -292,7 +292,7 @@ namespace BackOffice.Data.DataBase
             Veiculo b = null;
             DataTable results = new DataTable();
 
-            string queryString = String.Format("SELECT * dbo.Veiculo " +
+            string queryString = String.Format("SELECT * FROM dbo.Veiculo " +
                     "WHERE Chassi = '{0}' AND Atividade = {1};",
                           chassi,this.idatividade);
 
@@ -307,13 +307,13 @@ namespace BackOffice.Data.DataBase
                 int ativ = this.idatividade;
 
                 List<string> caract = new List<string>();
-                string queryStringCarac = String.Format("SELECT * dbo.VeiculoCaracteristicas " +
+                string queryStringCarac = String.Format("SELECT * FROM dbo.VeiculoCaracteristicas " +
                     "WHERE Chassi = '{0}';",
                           chass);
 
                 SqlCommand commandVC = new SqlCommand(queryStringCarac, connection,tr);
                 commandVC.CommandTimeout = 60;
-                SqlDataReader readerVC = command.ExecuteReader();
+                SqlDataReader readerVC = commandVC.ExecuteReader();
                 while (readerVC.Read())
                 {
                     caract.Add(reader[0] as string);
@@ -336,7 +336,7 @@ namespace BackOffice.Data.DataBase
             SqlCommand command = new SqlCommand(queryString, connection,tr);
             command.CommandTimeout = 60;
             //command.Transaction = connection.
-            MessageBox.Show(connection.State.ToString());
+            //MessageBox.Show(connection.State.ToString());
             SqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
@@ -382,11 +382,11 @@ namespace BackOffice.Data.DataBase
                 foreach(string c in cara)
                 {
                     queryStringC = String.Format("INSERT INTO dbo.VeiculoCaracteristicas " +
-                    "(Caracteristica, Chassi) " +
+                    "(Caracteristica, Chassi, Atividade) " +
                     " VALUES " +
-                    " ('{0}', '{1}'); ",
-                          c,novo.chassi);
-                    command = new SqlCommand(queryString, connection,tr);
+                    " ('{0}', '{1}' , {2}); ",
+                          c,novo.chassi, this.idatividade);
+                    command = new SqlCommand(queryStringC, connection,tr);
                     command.CommandTimeout = 60;
                     command.ExecuteNonQuery();
                 }
@@ -455,19 +455,21 @@ namespace BackOffice.Data.DataBase
 
 
                 Dictionary<int,GeoCoordinate> cords = new Dictionary<int, GeoCoordinate>();
-                string queryStringCarac = String.Format("SELECT * dbo.Cordenadas " +
+                string queryStringCarac = String.Format("SELECT * from dbo.Coordenadasmapa " +
                     "WHERE Mapa = '{0}';",
                           id);
                 reader.Close();
                 SqlCommand commandVC = new SqlCommand(queryStringCarac, connection,tr);
                 commandVC.CommandTimeout = 60;
-                SqlDataReader readerC = command.ExecuteReader();
+                SqlDataReader readerC = commandVC.ExecuteReader();
                 while (readerC.Read())
                 {
                     var idC = readerC[0];
                     var longit = readerC[1];
                     var lat = readerC[2];
-                    GeoCoordinate gnew = new GeoCoordinate(Double.Parse(lat.ToString(), CultureInfo.InvariantCulture), Double.Parse(longit.ToString(), CultureInfo.InvariantCulture));
+
+                    //MessageBox.Show("lat" + Double.Parse(lat.ToString().Replace(',','.'), CultureInfo.InvariantCulture) + "long" + Double.Parse(longit.ToString().Replace(',', '.'), CultureInfo.InvariantCulture));
+                    GeoCoordinate gnew = new GeoCoordinate(Double.Parse(lat.ToString().Replace(',', '.'), CultureInfo.InvariantCulture), Double.Parse(longit.ToString().Replace(',', '.'), CultureInfo.InvariantCulture));
                     cords.Add(Int32.Parse(idC.ToString()), gnew);
                 }
                 readerC.Close();

@@ -19,9 +19,11 @@ namespace BackOffice.Presentation
     {
         List<Veiculo> veiculos;
         BackOfficeAPP backoffice;
-        
-        public InserirVeiculo(BackOfficeAPP b, List<Veiculo> l)
+        Window anterior;
+
+        public InserirVeiculo(BackOfficeAPP b, List<Veiculo> l,Window w)
         {
+            this.anterior = w;
             this.backoffice = b;
             this.veiculos = l;
             InitializeComponent();
@@ -51,6 +53,7 @@ namespace BackOffice.Presentation
             var lista = new String[] { chassi, marca, modelo };
 
             this.listaVeiculos.Items.Add(new MyItem { Chassi = chassi, Marca = marca, Modelo = modelo});
+            
         }
 
         private void buttonRemoverVeiculo_Click(object sender, RoutedEventArgs e)
@@ -72,7 +75,8 @@ namespace BackOffice.Presentation
 
         private void buttonOK_Click(object sender, RoutedEventArgs e)
         {
-            this.Visibility = Visibility.Hidden;
+            this.Close();
+            this.anterior.Visibility = Visibility.Visible;
         }
     }
 

@@ -24,9 +24,11 @@ namespace BackOffice.Presentation
         List<Atividade> atividades;
         Atividade selecionada;
         Boolean gerado;
+        Window anterior;
 
-        public ConsultarAtividadeConcluida(BackOfficeAPP b)
+        public ConsultarAtividadeConcluida(BackOfficeAPP b, Window w)
         {
+            this.anterior = w;
             this.backoffice = b;
             this.gerado = false;
             InitializeComponent();
@@ -53,7 +55,7 @@ namespace BackOffice.Presentation
             string Atividade = (comboBox.SelectedItem as string);
             string split = Atividade.Split(new string[] { " " }, StringSplitOptions.None)[0];
 
-            MessageBox.Show(split);
+            //MessageBox.Show(split);
 
             foreach (Atividade a in atividades)
             {
@@ -121,6 +123,12 @@ namespace BackOffice.Presentation
         {
             GerirRelatorio gr = new GerirRelatorio(this.backoffice);
             gr.Visibility = Visibility.Visible;
+        }
+
+        private void buttonRegressar_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+            this.anterior.Visibility = Visibility.Visible;
         }
     }
 
