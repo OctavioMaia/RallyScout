@@ -1,4 +1,5 @@
 ﻿using BackOffice.Business;
+using BackOffice.Business.Exceptions;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -24,10 +26,12 @@ namespace BackOffice.Presentation
     {
         List<Veiculo> l { get; set; }
         BackOfficeAPP backoffice;
+        Window anterior;
 
-        public RegistoAtividade(BackOfficeAPP b)
+        public RegistoAtividade(BackOfficeAPP b, Window w)
         {
-            backoffice = b;
+            this.anterior = w;
+            this.backoffice = b;
             InitializeComponent();
             UpdateComboBox();
         }
@@ -46,35 +50,56 @@ namespace BackOffice.Presentation
         private void buttonAdicionarVeiculo_Click(object sender, RoutedEventArgs e)
         {
             l = new List<Veiculo>();
-            InserirVeiculo i = new InserirVeiculo(backoffice,l);
+            InserirVeiculo i = new InserirVeiculo(backoffice,l,this);
             i.Visibility = Visibility.Visible;
+            this.Visibility = Visibility.Hidden;
         }
 
         private void buttonProcurarFicheiro_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
+            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
             if (openFileDialog.ShowDialog() == true)
                 textBoxPath.Text = openFileDialog.FileName;
         }
 
         private void buttonOK_Click(object sender, RoutedEventArgs e)
         {
-            String trajeto = textBoxPath.Text;//.Replace('/', '\\');
+            String trajeto = textBoxPath.Text;
             String nomeProva = textBoxNomeProva.Text;
             String nomeEquipa = textBoxNomeEquipa.Text;
             String emailEquipa = textBoxEmailEquipa.Text;
-            int index = comboBox.SelectedIndex;
-            
-            //ComboBoxItem typeItem = (ComboBoxItem)
             string mailBatedor = comboBox.SelectedItem as string;
-
-            backoffice.registarAtividade(mailBatedor, trajeto, nomeProva, nomeEquipa, emailEquipa, l); 
-            this.Visibility = Visibility.Hidden;
+            try {
+                if (trajeto.Length > 0 && nomeProva.Length > 0 && nomeEquipa.Length > 0 && emailEquipa.Length > 0 && mailBatedor.Length > 0) {
+                    if (System.IO.Path.GetExtension(trajeto).Equals(".gpx"))
+                    {
+                        backoffice.registarAtividade(mailBatedor, trajeto, nomeProva, nomeEquipa, emailEquipa, l);
+                        this.Close();
+                        this.anterior.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        System.Windows.Forms.MessageBox.Show("Apenas são permitidos ficheiros .gpx!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+                else
+                {
+                    System.Windows.Forms.MessageBox.Show("Verifique se introduziu todos os parâmetros.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }catch(System.Xml.XmlException)
+            {
+                System.Windows.Forms.MessageBox.Show("Ficheiro .gpx inválido!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                
+            }catch(MapaVazioException ex)
+            {
+                System.Windows.Forms.MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void buttonCancelar_Click(object sender, RoutedEventArgs e)
         {
-            this.Visibility = Visibility.Hidden;
+            this.Close();
+            this.anterior.Visibility = Visibility.Visible;
         }
     }
 }
