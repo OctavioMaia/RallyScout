@@ -1,0 +1,23 @@
+﻿<Window x:Class="BackOffice.Presentation.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BackOffice.Presentation"
+        mc:Ignorable="d"
+        Title="Menu" Height="242.222" Width="525.334" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" FontFamily="Arial">
+    <Grid Margin="0,0,0,4">
+        <Label x:Name="labelIP" Content="IP" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,10,0,0" Height="27" Width="30" FontSize="14" FontWeight="Bold"/>
+        <TextBox x:Name="textBoxIP" HorizontalAlignment="Left" Height="27" Margin="35,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="216" IsEnabled="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="16"/>
+        <Label x:Name="labelPorta" Content="Porta" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="256,10,0,0" Height="27" Width="45" FontSize="14" FontWeight="Bold"/>
+        <TextBox x:Name="textBoxPorta" HorizontalAlignment="Left" Height="27" Margin="306,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="72" IsEnabled="False" FontSize="16" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+        <Button x:Name="buttonServer" Content="Start" Height="27" Margin="392,9,56,0" VerticalAlignment="Top" FontSize="14" FontWeight="Bold" Click="buttonServer_Click"/>
+        <Ellipse x:Name="ellipse" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="15" Margin="480,15,0,0" Stroke="Black" VerticalAlignment="Top" Width="15" RenderTransformOrigin="0.489,1.911"/>
+        <Button x:Name="buttonRegistaAtividade" Content="Registar Atividade" HorizontalAlignment="Left" Height="29" Margin="12,63,0,0" VerticalAlignment="Top" Width="241" FontSize="14" FontWeight="Bold" Click="buttonRegistaAtividade_Click"/>
+        <Button x:Name="buttonConsultaAtividade" Content="Consultar Atividade Terminada" HorizontalAlignment="Left" Height="29" Margin="263,63,0,0" VerticalAlignment="Top" Width="241" FontSize="14" FontWeight="Bold" Click="buttonConsultaAtividade_Click"/>
+        <Button x:Name="buttonRegistaBatedir" Content="Registar Batedor" HorizontalAlignment="Left" Height="29" Margin="12,111,0,0" VerticalAlignment="Top" Width="241" FontSize="14" FontWeight="Bold" Click="buttonRegistaBatedir_Click"/>
+        <Button x:Name="buttonConsultaBatedor" Content="Consultar Batedor" HorizontalAlignment="Left" Height="29" Margin="263,111,0,0" VerticalAlignment="Top" Width="241" FontSize="14" FontWeight="Bold" Click="buttonConsultaBatedor_Click"/>
+        <Button x:Name="buttonLogout" Content="Logout" HorizontalAlignment="Left" Height="29" Margin="12,174,0,0" VerticalAlignment="Top" Width="492" FontSize="14" FontWeight="Bold" Click="buttonLogout_Click"/>
+
+    </Grid>
+</Window>

@@ -18,7 +18,7 @@ using System.IO;
 
 namespace BackOffice.Business
 {
-    public class Atividade
+    public class Atividade : IComparable
     {
         public int idAtividade { get; set; }
         public DateTime inicioReconhecimento { get; set; }
@@ -53,20 +53,41 @@ namespace BackOffice.Business
             Batedor bat)
         {
             this.idAtividade = id;
-            this.inicioReconhecimento = new DateTime(); //nao deixa meter nulo
-            this.fimReconhecimento= new DateTime(); //nao deixa meter nulo
+            this.inicioReconhecimento = DateTime.Now; //nao deixa meter nulo
+            this.fimReconhecimento= DateTime.Now; //nao deixa meter nulo
             this.nomeEquipa = equip.nome;
             this.inprogress = false;
             this.done = false;
-            this.notas = null; //quando uma atividade é inserida nao tem notas
+            this.notas = new List<Nota>(); //quando uma atividade é inserida nao tem notas
             this.percurso = new Mapa(nomeProva, id, mapPath);
             this.veiculos = veicls;
+            if (this.veiculos == null)
+            {
+                this.veiculos = new List<Veiculo>();
+            }
             this.equipa = equip;
             this.batedor = bat;
 
 
         }
 
+        public Atividade( int idAtividade,  DateTime inicioReconhecimento ,
+         DateTime fimReconhecimento , string nomeEquipa , Boolean inprogress ,
+         Boolean done , List<Nota> notas , Mapa percurso ,List<Veiculo> veiculos ,
+         Equipa equipa , Batedor batedor )
+        {
+            this.idAtividade = idAtividade;
+            this.inicioReconhecimento = inicioReconhecimento;
+            this.fimReconhecimento = fimReconhecimento;
+            this.nomeEquipa = nomeEquipa;
+            this.inprogress = inprogress;
+            this.done = done;
+            this.notas = notas;
+            this.percurso = percurso;
+            this.veiculos = veiculos;
+            this.equipa = equipa;
+            this.batedor = batedor;
+        }
 
         public void addNota(Nota n)
         {
@@ -123,6 +144,18 @@ namespace BackOffice.Business
             this.fimReconhecimento = DateTime.Now;
         }
 
+        public void stopReconhecimento(Atividade toUpdateFrom)
+        {
+            if (this.inprogress == false)
+            {
+                throw new AtividadeNaoIniciadaException("Atividade Não Foi Iniciada");
+            }
+            this.notas = toUpdateFrom.notas;
+            this.inprogress = false;
+            this.done = true;
+            this.fimReconhecimento = DateTime.Now;
+        }
+
         public void addVeiculo(string mod, string marc, string chassie, List<string> carac)
         {
             Veiculo v = new Veiculo(mod, marc, chassie, carac);
@@ -170,6 +203,19 @@ namespace BackOffice.Business
         {
             //TODO 
         }
+
+        public int CompareTo(object obj)
+        {
+            if (obj == null) return 1;
+
+            Atividade otherActividade = obj as Atividade;
+            if (otherActividade != null)
+                return this.idAtividade.CompareTo(otherActividade.idAtividade);
+            else
+                throw new ArgumentException("Object is not a Temperature");
+        }
+
+
     }
 
 

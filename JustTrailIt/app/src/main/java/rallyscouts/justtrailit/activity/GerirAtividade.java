@@ -2,20 +2,25 @@ package rallyscouts.justtrailit.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 import rallyscouts.justtrailit.R;
 import rallyscouts.justtrailit.business.Batedor;
 import rallyscouts.justtrailit.data.AtividadeDAO;
 import rallyscouts.justtrailit.data.BatedorDAO;
+import rallyscouts.justtrailit.data.NotaDAO;
 
 public class GerirAtividade extends AppCompatActivity {
 
 
     private BatedorDAO batedores;
     private AtividadeDAO atividades;
+    private NotaDAO notas;
 
     private rallyscouts.justtrailit.business.Atividade atividadeAProcess;
     private Batedor batedorLogin;
@@ -45,6 +50,12 @@ public class GerirAtividade extends AppCompatActivity {
 
     }
 
+    public void verVeiculos(View v){
+        Intent verVeiculos = new Intent(GerirAtividade.this, ShowVeiculos.class);
+        verVeiculos.putExtra("idAtividade",atividadeAProcess.getIdAtividade());
+        GerirAtividade.this.startActivity(verVeiculos);
+    }
+
     public void verPercurso(View v){
         Intent verpercurso = new Intent(GerirAtividade.this, MapaPercurso.class);
         verpercurso.putExtra("idAtividade",atividadeAProcess.getIdAtividade());
@@ -55,14 +66,16 @@ public class GerirAtividade extends AppCompatActivity {
 
         Intent registarnota = new Intent(GerirAtividade.this, RegistarNota.class);
         registarnota.putExtra("idAtividade",batedorLogin.getAtividade());
+        registarnota.putExtra("idNota",notas.getMaiorNota());
         GerirAtividade.this.startActivity(registarnota);
 
     }
 
-
     public void verNotas(View v){
 
         Intent vernotas = new Intent(GerirAtividade.this, Notas.class);
+        //vernotas.putParcelableArrayListExtra("notas",(ArrayList<? extends Parcelable>) notas.getAllNotas(batedorLogin.getAtividade()));
+        vernotas.putExtra("idAtividade",batedorLogin.getAtividade());
         GerirAtividade.this.startActivity(vernotas);
 
 
