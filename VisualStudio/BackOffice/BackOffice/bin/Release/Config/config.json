@@ -1,0 +1,89 @@
+{
+  "email" : "xsolutiondevelopment@gmail.com",
+  "password" : "rallyscouts",
+  "port" : "6969",
+  "database" : "Data Source = BEASTPC; Initial Catalog = BackOffice; Integrated Security = True; MultipleActiveResultSets = True",
+  "dicionario" : 
+    ["Corner","Grade","Left","Right","Flat or fast plus","Flat or fast", "Easy plus","Easy",
+      "Easy minus","Medium plus","Medium","Medium minus","Kay plus","Kay","Kay minus","Bad plus",
+      "Bad","Bad minus","Hairpin plus","Hairpin","Less duration than normal","Normal duration",
+      "More duration than normal","Very long duration","Extra long duration","Extreme duration", 
+      "Further","Late","Closes","Tightens","Opens","Opens and tightens","Road","Caution",
+      "Double Caution","Triple Caution","Danger","maybe","Small crest","Small brow","Crest",
+      "Brow","Big crest","Action on top of crest","Small jump","Jump","Big jump",
+      "Short sharp crest","Bump","Big bump","Dip","Over","Bridge","Drop","Keep","Keep lefthand",
+      "Keep middle","Keep righthand","Through","Cattle guard","No cut","Road narrows","Off camber","Rough"
+      ],
+  "simbolos":{
+      "corner": {
+          "grade":{
+            "Right":"R",
+            "Left":"L",
+            "Flat or fast plus":"6+",
+            "Flat or fast":"6",
+            "Easy plus":"5+",
+            "Easy":"5",
+            "Easy minus":"5-",
+            "Medium plus":"4+",
+            "Medium":"4",
+            "Medium minus":"4-",
+            "Kay plus":"3+",
+            "Kay":"3",
+            "Kay minus":"3-",
+            "Bad plus":"2+",
+            "Bad":"2",
+            "Bad minus":"2-",
+            "Hairpin plus":"1+",
+            "Hairpin":"1"
+            },
+          "duration":{
+            "Less duration than normal":"short",
+            "Normal duration":"",
+            "More duration than normal":"lg",
+            "Very long duration":"Vlg",
+            "Extra long duration":"Xlg",
+            "Extreme duration":"/xxx"
+            },
+          "further":{
+            "Late":"late",
+            "Closes":">",
+            "Tightens":">",
+            "Opens":"<",
+            "Opens and tightens":"<>"
+          }
+      },
+      "road":{
+        "Caution":"!",
+        "Double Caution":"!!",
+        "Triple Caution":"!!!",
+        "Danger":"!!!",
+        "maybe":"?",
+        "Small crest":"smCr",
+        "Small brow":"smCr",
+        "Crest":"Cr",
+        "Brow":"Cr",
+        "Big crest":"BigCr",
+        "Action on top of crest":"onCr",
+        "Small jump":"smJmp",
+        "Jump":"Jmp",
+        "Big jump":"BigJmp",
+        "Short sharp crest":"kick",
+        "Bump":"bmp",
+        "Big bump":"BigBmp",
+        "Dip":"dip",
+        "Over":"/",
+        "Bridge":"][",
+        "Drop":"Drop",
+        "Keep":"stay",
+        "Keep lefthand":"stay L",
+        "Keep middle":"stay middle",
+        "Keep righthand":"stay R",
+        "Through":"thru",
+        "Cattle guard":"guard",
+        "No cut":"n.c.",
+        "Road narrows":"nar",
+        "Off camber":"o.c.",
+        "Rough":"ruf"
+      }
+  }
+}

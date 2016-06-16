@@ -32,16 +32,25 @@ namespace BackOffice.Business
             this.on = false;
         }
 
-        public void Start()
+        public Thread Start()
         {
+            Thread newThread = null;
             this.on = true;
+            Console.WriteLine(" Comecar ....");
+
             try
             {
-                Thread newThread = new Thread(new ThreadStart(Run));
-            }catch(Exception e)
-            {
-                this.on = false;
+                    newThread = new Thread(new ThreadStart(Run));
+                Console.WriteLine(" OK ....");
             }
+            catch(Exception e)
+            {
+                Console.WriteLine(" KO ....");
+                this.on = false;
+                newThread = null;
+            }
+            return newThread;
+
         }
 
         public void Stop()
@@ -51,22 +60,38 @@ namespace BackOffice.Business
 
         private void Run()
         {
-            TcpListener serverSocket = new TcpListener(this.listeningIP,this.listenigPort);
-
-            serverSocket.Start();
-            MessageBox.Show(" Server Started ....");
-            while (this.on==true)
+            TcpListener serverSocket=null;
+            try
             {
-                TcpClient clientSocket = serverSocket.AcceptTcpClient();
-          
-                MessageBox.Show(" Novo cliente ");
+                serverSocket = new TcpListener(this.listeningIP, this.listenigPort);
+                serverSocket.Start();
+                Console.WriteLine(" Server Started ....");
 
-                ClinetHandler ch=  new ClinetHandler(clientSocket, this.dbConf); //nova thread para cliente
-                ch.Start();
+                while (this.on == true)
+                {
+                    TcpClient clientSocket = serverSocket.AcceptTcpClient();
+
+                    Console.WriteLine(" Novo cliente ");
+                    //System.Diagnostics.Debug.WriteLine("Novo cliente");
+
+
+                    ClinetHandler ch = new ClinetHandler(clientSocket, this.dbConf); //nova thread para cliente
+                    ch.Start();
+                }
             }
+            finally
+            {
+                if (serverSocket != null)
+                {
+                    serverSocket.Stop();
+                }
+                this.on = false;
+                Console.WriteLine("FIM");
+                //System.Diagnostics.Debug.WriteLine("FIM");
+            }
+            
 
-            serverSocket.Stop();
-            MessageBox.Show("FIM");
+            
 
         }
     }
