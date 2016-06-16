@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -35,17 +36,23 @@ namespace BackOffice.Presentation
         {
             if (!started)
             {
-                this.backoffice.startReceive();
-                ellipse.Fill = new SolidColorBrush(Colors.Green);
-                this.buttonServer.Content = "Stop";
-                started = true;
+
+                    ellipse.Fill = new SolidColorBrush(Colors.Green);
+                    this.buttonServer.Content = "Stop";
+                this.buttonServer.IsEnabled = false;
+                    this.backoffice.startReceive();
+                    
+                    started = true;
+
+                
             }
             else
             {
-                this.backoffice.stopReceive();
-                ellipse.Fill = new SolidColorBrush(Colors.Red);
-                this.buttonServer.Content = "Start";
-                started = false;
+
+                    this.backoffice.stopReceive();
+                    ellipse.Fill = new SolidColorBrush(Colors.Red);
+                    this.buttonServer.Content = "Start";
+                    started = false;
 
             }
         }
@@ -60,7 +67,9 @@ namespace BackOffice.Presentation
             }
             else
             {
-                MessageBox.Show("Não existem batedores no sistema!");
+                //MessageBox.Show();
+                System.Windows.Forms.MessageBox.Show("Não existem batedores no sistema!", "Warning",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -74,7 +83,9 @@ namespace BackOffice.Presentation
             }
             else
             {
-                MessageBox.Show("Não existem atividades terminadas no sistema!");
+               // MessageBox.Show();
+                System.Windows.Forms.MessageBox.Show("Não existem atividades terminadas no sistema!", "Warning",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -94,7 +105,9 @@ namespace BackOffice.Presentation
             }
             else
             {
-                MessageBox.Show("Não existem batedores no sistema!");
+               // MessageBox.Show("Não existem batedores no sistema!");
+                System.Windows.Forms.MessageBox.Show("Não existem batedores no sistema!", "Warning",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 

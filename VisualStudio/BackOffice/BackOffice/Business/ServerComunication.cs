@@ -15,6 +15,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 
 namespace BackOffice.Business
 {
@@ -24,7 +25,7 @@ namespace BackOffice.Business
         public String dbConf { get; set; }
         public System.Net.IPAddress listeningIP { get; set; }
         private Boolean on;
-        private CancellationTokenSource cancellation { get; set; } 
+        private CancellationTokenSource cancellation { get; set; }
         public ServerComunication(int port, string db)
         {
             this.dbConf = db;
@@ -42,10 +43,10 @@ namespace BackOffice.Business
 
             try
             {
-                    newThread = new Thread(new ThreadStart(Run));
+                newThread = new Thread(new ThreadStart(Run));
                 Console.WriteLine(" OK ....");
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine(" KO ....");
                 this.on = false;
@@ -57,7 +58,7 @@ namespace BackOffice.Business
 
         public void Stop()
         {
-             this.on = false;
+            this.on = false;
             this.cancellation.Cancel();
         }
 
@@ -86,6 +87,10 @@ namespace BackOffice.Business
                     ClinetHandler ch = new ClinetHandler(clientSocket, this.dbConf); //nova thread para cliente
                     ch.Start();
                 }
+            }catch(Exception e)
+            {
+                System.Windows.Forms.MessageBox.Show(e.Message.ToString(), "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
@@ -108,7 +113,7 @@ namespace BackOffice.Business
     {
         public TcpClient mySocket { get; set; }
         //Connects fine
-        public NetworkStream netstream { get; set; } 
+        public NetworkStream netstream { get; set; }
         public StreamWriter writerStream { get; set; }
         public StreamReader readStream { get; set; }
         public String dbConfg { get; set; }
@@ -120,7 +125,7 @@ namespace BackOffice.Business
             this.netstream = this.mySocket.GetStream();
             this.writerStream = new StreamWriter(this.netstream);
             this.readStream = new StreamReader(this.netstream);
-           
+
         }
 
         public void Start()
@@ -157,11 +162,11 @@ namespace BackOffice.Business
                 BackToJust atOK = new BackToJust(-3);
                 this.writeData(this.jsonFrom(atOK));
             }
-            
+
 
 
             //fechar as comunicaçoes da tread para terminar
-            
+
             this.writerStream.Close();
             this.readStream.Close();
             this.netstream.Close();
@@ -226,9 +231,9 @@ namespace BackOffice.Business
         {
             BatedorDAO batDao = new BatedorDAO(this.dbConfg);
             List<Batedor> lb = batDao.Values();
-            foreach(Batedor b in lb)
+            foreach (Batedor b in lb)
             {
-                if(b.email.Equals(content.email) && b.password.Equals(content.password)) //passwordOK
+                if (b.email.Equals(content.email) && b.password.Equals(content.password)) //passwordOK
                 {
                     this.sendAtividadeOK(content.email);
                     return;
@@ -253,7 +258,7 @@ namespace BackOffice.Business
             AtividadeDAO atDAO = new AtividadeDAO(this.dbConfg);
             List<Atividade> lats = atDAO.Values();
             ArrayList paraBatedor = new ArrayList();
-            foreach(Atividade a in lats)
+            foreach (Atividade a in lats)
             {
                 if (a.batedor.email.Equals(toBatodorMail))
                 {
@@ -321,3 +326,4 @@ namespace BackOffice.Business
 
     }
 }
+
