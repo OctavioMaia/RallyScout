@@ -221,7 +221,9 @@ public class JsonRC {
             notaJson.put("notaTextual",nota.getNotaTextual());
             notaJson.put("local",createLocal(nota.getLocalRegisto()));
             notaJson.put("imagem", createImagens(nota.getImagens()));
-            notaJson.put("audio", Base64.encodeToString(nota.getVoice(),Base64.DEFAULT) );
+            if(nota.getVoice()!=null){
+                notaJson.put("audio", Base64.encodeToString(nota.getVoice(),Base64.DEFAULT) );
+            }
         } catch (JSONException e) {
             Log.e(TAG,"Não foi possivel criar o Json para a nota " + nota.getIdNota());
             notaJson = null;

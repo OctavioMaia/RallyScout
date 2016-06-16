@@ -41,7 +41,7 @@ import rallyscouts.justtrailit.data.NotaDAO;
 
 public class GerirAtividade extends AppCompatActivity implements OnMapReadyCallback {
 
-    private static final float distanciaMinima = 300000;
+    private static final float distanciaMinima = 900000000;
 
     private BatedorDAO batedores;
     private AtividadeDAO atividades;

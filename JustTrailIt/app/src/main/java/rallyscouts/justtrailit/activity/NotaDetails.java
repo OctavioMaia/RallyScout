@@ -3,6 +3,7 @@ package rallyscouts.justtrailit.activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
+import android.nfc.Tag;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -81,6 +82,7 @@ public class NotaDetails extends AppCompatActivity {
         for (Bitmap bitmap : nota.getImagens() ) {
             ImageView iv = (ImageView) inflater.inflate(
                     R.layout.item_image, null);
+            Log.i(TAG,"IMAGEM BYTES"+bitmap.getByteCount());
             iv.setImageBitmap(bitmap);
             iv.setLayoutParams( new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,

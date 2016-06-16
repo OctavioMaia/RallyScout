@@ -132,6 +132,15 @@ public class MenuBatedor extends AppCompatActivity {
             });
 
             thread.start();
+            try {
+                thread.join();
+                textView_AtividadeDisp.setText("Atividade " + batedorLogin.getAtividade() + " não enviada");
+                this.button_gerirAtividade.setEnabled(true);
+                this.button_download.setEnabled(false);
+                this.button_upload.setEnabled(true);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -171,8 +180,7 @@ public class MenuBatedor extends AppCompatActivity {
                             veiculos.deleteAllVeiculoAtividade(batedorLogin.getAtividade());
                             mapas.deleteMapa(batedorLogin.getAtividade());
                             atividades.deleteAtividade(batedorLogin.getAtividade());
-                            batedores.deleteBatedor(batedorLogin.getEmail());
-                            batedorLogin=null;
+                            batedorLogin.setAtividade(-1);
                         }else{
                             //Toast.makeText(getApplicationContext(), "Não foi enviada corretamente a atividade" , Toast.LENGTH_LONG).show();
                             Log.i(TAG,"Não foi enviada corretamente a atividade");
@@ -185,6 +193,16 @@ public class MenuBatedor extends AppCompatActivity {
             });
 
             thread.start();
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            this.button_gerirAtividade.setEnabled(false);
+            this.button_download.setEnabled(true);
+            this.button_upload.setEnabled(false);
+            textView_AtividadeDisp.setText("Não existe nenhuma atividade em processamento");
 
         }
 
