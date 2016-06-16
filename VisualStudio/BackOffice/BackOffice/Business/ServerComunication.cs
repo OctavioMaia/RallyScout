@@ -15,6 +15,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 
 namespace BackOffice.Business
 {
@@ -64,6 +65,7 @@ namespace BackOffice.Business
         private async void Run()
         {
             TcpListener serverSocket = null;
+            //Exception send = null;
             try
             {
                 serverSocket = new TcpListener(this.listenigPort);
@@ -86,6 +88,10 @@ namespace BackOffice.Business
                     ClinetHandler ch = new ClinetHandler(clientSocket, this.dbConf); //nova thread para cliente
                     ch.Start();
                 }
+            }catch(Exception ex)
+            {
+                 System.Windows.Forms.MessageBox.Show(ex.Message.ToString(), "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
