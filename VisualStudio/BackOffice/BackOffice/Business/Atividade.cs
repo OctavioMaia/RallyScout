@@ -171,7 +171,7 @@ namespace BackOffice.Business
             Document doc = new Document(iTextSharp.text.PageSize.LETTER, 10, 10, 42, 35);
             PdfWriter wri = PdfWriter.GetInstance(doc, new FileStream(path, FileMode.Create));
             doc.Open();
-            Paragraph p = new Paragraph("Reprot from " + percurso.nomeProva + " to Team " + equipa.nome + ".\n\n\n\n", TitleFont);
+            Paragraph p = new Paragraph("Report from " + percurso.nomeProva + " to Team " + equipa.nome + ".\n\n\n\n", TitleFont);
             p.Alignment = Element.ALIGN_CENTER;
             doc.Add(p);
 
@@ -201,7 +201,20 @@ namespace BackOffice.Business
 
         public void generateReportGlobal(string path)
         {
-            //TODO 
+            var NotaFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 18, BaseColor.BLACK);
+            var TitleFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 20, BaseColor.BLACK);
+            var distFont = FontFactory.GetFont(FontFactory.HELVETICA, 12, BaseColor.BLACK);
+            Document doc = new Document(iTextSharp.text.PageSize.LETTER, 10, 10, 42, 35);
+            PdfWriter wri = PdfWriter.GetInstance(doc, new FileStream(path, FileMode.Create));
+            doc.Open();
+            Paragraph p = new Paragraph("Relatório Temporario vazio", TitleFont);
+            p.Alignment = Element.ALIGN_CENTER;
+            doc.Add(p);
+
+            //TODO
+
+            
+            doc.Close();
         }
 
         public int CompareTo(object obj)
