@@ -5,16 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BackOffice.Presentation"
         mc:Ignorable="d"
-        Title="Consultar Atividade Concluida" Height="443.865" Width="720.423" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" FontFamily="Arial" Icon="/BackOffice;component/icon.ico">
+        Title="Consultar Atividade Concluida" Height="486.199" Width="720.423" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" FontFamily="Arial" Icon="/BackOffice;component/icon.ico">
     <Grid Margin="0,0,0.333,6">
         <Label x:Name="label" Content="Atividade" HorizontalAlignment="Left" Height="27" Margin="10,10,0,0" VerticalAlignment="Top" Width="95" FontWeight="Bold" FontSize="14"/>
         <ComboBox x:Name="comboBox" HorizontalAlignment="Left" Height="27" Margin="110,10,0,0" VerticalAlignment="Top" Width="582" SelectionChanged="comboBox_SelectionChanged"/>
         <Separator HorizontalAlignment="Left" Height="5" Margin="18,51,0,0" VerticalAlignment="Top" Width="674"/>
         <Label x:Name="label_Copy" Content="Nome Equipa" HorizontalAlignment="Left" Height="27" Margin="10,61,0,0" VerticalAlignment="Top" Width="118" FontWeight="Bold" FontSize="14"/>
-        <Label x:Name="label_Copy1" Content="Data de Inicio" HorizontalAlignment="Left" Height="27" Margin="10,125,0,0" VerticalAlignment="Top" Width="118" FontWeight="Bold" FontSize="14"/>
-        <Label x:Name="label_Copy2" Content="Data de Fim" HorizontalAlignment="Left" Height="27" Margin="10,157,0,0" VerticalAlignment="Top" Width="118" FontWeight="Bold" FontSize="14"/>
-        <Label x:Name="label_Copy3" Content="Batedor" HorizontalAlignment="Left" Height="27" Margin="10,93,0,0" VerticalAlignment="Top" Width="118" FontWeight="Bold" FontSize="14"/>
-        <ListView x:Name="listViewVeiculos" HorizontalAlignment="Left" Height="162" Margin="10,196,0,0" VerticalAlignment="Top" Width="455" SelectionChanged="listView_SelectionChanged" SelectionMode="Single">
+        <Label x:Name="label_Copy1" Content="Data de Inicio" HorizontalAlignment="Left" Height="27" Margin="10,158,0,0" VerticalAlignment="Top" Width="118" FontWeight="Bold" FontSize="14"/>
+        <Label x:Name="label_Copy2" Content="Data de Fim" HorizontalAlignment="Left" Height="27" Margin="10,190,0,0" VerticalAlignment="Top" Width="118" FontWeight="Bold" FontSize="14"/>
+        <Label x:Name="label_Copy3" Content="Batedor" HorizontalAlignment="Left" Height="27" Margin="10,126,0,0" VerticalAlignment="Top" Width="118" FontWeight="Bold" FontSize="14"/>
+        <ListView x:Name="listViewVeiculos" HorizontalAlignment="Left" Height="162" Margin="10,229,0,0" VerticalAlignment="Top" Width="455" SelectionChanged="listView_SelectionChanged" SelectionMode="Single">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Chassi" Width="150" DisplayMemberBinding="{Binding Chassi}" />
@@ -23,20 +23,22 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <ListView x:Name="listViewCarateristicas" HorizontalAlignment="Left" Height="164" Margin="479,194,0,0" VerticalAlignment="Top" Width="213">
+        <ListView x:Name="listViewCarateristicas" HorizontalAlignment="Left" Height="164" Margin="479,227,0,0" VerticalAlignment="Top" Width="213">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Carateristicas" Width="210" DisplayMemberBinding="{Binding Carateristicas}" />
                 </GridView>
             </ListView.View>
         </ListView>
-        <TextBox x:Name="textBoxNomeEquipa" HorizontalAlignment="Left" Height="27" Margin="128,61,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="564" IsEnabled="False"/>
-        <TextBox x:Name="textBoxNomeBatedor" HorizontalAlignment="Left" Height="27" Margin="128,93,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="564" IsEnabled="False"/>
-        <TextBox x:Name="textBoxDataInicio" HorizontalAlignment="Left" Height="27" Margin="128,125,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="564" IsEnabled="False"/>
-        <TextBox x:Name="textBoxDataFim" HorizontalAlignment="Left" Height="27" Margin="128,157,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="564" IsEnabled="False"/>
-        <Button x:Name="buttonVerMapa" Content="Visualizar Mapa" HorizontalAlignment="Left" Height="33" Margin="10,372,0,0" VerticalAlignment="Top" Width="226" FontSize="14" FontWeight="Bold" Click="buttonVerMapa_Click"/>
-        <Button x:Name="buttonGerarRelatorios" Content="Gestão Relatórios" HorizontalAlignment="Left" Height="33" Margin="247,372,0,0" VerticalAlignment="Top" Width="226" FontSize="14" FontWeight="Bold" Click="buttonGerar_Click" RenderTransformOrigin="0.472,3.611"/>
-        <Button x:Name="buttonRegressar" Content="Regressar" HorizontalAlignment="Left" Height="33" Margin="479,372,0,0" VerticalAlignment="Top" Width="226" FontSize="14" FontWeight="Bold" Click="buttonRegressar_Click" RenderTransformOrigin="0.472,3.611"/>
+        <TextBox x:Name="textBoxNomeEquipa" HorizontalAlignment="Left" Height="27" Margin="128,61,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="564" IsEnabled="False" VerticalContentAlignment="Center"/>
+        <TextBox x:Name="textBoxNomeBatedor" HorizontalAlignment="Left" Height="27" Margin="128,126,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="564" IsEnabled="False" VerticalContentAlignment="Center"/>
+        <TextBox x:Name="textBoxDataInicio" HorizontalAlignment="Left" Height="27" Margin="128,158,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="564" IsEnabled="False" VerticalContentAlignment="Center"/>
+        <TextBox x:Name="textBoxDataFim" HorizontalAlignment="Left" Height="27" Margin="128,190,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="564" IsEnabled="False" VerticalContentAlignment="Center"/>
+        <Button x:Name="buttonVerMapa" Content="Visualizar Mapa" HorizontalAlignment="Left" Height="33" Margin="10,405,0,0" VerticalAlignment="Top" Width="226" FontSize="14" FontWeight="Bold" Click="buttonVerMapa_Click"/>
+        <Button x:Name="buttonGerarRelatorios" Content="Gestão Relatórios" HorizontalAlignment="Left" Height="33" Margin="247,405,0,0" VerticalAlignment="Top" Width="226" FontSize="14" FontWeight="Bold" Click="buttonGerar_Click" RenderTransformOrigin="0.472,3.611"/>
+        <Button x:Name="buttonRegressar" Content="Regressar" HorizontalAlignment="Left" Height="33" Margin="479,405,0,0" VerticalAlignment="Top" Width="226" FontSize="14" FontWeight="Bold" Click="buttonRegressar_Click" RenderTransformOrigin="0.472,3.611"/>
+        <Label x:Name="label_Copy4" Content="Email Equipa" HorizontalAlignment="Left" Height="27" Margin="10,93,0,0" VerticalAlignment="Top" Width="118" FontWeight="Bold" FontSize="14"/>
+        <TextBox x:Name="textBoxEmailEquipa" HorizontalAlignment="Left" Height="27" Margin="128,93,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="564" IsEnabled="False" VerticalContentAlignment="Center"/>
 
     </Grid>
 </Window>

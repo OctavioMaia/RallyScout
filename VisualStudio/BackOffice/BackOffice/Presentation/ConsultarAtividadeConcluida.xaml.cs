@@ -66,6 +66,7 @@ namespace BackOffice.Presentation
                     this.selecionada = a; 
                     veiculos = a.veiculos;
                     this.textBoxNomeEquipa.Text = a.nomeEquipa;
+                    this.textBoxEmailEquipa.Text = a.equipa.email;
                     this.textBoxNomeBatedor.Text = a.batedor.nome + " | " + a.batedor.email;
                     this.textBoxDataInicio.Text = a.inicioReconhecimento.ToString();
                     this.textBoxDataFim.Text = a.fimReconhecimento.ToString();
