@@ -17,6 +17,8 @@ using System.Net.Sockets;
 using System.Net;
 using BackOffice.Data.DataBase;
 using System.Threading;
+using System.Windows.Shapes;
+using System.Windows.Controls;
 
 namespace BackOffice.Business
 {
@@ -353,14 +355,14 @@ namespace BackOffice.Business
                 {
                     voice = null;
                 }
-                List<Image> li = new List<Image>();
+                List<System.Drawing.Image> li = new List<System.Drawing.Image>();
                 foreach(String s in no.imagem)
                 {
                     byte[] ia = Encoding.ASCII.GetBytes(s);
-                    Image i;
+                    System.Drawing.Image i;
                     using (var ms = new MemoryStream(ia)) 
                     {
-                        i= Image.FromStream(ms);
+                        i= System.Drawing.Image.FromStream(ms);
                     }
                     li.Add(i);
                     
