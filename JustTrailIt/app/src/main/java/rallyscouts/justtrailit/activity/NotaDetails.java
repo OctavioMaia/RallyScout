@@ -26,11 +26,15 @@ import java.util.concurrent.TimeUnit;
 
 import rallyscouts.justtrailit.R;
 import rallyscouts.justtrailit.business.Nota;
+import rallyscouts.justtrailit.data.NotaDAO;
 
 public class NotaDetails extends AppCompatActivity {
 
-    private static final String TAG = "NotaDetails";
+    public static final String TAG = "NotaDetails";
+    public static final String ID_NOTA = "idNota";
+    public static final String ID_ATIVIDADE = "idAtividade";
 
+    private NotaDAO notas;
     private Nota nota;
     private MediaPlayer mediaPlayer;
 
@@ -50,7 +54,8 @@ public class NotaDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nota_details);
 
-        this.nota = (Nota) getIntent().getExtras().getSerializable("nota");
+        this.notas = new NotaDAO(NotaDetails.this);
+        this.nota = notas.getNota(getIntent().getExtras().getInt(ID_NOTA),getIntent().getExtras().getInt(ID_ATIVIDADE));
         this.notaTextual = (TextView) findViewById(R.id.textView_NotaTextual);
         this.tl = (TableLayout) findViewById(R.id.imagensLayout);
         this.start = (Button) findViewById(R.id.button_Play);

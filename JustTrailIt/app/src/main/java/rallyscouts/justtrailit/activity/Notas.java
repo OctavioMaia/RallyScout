@@ -31,6 +31,8 @@ import rallyscouts.justtrailit.data.NotaDAO;
 
 public class Notas extends AppCompatActivity implements OnMapReadyCallback,AdapterView.OnItemSelectedListener {
 
+    public static final String ID_ATIVIDADE = "idAtividade";
+
     private NotaDAO notas;
     private MapaDAO mapas;
 
@@ -52,13 +54,12 @@ public class Notas extends AppCompatActivity implements OnMapReadyCallback,Adapt
 
         this.notas = new NotaDAO(Notas.this);
         this.mapas = new MapaDAO(Notas.this);
-        this.notasShow = notas.getAllNotas(getIntent().getExtras().getInt("idAtividade"));
+        this.notasShow = notas.getAllNotas(getIntent().getExtras().getInt(ID_ATIVIDADE));
 
         this.analisarNota = (Button) findViewById(R.id.button_AnalisarNota);
         this.spinner = (Spinner) findViewById(R.id.notas_spinner);
 
         // Spinner click listener
-        spinner.setOnItemSelectedListener(this);
 
         // Creating adapter for spinner
         ArrayAdapter<Integer> dataAdapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_list_item_1, prepareSpinner());
@@ -79,6 +80,7 @@ public class Notas extends AppCompatActivity implements OnMapReadyCallback,Adapt
                 res.add(n.getIdNota());
             }
         }
+        Toast.makeText(getApplicationContext(), "Numero de notas: " + res.size(), Toast.LENGTH_LONG).show();
         return res;
     }
 
@@ -129,8 +131,9 @@ public class Notas extends AppCompatActivity implements OnMapReadyCallback,Adapt
     public void analisarNota(View v){
         Spinner spinner = (Spinner) findViewById(R.id.notas_spinner);
 
-        Intent analisarNota = new Intent(Notas.this, Notas.class);
-        analisarNota.putExtra("nota",notasShow.get(spinner.getSelectedItemPosition()));
+        Intent analisarNota = new Intent(Notas.this, NotaDetails.class);
+        analisarNota.putExtra(NotaDetails.ID_NOTA,(int)spinner.getSelectedItem());
+        analisarNota.putExtra(NotaDetails.ID_ATIVIDADE,getIntent().getExtras().getInt(ID_ATIVIDADE));
         Notas.this.startActivity(analisarNota);
 
 

@@ -168,6 +168,7 @@ public class MenuBatedor extends AppCompatActivity {
 
             if(batedorLogin.getAtividade()!=-1){
                 this.button_gerirAtividade.setEnabled(true);
+                this.button_download.setEnabled(false);
             }else{
                 Toast.makeText(getApplicationContext(), res , Toast.LENGTH_LONG).show();
             }

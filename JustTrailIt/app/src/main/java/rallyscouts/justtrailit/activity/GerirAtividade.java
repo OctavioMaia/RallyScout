@@ -34,7 +34,6 @@ import rallyscouts.justtrailit.R;
 import rallyscouts.justtrailit.business.Atividade;
 import rallyscouts.justtrailit.business.Batedor;
 import rallyscouts.justtrailit.business.Mapa;
-import rallyscouts.justtrailit.business.Nota;
 import rallyscouts.justtrailit.data.AtividadeDAO;
 import rallyscouts.justtrailit.data.BatedorDAO;
 import rallyscouts.justtrailit.data.MapaDAO;
@@ -77,6 +76,9 @@ public class GerirAtividade extends AppCompatActivity implements OnMapReadyCallb
         this.equipa.setText("Equipa: " + atividadeAProcess.getNomeEquipa());
 
         this.search = (SearchView) findViewById(R.id.searchView);
+
+
+
 
         this.search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -144,6 +146,7 @@ public class GerirAtividade extends AppCompatActivity implements OnMapReadyCallb
                 if( locProxima!=null ) {
                     Intent registarnota = new Intent(GerirAtividade.this, RegistarNota.class);
                     registarnota.putExtra(RegistarNota.ID_ATIVIDADE,batedorLogin.getAtividade());
+                    registarnota.putExtra(RegistarNota.ID_NOTA,notas.getLargerID(batedorLogin.getAtividade())+1);
                     registarnota.putExtra(RegistarNota.LOC_LATITUDE,locProxima.getLatitude());
                     registarnota.putExtra(RegistarNota.LOC_LONGUITUDE,locProxima.getLongitude());
                     GerirAtividade.this.startActivity(registarnota);
@@ -175,7 +178,7 @@ public class GerirAtividade extends AppCompatActivity implements OnMapReadyCallb
     public void verNotas(View v){
 
         Intent vernotas = new Intent(GerirAtividade.this, Notas.class);
-        vernotas.putExtra("idAtividade",batedorLogin.getAtividade());
+        vernotas.putExtra(Notas.ID_ATIVIDADE,batedorLogin.getAtividade());
         GerirAtividade.this.startActivity(vernotas);
     }
 

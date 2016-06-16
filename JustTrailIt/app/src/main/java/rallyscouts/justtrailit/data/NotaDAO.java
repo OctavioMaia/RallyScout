@@ -128,10 +128,11 @@ public class NotaDAO {
                 new String[]{ ""+idNota,""+idAtividade }
         );
 
+        resNota.moveToFirst();
         if(resNota.getCount()>0){
             Location loc = new Location("");
-            loc.setLatitude(resNota.getLong(resNota.getColumnIndex(NOTA_COLUMN_LATITUDE)));
-            loc.setLongitude(resNota.getLong(resNota.getColumnIndex(NOTA_COLUMN_LONGITUDE)));
+            loc.setLatitude(resNota.getDouble(resNota.getColumnIndex(NOTA_COLUMN_LATITUDE)));
+            loc.setLongitude(resNota.getDouble(resNota.getColumnIndex(NOTA_COLUMN_LONGITUDE)));
             not = new Nota(idNota,loc);
         }
         resNota.close();
@@ -169,7 +170,7 @@ public class NotaDAO {
 
         res.moveToFirst();
         while(res.isAfterLast()==false){
-            Nota n = getNota(res.getInt(res.getColumnIndex(NOTA_COLUMN_ATIVIDADE)),idAtividade);
+            Nota n = getNota(res.getInt(res.getColumnIndex(NOTA_COLUMN_ID_NOTA)),idAtividade);
             if(n!=null){
                 notas.add(n);
             }
