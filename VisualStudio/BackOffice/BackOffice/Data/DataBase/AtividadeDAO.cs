@@ -396,9 +396,9 @@ namespace BackOffice.Data.DataBase
                 // UPDATE dbo.Batedor
                 // SET Nome = 'ze', Password = 'novo', HorasDeReconhecimento = 10, N_Atividades = 10
                 // WHERE Email = 'a@a.pt';
-                queryString = String.Format("UPDATE dbo.VeiculoCaracteristicas " +
+                queryString = String.Format("UPDATE dbo.Veiculo " +
                     " SET Marca = '{0}', Modelo = '{1}' " +
-                    " WHERE Chassi = '{3}'  AND Atividade = {4} ;",
+                    " WHERE Chassi = '{2}'  AND Atividade = {3} ;",
                           novo.marca, novo.modelo, novo.chassi, this.idatividade);
                 SqlCommand command = new SqlCommand(queryString, connection,tr);
                 command.CommandTimeout = 60;
@@ -409,7 +409,7 @@ namespace BackOffice.Data.DataBase
                 foreach (string c in cara)
                 {
 
-                    string queryStringCarac = String.Format("SELECT * dbo.VeiculoCaracteristicas " +
+                    string queryStringCarac = String.Format("SELECT * from dbo.VeiculoCaracteristicas " +
                     "WHERE Chassi = '{0}' AND Caracteristica = '{1}';",
                           novo.chassi, c);
 
@@ -418,7 +418,7 @@ namespace BackOffice.Data.DataBase
                     SqlDataReader readerVC = command.ExecuteReader();
                     if (!readerVC.Read())
                     {//novo
-                        queryStringC = String.Format("INSERT dbo.VeiculoCaracteristicas " +
+                        queryStringC = String.Format("INSERT into dbo.VeiculoCaracteristicas " +
                             "(Caracteristica, Chassi) " +
                             " VALUES " +
                             " ('{0}', '{1}'); ",
