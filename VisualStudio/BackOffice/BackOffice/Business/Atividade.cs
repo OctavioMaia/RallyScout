@@ -215,6 +215,15 @@ namespace BackOffice.Business
                 throw new ArgumentException("Object is not a Temperature");
         }
 
+        public Boolean isPendent()
+        {
+            if(this.inprogress==true && this.done== false)
+            {
+                return true;
+            }
+            return false;
+        }
+
 
     }
 
