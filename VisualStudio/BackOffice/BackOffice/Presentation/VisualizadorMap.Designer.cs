@@ -236,7 +236,7 @@ namespace BackOffice.Presentation
             gmap.MapProvider = GMapProviders.OpenStreetMap;
             gmap.Position = new PointLatLng(cords[keyList.Min()].Latitude, cords[keyList.Min()].Longitude);
 
-            MapRoute route = GMap.NET.MapProviders.GoogleMapProvider.Instance.GetRoute(inicio, fim, true, false, 12);
+            //MapRoute route = GMap.NET.MapProviders.GoogleMapProvider.Instance.GetRoute(inicio, fim, true, false, 12);
 
             GMapRoute r = new GMapRoute(points, map.nomeProva);
 

@@ -95,6 +95,7 @@
     <Compile Include="Business\Exceptions\AtividadeNaoIniciadaException.cs" />
     <Compile Include="Business\Exceptions\AtividadeNaoTerminadaExeption.cs" />
     <Compile Include="Business\Exceptions\CaracteristicaExistenteException.cs" />
+    <Compile Include="Business\Exceptions\MapaVazioException.cs" />
     <Compile Include="Business\Exceptions\NaoExisteAtividadeExeption.cs" />
     <Compile Include="Business\Exceptions\NaoExisteBatedorExeption.cs" />
     <Compile Include="Business\FichaBatedor.cs" />

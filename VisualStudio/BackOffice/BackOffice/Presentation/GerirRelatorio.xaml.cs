@@ -73,11 +73,12 @@ namespace BackOffice.Presentation
                 anexos.Add(general);
 
                 this.backoffice.email_send(current.equipa.email, assunto, texto,anexos);
-                System.Windows.MessageBox.Show("Email enviado com sucesso.");
+
+                System.Windows.Forms.MessageBox.Show("Email enviado com sucesso.", "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
-                System.Windows.MessageBox.Show("Por favor preencha todos os campos.");
+                System.Windows.Forms.MessageBox.Show("Por favor preencha todos os campos.", "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             
         }
