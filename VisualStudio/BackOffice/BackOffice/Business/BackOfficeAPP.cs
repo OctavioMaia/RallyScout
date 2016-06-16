@@ -137,6 +137,7 @@ namespace BackOffice.Business
             if (this.comuTrhead == null || !this.comuTrhead.IsAlive)
             {
                 this.comuTrhead = this.comunica.Start();
+                this.comuTrhead.Start();
             }
         }
 
