@@ -15,7 +15,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Forms;
 
 namespace BackOffice.Business
 {
@@ -23,14 +22,14 @@ namespace BackOffice.Business
     {
         public int listenigPort { get; set; }
         public String dbConf { get; set; }
-        public System.Net.IPAddress listeningIP { get; set; }
+       // public System.Net.IPAddress listeningIP { get; set; }
         private Boolean on;
         private CancellationTokenSource cancellation { get; set; }
         public ServerComunication(int port, string db)
         {
             this.dbConf = db;
             this.listenigPort = port;
-            this.listeningIP = Dns.Resolve("localhost").AddressList[0];
+           // this.listeningIP = Dns.Resolve("localhost").AddressList[0];
             this.cancellation = new CancellationTokenSource();
             this.on = false;
         }
@@ -87,10 +86,6 @@ namespace BackOffice.Business
                     ClinetHandler ch = new ClinetHandler(clientSocket, this.dbConf); //nova thread para cliente
                     ch.Start();
                 }
-            }catch(Exception e)
-            {
-                System.Windows.Forms.MessageBox.Show(e.Message.ToString(), "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
@@ -166,11 +161,11 @@ namespace BackOffice.Business
 
 
             //fechar as comunicaçoes da tread para terminar
-
+            /*
             this.writerStream.Close();
             this.readStream.Close();
             this.netstream.Close();
-            this.mySocket.Close();
+            this.mySocket.Close();*/
         }
 
 
