@@ -39,6 +39,7 @@ namespace BackOffice.Presentation
 
                     ellipse.Fill = new SolidColorBrush(Colors.Green);
                     this.buttonServer.Content = "Stop";
+                this.buttonServer.IsEnabled = false;
                     this.backoffice.startReceive();
                     
                     started = true;
