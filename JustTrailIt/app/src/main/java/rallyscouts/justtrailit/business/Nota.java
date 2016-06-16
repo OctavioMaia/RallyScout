@@ -97,4 +97,9 @@ public class Nota implements Serializable{
         return result;
     }
 
+
+    public boolean addImagem(Bitmap bitmap){
+        return imagens.add(bitmap);
+    }
+
 }

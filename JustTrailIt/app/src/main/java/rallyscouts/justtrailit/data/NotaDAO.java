@@ -89,12 +89,34 @@ public class NotaDAO {
         return true;
     }
 
-    public int getMaiorNota() {
+    public int getLargerID(int idAtividade){
+        int large = -1;
         Cursor nota = mDatabase.rawQuery(
-                "SELECT NVL(MAX( " + NOTA_COLUMN_ID_NOTA +" ),0)" + "FROM " + NOTA_TABLE_NAME,null);
-        int maiorNota = nota.getInt(1);
-        if(maiorNota==0) {return maiorNota;}
-            else {return maiorNota+1;}
+                "SELECT " + NOTA_COLUMN_ID_NOTA +
+                        " FROM " + NOTA_TABLE_NAME +
+                        " WHERE " + NOTA_COLUMN_ATIVIDADE + " = ?" , new String[]{ ""+idAtividade });
+        if(nota.getCount()==0) {
+            large = -1;
+        } else{
+            nota.moveToFirst();
+            while (nota.isAfterLast()==false){
+                if(nota.getInt(nota.getColumnIndex(NOTA_COLUMN_ID_NOTA)) > large) { large = nota.getInt(nota.getColumnIndex(NOTA_COLUMN_ID_NOTA));}
+                nota.moveToNext();
+            }
+            nota.close();
+        }
+        return large;
+
+    }
+
+    public int getMaiorNota(int idAtividade) {
+        Cursor nota = mDatabase.rawQuery(
+                "SELECT NVL(MAX( " + NOTA_COLUMN_ID_NOTA +" ),0)" +
+                        "FROM " + NOTA_TABLE_NAME +
+                        " WHERE " + NOTA_COLUMN_ATIVIDADE + " = ?" , new String[]{ ""+idAtividade });
+        int maior =  nota.getInt(0);
+        nota.close();
+        return maior;
     }
 
 
@@ -112,6 +134,7 @@ public class NotaDAO {
             loc.setLongitude(resNota.getLong(resNota.getColumnIndex(NOTA_COLUMN_LONGITUDE)));
             not = new Nota(idNota,loc);
         }
+        resNota.close();
         return not;
     }
 
@@ -121,7 +144,7 @@ public class NotaDAO {
 
         Cursor resImagens = mDatabase.rawQuery(
                 "SELECT * FROM " + IMAGEM_TABLE_NAME +
-                        "WHERE " + IMAGEM_COLUMN_NOTA + " = ? AND " + IMAGEM_COLUMN_ATIVIDADE + " = ?",
+                        " WHERE " + IMAGEM_COLUMN_NOTA + " = ? AND " + IMAGEM_COLUMN_ATIVIDADE + " = ?",
                 new String[]{ ""+idNota, ""+idAtividade }
         );
 
@@ -132,6 +155,7 @@ public class NotaDAO {
             imagens.add(bm);
             resImagens.moveToNext();
         }
+        resImagens.close();
         return imagens;
     }
 
@@ -144,7 +168,6 @@ public class NotaDAO {
                 new String[]{""+idAtividade});
 
         res.moveToFirst();
-
         while(res.isAfterLast()==false){
             Nota n = getNota(res.getInt(res.getColumnIndex(NOTA_COLUMN_ATIVIDADE)),idAtividade);
             if(n!=null){
@@ -152,6 +175,7 @@ public class NotaDAO {
             }
             res.moveToNext();
         }
+        res.close();
         return notas;
 
     }

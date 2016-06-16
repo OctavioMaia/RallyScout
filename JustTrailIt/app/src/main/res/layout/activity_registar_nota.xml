@@ -20,18 +20,6 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Registar Voz"
-        android:id="@+id/button_RegistarVoz"
-        android:clickable="true"
-        android:focusable="true"
-        android:onClick="registarVoz"
-        android:layout_below="@+id/id_InserirTexto"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
 
     <Button
         android:layout_width="match_parent"
@@ -41,9 +29,50 @@
         android:clickable="true"
         android:focusable="true"
         android:onClick="registarImagem"
-        android:layout_below="@+id/button_RegistarVoz"
+        android:layout_below="@+id/id_InserirTexto"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
+
+    <LinearLayout
+        android:layout_height="35dp"
+        android:layout_width="fill_parent"
+        android:layout_weight="0.64"
+        android:id="@+id/linearLayout2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/button_RegistarImagem">
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageButton_Start_PauseRecord"
+            android:layout_above="@+id/button_SubmissaoNota"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/linearLayout2"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/abc_ic_voice_search_api_mtrl_alpha"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageButton_Stop"
+            android:layout_weight="1"
+            android:src="@android:drawable/ic_notification_overlay" />
+
+    </LinearLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Analisar nota"
+        android:id="@+id/buttonAnalisarNota"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <Button
         android:layout_width="match_parent"
@@ -51,19 +80,8 @@
         android:text="Confirmar submissão nota "
         android:id="@+id/button_SubmissaoNota"
         android:onClick="confirmarSubmissao"
-        android:layout_alignParentBottom="true"
+        android:layout_above="@+id/buttonAnalisarNota"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Analisar nota"
-        android:id="@+id/buttonAnalisarNota"
-        android:layout_below="@+id/button_RegistarImagem"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/button_RegistarImagem"
-        android:layout_alignEnd="@+id/button_RegistarImagem" />
 
 </RelativeLayout>

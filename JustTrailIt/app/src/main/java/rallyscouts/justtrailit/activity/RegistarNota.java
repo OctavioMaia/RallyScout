@@ -23,76 +23,67 @@ import rallyscouts.justtrailit.data.NotaDAO;
 
 public class RegistarNota extends AppCompatActivity {
 
+    public static final String ID_ATIVIDADE = "idAtividade";
+    public static final String LOC_LATITUDE = "latitude";
+    public static final String LOC_LONGUITUDE = "longuitude";
 
-    private Nota notaToSave;
     private NotaDAO notas;
 
+    private int idAtividade;
+    private Nota notaToSave;
 
     public static final int CAMARA_REQUEST = 10;
-    //Resposavel por guardar o texto do utilizador;
-    String guardarTexto = new String();
-    //Resposavel por guardar as imagens do utilizador;
-    ArrayList<Bitmap> imagens = new ArrayList<>() ;
-    //Resposavel por guardar a voz do utilizador;
-    private byte[] voz;
-    Location l;
+
+    private EditText mensagem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registar_nota);
-        this.setTitle("Registar Nota");
-
 
         this.notas = new NotaDAO(RegistarNota.this);
-        //this.notaToSave = new Nota( notas.getMaiorNota() , new Location(""));
 
+        Location loc = new Location("");
+        loc.setLatitude(getIntent().getExtras().getDouble(LOC_LATITUDE));
+        loc.setLongitude(getIntent().getExtras().getDouble(LOC_LONGUITUDE));
 
-        LocationManager myManager;
-        LocationListener myListener;
-        myManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        myListener = new LocationListener() {
+        this.idAtividade = getIntent().getExtras().getInt(ID_ATIVIDADE);
+        this.notaToSave = new Nota(idAtividade,loc);
+
+        this.setTitle("Registar Nota: " + idAtividade +
+                "Lat: " + this.notaToSave.getLocalRegisto().getLatitude() +
+                "Lng: " + this.notaToSave.getLocalRegisto().getLongitude()
+        );
+
+        this.mensagem = (EditText)findViewById(R.id.id_InserirTexto);
+
+        mensagem.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onLocationChanged(Location location) {
-                if(location!=null)
-                {
-                    l.setLatitude(location.getLatitude());
-                    l.setLongitude(location.getLongitude());
+            public void onFocusChange(View v, boolean hasFocus) {
+                //tinha o focus e ficou sem ele
+                if(!hasFocus){
+                    notaToSave.setNotaTextual(mensagem.getText().toString());
+                }else{
+                    mensagem.setText(notaToSave.getNotaTextual());
                 }
             }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-
-            }
-        };
-
-        myManager.requestLocationUpdates("gps",0,0,myListener);
-
-        this.notas = new NotaDAO(RegistarNota.this);
-
-        final EditText mensagem = (EditText)findViewById(R.id.id_InserirTexto);
-
-
+        });
     }
 
 
-    public void registarImagem(View v)
-    {
-    Intent camaraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-    startActivityForResult(camaraIntent,CAMARA_REQUEST);
+    public void registarImagem(View v) {
+        Intent camaraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(camaraIntent,CAMARA_REQUEST);
     }
+
+
+    public void confirmarSubmissao(View v) {
+        //Falta definir a voz a latitude e a longitude.
+        notas.insertNota(idAtividade,notaToSave);
+        finish();
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
@@ -103,16 +94,8 @@ public class RegistarNota extends AppCompatActivity {
             if(requestCode==CAMARA_REQUEST)
             {
                 Bitmap camaraImage = (Bitmap) data.getExtras().get("data");
-                imagens.add(camaraImage);
+                notaToSave.addImagem(camaraImage);
             }
         }
-    }
-
-    public void confirmarSubmissao(View v)
-    {
-        //Falta definir a voz a latitude e a longitude.
-        //notas.insertNota((int)getIntent().getExtras().get("idNota"),(int)getIntent().getExtras().get("idAtividade",guardarTexto,voz,latitude,longitude,imagens);
-        Intent submissao = new Intent(RegistarNota.this, GerirAtividade.class);
-        RegistarNota.this.startActivity(submissao);
     }
 }
