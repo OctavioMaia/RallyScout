@@ -67,7 +67,7 @@ namespace BackOffice.Presentation
             }
             else
             {
-                MessageBox.Show("erro parse");
+                System.Windows.Forms.MessageBox.Show("Erro parse", "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
              
         }
@@ -80,7 +80,7 @@ namespace BackOffice.Presentation
             }
             else
             {
-                MessageBox.Show("Não existem imagens anteriores a esta.");
+                System.Windows.Forms.MessageBox.Show("Não existem imagens anteriores a esta!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             
         }
@@ -94,7 +94,7 @@ namespace BackOffice.Presentation
             }
             else
             {
-                MessageBox.Show("Não existem imagens posteriores a esta.");
+                System.Windows.Forms.MessageBox.Show("Não existem imagens posteriores a esta!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -111,7 +111,7 @@ namespace BackOffice.Presentation
             }
             else
             {
-                MessageBox.Show("Sound null");
+                System.Windows.Forms.MessageBox.Show("Ficheiro áudio nulo", "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
     }

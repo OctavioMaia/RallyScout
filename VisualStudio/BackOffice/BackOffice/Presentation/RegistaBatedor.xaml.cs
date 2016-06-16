@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -47,15 +48,13 @@ namespace BackOffice.Presentation
                 }
                 else
                 {
-                    MessageBox.Show("Já existe um batedor com esse email!");
+                    System.Windows.Forms.MessageBox.Show("Já existe um batedor com esse email!", "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
             }
             else
             {
-                MessageBox.Show("Verifique se introduziu todos os parametros!");
+                System.Windows.Forms.MessageBox.Show("Verifique se introduziu todos os parametros!", "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-
-           
         }
 
         private void button_Copy_Click(object sender, RoutedEventArgs e)
