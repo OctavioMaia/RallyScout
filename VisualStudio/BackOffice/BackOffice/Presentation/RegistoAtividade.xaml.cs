@@ -24,10 +24,12 @@ namespace BackOffice.Presentation
     {
         List<Veiculo> l { get; set; }
         BackOfficeAPP backoffice;
+        Window anterior;
 
-        public RegistoAtividade(BackOfficeAPP b)
+        public RegistoAtividade(BackOfficeAPP b, Window w)
         {
-            backoffice = b;
+            this.anterior = w;
+            this.backoffice = b;
             InitializeComponent();
             UpdateComboBox();
         }
@@ -46,8 +48,9 @@ namespace BackOffice.Presentation
         private void buttonAdicionarVeiculo_Click(object sender, RoutedEventArgs e)
         {
             l = new List<Veiculo>();
-            InserirVeiculo i = new InserirVeiculo(backoffice,l);
+            InserirVeiculo i = new InserirVeiculo(backoffice,l,this);
             i.Visibility = Visibility.Visible;
+            this.Visibility = Visibility.Hidden;
         }
 
         private void buttonProcurarFicheiro_Click(object sender, RoutedEventArgs e)
@@ -59,22 +62,38 @@ namespace BackOffice.Presentation
 
         private void buttonOK_Click(object sender, RoutedEventArgs e)
         {
-            String trajeto = textBoxPath.Text;//.Replace('/', '\\');
+            String trajeto = textBoxPath.Text;
             String nomeProva = textBoxNomeProva.Text;
             String nomeEquipa = textBoxNomeEquipa.Text;
             String emailEquipa = textBoxEmailEquipa.Text;
-            int index = comboBox.SelectedIndex;
-            
-            //ComboBoxItem typeItem = (ComboBoxItem)
             string mailBatedor = comboBox.SelectedItem as string;
-
-            backoffice.registarAtividade(mailBatedor, trajeto, nomeProva, nomeEquipa, emailEquipa, l); 
-            this.Visibility = Visibility.Hidden;
+            try {
+                if (trajeto.Length > 0 && nomeProva.Length > 0 && nomeEquipa.Length > 0 && emailEquipa.Length > 0 && mailBatedor.Length > 0) {
+                    if (System.IO.Path.GetExtension(trajeto).Equals(".gpx"))
+                    {
+                        backoffice.registarAtividade(mailBatedor, trajeto, nomeProva, nomeEquipa, emailEquipa, l);
+                        this.Close();
+                        this.anterior.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Apenas são permitidos ficheiros .gpx!");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Verifique se introduziu todos os parâmetros.");
+                }
+            }catch(System.Xml.XmlException)
+            {
+                MessageBox.Show("Ficheiro .gpx inválido!");
+            }
         }
 
         private void buttonCancelar_Click(object sender, RoutedEventArgs e)
         {
-            this.Visibility = Visibility.Hidden;
+            this.Close();
+            this.anterior.Visibility = Visibility.Visible;
         }
     }
 }
