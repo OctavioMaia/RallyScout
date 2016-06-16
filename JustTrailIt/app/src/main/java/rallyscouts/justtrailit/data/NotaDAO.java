@@ -197,4 +197,13 @@ public class NotaDAO {
         }
         return true;
     }
+
+    public int deleteAllImageAtividade(int idAtividade){
+        return mDatabase.delete(IMAGEM_TABLE_NAME,IMAGEM_COLUMN_ATIVIDADE + " = ?", new String[]{""+idAtividade});
+    }
+
+    public int deleteAllNotaAtividade(int idAtividade) {
+        deleteAllImageAtividade(idAtividade);
+        return mDatabase.delete(NOTA_TABLE_NAME, NOTA_COLUMN_ATIVIDADE + " = ?", new String[]{ ""+idAtividade });
+    }
 }

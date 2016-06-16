@@ -22,10 +22,14 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 
 import rallyscouts.justtrailit.R;
+import rallyscouts.justtrailit.business.Atividade;
 import rallyscouts.justtrailit.business.Batedor;
 import rallyscouts.justtrailit.business.JsonRC;
+import rallyscouts.justtrailit.data.AtividadeDAO;
 import rallyscouts.justtrailit.data.BatedorDAO;
+import rallyscouts.justtrailit.data.MapaDAO;
 import rallyscouts.justtrailit.data.NotaDAO;
+import rallyscouts.justtrailit.data.VeiculoDAO;
 
 public class MenuBatedor extends AppCompatActivity {
 
@@ -39,6 +43,9 @@ public class MenuBatedor extends AppCompatActivity {
     private Batedor batedorLogin;
     private BatedorDAO batedores;
     private NotaDAO notas;
+    private MapaDAO mapas;
+    private VeiculoDAO veiculos;
+    private AtividadeDAO atividades;
 
     private String ipServer;
     private int portServer;
@@ -50,6 +57,10 @@ public class MenuBatedor extends AppCompatActivity {
 
         this.batedores = new BatedorDAO(MenuBatedor.this);
         this.notas = new NotaDAO(MenuBatedor.this);
+        this.mapas = new MapaDAO(MenuBatedor.this);
+        this.veiculos = new VeiculoDAO(MenuBatedor.this);
+        this.atividades = new AtividadeDAO(MenuBatedor.this);
+
         this.batedorLogin = batedores.getBatedor((String)getIntent().getExtras().get("email"));
 
 
@@ -90,7 +101,6 @@ public class MenuBatedor extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), "IP: " + ipServer + " port: " + portServer , Toast.LENGTH_LONG).show();
 
         if(ipServer!=null && portServer!=-1){
-            //Toast.makeText(getApplicationContext(), "Comunicação ainda não está a funcionar" + portServer , Toast.LENGTH_LONG).show();
 
             Thread thread = new Thread(new Runnable()
             {
@@ -99,9 +109,7 @@ public class MenuBatedor extends AppCompatActivity {
                 {
                     try {
                         JSONObject request = JsonRC.downloadAtividade(batedorLogin.getEmail(),batedorLogin.getPassword());
-
                         Log.i(TAG,request.toString());
-                        //Toast.makeText(getApplicationContext(), request.toString() , Toast.LENGTH_LONG).show();
 
                         Socket socket = new Socket(ipServer,portServer);
                         BufferedReader br = new BufferedReader( new InputStreamReader(socket.getInputStream()));
@@ -111,18 +119,10 @@ public class MenuBatedor extends AppCompatActivity {
                         bw.newLine();
                         bw.flush();
 
-
                         String json = br.readLine();
                         String res = JsonRC.reciveAtividade(MenuBatedor.this,json,batedorLogin);
 
-                        if(batedorLogin.getAtividade()!=-1){
-                            ((Button) findViewById(R.id.button_gerirAtividade)).setEnabled(true);
-                            ((Button) findViewById(R.id.button_DownloadAtividade)).setEnabled(false);
-                            ((Button) findViewById(R.id.button_uploadAtividade)).setEnabled(true);
-                        }else{
-                            Toast.makeText(getApplicationContext(), res , Toast.LENGTH_LONG).show();
-
-                        }
+                        Log.i(TAG,res);
 
                         socket.close();
                     } catch (IOException e) {
@@ -134,7 +134,7 @@ public class MenuBatedor extends AppCompatActivity {
             thread.start();
         }
     }
-    
+
     public void uploadAtividade(View v){
 
 
@@ -152,15 +152,31 @@ public class MenuBatedor extends AppCompatActivity {
 
                     try {
                         Socket socket = new Socket(ipServer, portServer);
+
+                        BufferedReader br = new BufferedReader( new InputStreamReader(socket.getInputStream()));
                         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
                         bw.write(send.toString());
                         bw.newLine();
                         bw.flush();
 
-                        ((Button) findViewById(R.id.button_DownloadAtividade)).setEnabled(true);
-                        ((Button) findViewById(R.id.button_gerirAtividade)).setEnabled(false);
-                        ((Button) findViewById(R.id.button_uploadAtividade)).setEnabled(false);
+
+
+                        String jsonACK = br.readLine();
+
+                        int ack = JsonRC.reciveACK(jsonACK);
+
+                        if(ack>=0){
+                            notas.deleteAllNotaAtividade(batedorLogin.getAtividade());
+                            veiculos.deleteAllVeiculoAtividade(batedorLogin.getAtividade());
+                            mapas.deleteMapa(batedorLogin.getAtividade());
+                            atividades.deleteAtividade(batedorLogin.getAtividade());
+                            batedores.deleteBatedor(batedorLogin.getEmail());
+                            batedorLogin=null;
+                        }else{
+                            //Toast.makeText(getApplicationContext(), "Não foi enviada corretamente a atividade" , Toast.LENGTH_LONG).show();
+                            Log.i(TAG,"Não foi enviada corretamente a atividade");
+                        }
 
                     } catch (IOException e) {
                         e.printStackTrace();

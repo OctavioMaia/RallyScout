@@ -130,7 +130,7 @@ public class MapaDAO {
         return coord;
     }
 
-    public int deleteMapaCoordenadas(int idMapa){
+    private int deleteMapaCoordenadas(int idMapa){
         return mDatabase.delete(MAPA_COORDENADAS_TABLE_NAME,MAPA_COORDENADAS_COLUMN_MAPA + " = ?", new String[]{ ""+idMapa });
     }
 

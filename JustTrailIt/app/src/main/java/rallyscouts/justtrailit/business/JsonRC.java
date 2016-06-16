@@ -28,6 +28,17 @@ public class JsonRC {
 
     public static final String TAG = "JsonClass";
 
+    public static int reciveACK(String jsonString){
+        int idAtividade = -1;
+        try {
+            JSONObject recive = new JSONObject(jsonString);
+            idAtividade = recive.getInt("idAtividade");
+        } catch (JSONException e) {
+            Log.w(TAG,"Erro ao receber o Json ACK");
+        }
+        return idAtividade;
+    }
+
     public static JSONObject downloadAtividade(String emailBatedor, String password){
 
         JSONObject download = new JSONObject();
