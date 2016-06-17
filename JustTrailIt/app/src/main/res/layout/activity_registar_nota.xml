@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="rallyscouts.justtrailit.activity.RegistarNota">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:id="@+id/id_InserirTexto"
+        android:autoText="false"
+        android:hint="Introduza aqui o seu texto"
+        android:textAlignment="center"
+        android:textSize="20dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Registar Imagem"
+        android:id="@+id/button_RegistarImagem"
+        android:clickable="true"
+        android:focusable="true"
+        android:onClick="registarImagem"
+        android:layout_below="@+id/id_InserirTexto"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Audio"
+        android:id="@+id/textView"
+        android:gravity="center"
+        android:layout_below="@+id/button_RegistarImagem" />
+
+    <LinearLayout
+        android:layout_height="35dp"
+        android:layout_width="fill_parent"
+        android:layout_weight="0.64"
+        android:id="@+id/linearLayout2"
+        android:layout_below="@+id/textView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageButton_Start_PauseRecord"
+            android:layout_above="@+id/button_SubmissaoNota"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/linearLayout2"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/abc_ic_voice_search_api_mtrl_alpha"
+            android:layout_weight="1"
+            android:onClick="startRecordAudio"/>
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageButton_Stop"
+            android:layout_weight="1"
+            android:src="@android:drawable/ic_notification_overlay"
+            android:onClick="stopRecordAudio"
+            android:clickable="false" />
+
+    </LinearLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Analisar nota"
+        android:id="@+id/buttonAnalisarNota"
+        android:layout_below="@+id/linearLayout2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Confirmar submissão nota "
+        android:id="@+id/button_SubmissaoNota"
+        android:onClick="confirmarSubmissao"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+</RelativeLayout>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:weightSum="1"
+    android:descendantFocusability="blocksDescendants">
+
+
+
+    <TextView
+        android:id="@+id/textView_chassi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:paddingTop="2dp"
+        android:paddingLeft="2dp"
+        android:paddingBottom="2dp"
+        android:textSize="15sp"
+        tools:text="chassi" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@+id/textView_chassi"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/linearLayout">
+
+        <TextView
+            android:id="@+id/textView_marca"
+            android:layout_width="189dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="2dp"
+            android:paddingLeft="2dp"
+            android:paddingBottom="2dp"
+            android:textSize="10sp"
+            tools:text="marca"
+            android:layout_alignBaseline="@+id/textView_modelo"
+            android:layout_alignBottom="@+id/textView_modelo"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView_modelo"
+        android:layout_below="@+id/textView_chassi"
+        android:layout_toRightOf="@+id/linearLayout"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:paddingTop="2dp"
+        android:paddingLeft="2dp"
+        android:paddingBottom="2dp"
+        android:textSize="10sp"
+        tools:text="modelo"/>
+
+
+</RelativeLayout>

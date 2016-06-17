@@ -6,39 +6,49 @@ import android.database.Cursor;
 import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+import java.sql.SQLException;
+
+import rallyscouts.justtrailit.business.Batedor;
 
 /**
  * Created by rjaf on 09/06/16.
  */
-public class BatedorDAO extends SQLiteOpenHelper{
+public class BatedorDAO {
 
-    public static final String DATABASE_NAME = "JustTrailIt.db";
+    public static final String TAG = "BatedorDAO";
+
+    private Context mContext;
+    private SQLiteDatabase mDatabase;
+    private DBAdapter myDBadapter;
+
     public static final String BATEDOR_TABLE_NAME = "Batedor";
     public static final String BATEDOR_COLUMN_EMAIL = "Email";
     public static final String BATEDOR_COLUMN_PASSWORD = "Password";
     public static final String BATEDOR_COLUMN_NOME = "Nome";
     public static final String BATEDOR_COLUMN_ATIVIDADE = "Atividade";
 
-    public BatedorDAO(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, DATABASE_NAME, factory, version);
+    public BatedorDAO(Context mContext) {
+        this.mContext = mContext;
+        this.myDBadapter = new DBAdapter( this.mContext );
+        // open the database
+        try {
+            open();
+        } catch (SQLException e) {
+            Log.e(TAG, "SQLException on openning database " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE " + BATEDOR_TABLE_NAME + " ( " +
-                        BATEDOR_COLUMN_EMAIL + " varchar(50) primary key, " +
-                        BATEDOR_COLUMN_PASSWORD + " varchar(50), " +
-                        BATEDOR_COLUMN_NOME + " varchar(50), " +
-                        BATEDOR_COLUMN_ATIVIDADE + "integer, " +
-                        " foreign key( " + BATEDOR_COLUMN_ATIVIDADE + " ) references " + AtividadeDAO.ATIVIDADE_TABLE_NAME + "( " + AtividadeDAO.ATIVIDADE_COLUMN_ID + " ))"
-        );
+    public void open() throws SQLException {
+        mDatabase = myDBadapter.getWritableDatabase();
     }
 
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + BATEDOR_TABLE_NAME);
-        onCreate(db);
+    public void close() {
+        myDBadapter.close();
     }
+
 
     /**
      * method para inserir um batedor
@@ -48,12 +58,12 @@ public class BatedorDAO extends SQLiteOpenHelper{
      * @return
      */
     public boolean insertBatedor(String email, String pass, String nome) {
-        SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(BATEDOR_COLUMN_EMAIL, email);
         contentValues.put(BATEDOR_COLUMN_PASSWORD, pass);
         contentValues.put(BATEDOR_COLUMN_NOME, nome);
-        db.insert(BATEDOR_TABLE_NAME, null, contentValues);
+        contentValues.put(BATEDOR_COLUMN_ATIVIDADE, -1);
+        if( mDatabase.insert(BATEDOR_TABLE_NAME, null, contentValues) == -1 ) return false;
         return true;
     }
 
@@ -66,13 +76,22 @@ public class BatedorDAO extends SQLiteOpenHelper{
      * @return
      */
     public boolean updateBatedor (String email, String pass, String nome, int atividade) {
-        SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(BATEDOR_COLUMN_EMAIL, email);
         contentValues.put(BATEDOR_COLUMN_PASSWORD, pass);
         contentValues.put(BATEDOR_COLUMN_NOME, nome);
         contentValues.put(BATEDOR_COLUMN_ATIVIDADE, atividade);
-        db.update(BATEDOR_TABLE_NAME, contentValues, BATEDOR_COLUMN_EMAIL + " = ? ", new String[]{email});
+        if( mDatabase.update(BATEDOR_TABLE_NAME, contentValues, BATEDOR_COLUMN_EMAIL + " = ? ", new String[]{email}) == 0) return false;
+        return true;
+    }
+
+    public boolean updateBatedor(Batedor bat){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(BATEDOR_COLUMN_EMAIL, bat.getEmail());
+        contentValues.put(BATEDOR_COLUMN_PASSWORD, bat.getPassword());
+        contentValues.put(BATEDOR_COLUMN_NOME, bat.getNome());
+        contentValues.put(BATEDOR_COLUMN_ATIVIDADE, bat.getAtividade());
+        if( mDatabase.update(BATEDOR_TABLE_NAME, contentValues, BATEDOR_COLUMN_EMAIL + " = ? ", new String[]{bat.getEmail()}) == 0) return false;
         return true;
     }
 
@@ -81,10 +100,32 @@ public class BatedorDAO extends SQLiteOpenHelper{
      * @param email
      * @return
      */
-    public Cursor getBatedor(String email){
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select * from " + BATEDOR_TABLE_NAME + " where " + BATEDOR_COLUMN_EMAIL + " = ?" , new String[]{ email });
-        return res;
+    public Batedor getBatedor(String email){
+        Batedor bat = null;
+        Cursor res = mDatabase.rawQuery("SELECT * FROM " + BATEDOR_TABLE_NAME + " WHERE " + BATEDOR_COLUMN_EMAIL + " = ?" , new String[]{ email });
+        res.moveToFirst();
+        if(res.getCount()>0){
+            bat = new Batedor(
+                    res.getString(res.getColumnIndex(BATEDOR_COLUMN_EMAIL)),
+                    res.getString(res.getColumnIndex(BATEDOR_COLUMN_NOME)),
+                    res.getString(res.getColumnIndex(BATEDOR_COLUMN_PASSWORD)),
+                    res.getInt(res.getColumnIndex(BATEDOR_COLUMN_ATIVIDADE))
+            );
+        }
+        return bat;
+    }
+
+    /**
+     * metodo que verifica se um deteminado email se encontra na base de dados
+     * associado a algum batedor
+     * @param email
+     * @return
+     */
+    public boolean contains(String email){
+        boolean cont = true;
+        Cursor res = mDatabase.rawQuery("SELECT * FROM " + BATEDOR_TABLE_NAME + " WHERE " + BATEDOR_COLUMN_EMAIL + " = ?" , new String[]{ email });
+        if(res.getCount()==0) cont = false;
+        return cont;
     }
 
     /**
@@ -92,8 +133,7 @@ public class BatedorDAO extends SQLiteOpenHelper{
      * @param email
      * @return
      */
-    public int removeBatedor(String email){
-        SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(BATEDOR_TABLE_NAME, BATEDOR_COLUMN_EMAIL + " = ?" , new String[]{ email });
+    public int deleteBatedor(String email){
+        return mDatabase.delete(BATEDOR_TABLE_NAME, BATEDOR_COLUMN_EMAIL + " = ?" , new String[]{ email });
     }
 }

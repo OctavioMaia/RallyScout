@@ -6,17 +6,26 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import rallyscouts.justtrailit.business.Veiculo;
 
 /**
  * Created by rjaf on 09/06/16.
  */
-public class VeiculoDAO extends SQLiteOpenHelper{
+public class VeiculoDAO {
 
-    public static final String DATABASE_NAME = "JustTrailIt.db";
+
+    private Context mContext;
+    private SQLiteDatabase mDatabase;
+    private DBAdapter myDBadapter;
+
+    public static final String TAG = "VeiculoDAO";
+
     public static final String VEICULO_TABLE_NAME = "Veiculo";
     public static final String VEICULO_COLUMN_CHASSI = "Chassi";
     public static final String VEICULO_COLUMN_MARCA = "Marca";
@@ -27,82 +36,119 @@ public class VeiculoDAO extends SQLiteOpenHelper{
     public static final String VEICULO_CARACTERISTICAS_COLUMN_CARACTERISTICA = "Caracteristicas";
     public static final String VEICULO_CARACTERISTICAS_COLUMN_CHASSI = "Chassi";
 
-    public VeiculoDAO(Context context, String name, SQLiteDatabase.CursorFactory factory) {
-        super(context, DATABASE_NAME, factory, 1);
+
+    public VeiculoDAO(Context mContext) {
+        this.mContext = mContext;
+        this.myDBadapter = new DBAdapter( mContext );
+        // open the database
+        try {
+            open();
+        } catch (SQLException e) {
+            Log.e(TAG, "SQLException on openning database " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
-
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        db.execSQL(" CREATE TABLE " + VEICULO_TABLE_NAME + " ( " +
-                        VEICULO_COLUMN_CHASSI + " varchar(50) primary key, " +
-                        VEICULO_COLUMN_MARCA + " varchar(50), " +
-                        VEICULO_COLUMN_MODELO + " varchar(50), " +
-                        VEICULO_COLUMN_ATIVIDADE + " integer, " +
-                        " foreign key( " + VEICULO_COLUMN_CHASSI + " ) references " + AtividadeDAO.ATIVIDADE_TABLE_NAME + "( " + AtividadeDAO.ATIVIDADE_COLUMN_ID + " ))"
-        );
-
-        db.execSQL(" CREATE TABLE " + VEICULO_CARACTERISTICAS_TABLE_NAME + " ( " +
-                        VEICULO_CARACTERISTICAS_COLUMN_CARACTERISTICA + " varchar(400), " +
-                        VEICULO_CARACTERISTICAS_COLUMN_CHASSI + " varchar(50), " +
-                        " primary key ( " + VEICULO_CARACTERISTICAS_COLUMN_CHASSI + " , " + VEICULO_CARACTERISTICAS_COLUMN_CARACTERISTICA + " ), " +
-                        " foreign key( " + VEICULO_CARACTERISTICAS_COLUMN_CHASSI + " ) references " + VEICULO_TABLE_NAME + "( " + VEICULO_COLUMN_CHASSI + " ))"
-        );
+    public void open() throws SQLException {
+        mDatabase = myDBadapter.getWritableDatabase();
     }
 
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+    public void close() {
+        myDBadapter.close();
     }
 
-    public boolean insertVeiculo  (String chassi, String marca, String modelo, int atividade)
-    {
-        SQLiteDatabase db = this.getWritableDatabase();
+    /**
+     * metodo que insere um veiculo
+     * @param vec
+     * @return
+     */
+    public boolean insertVeiculo(int idAtividade, Veiculo vec) {
+        boolean ret = false;
         ContentValues contentValues = new ContentValues();
-        contentValues.put(VEICULO_COLUMN_CHASSI, chassi);
-        contentValues.put(VEICULO_COLUMN_MARCA, marca);
-        contentValues.put(VEICULO_COLUMN_MODELO, modelo);
-        contentValues.put(VEICULO_COLUMN_ATIVIDADE, atividade);
-        db.insert(VEICULO_TABLE_NAME, null, contentValues);
-        return true;
+        contentValues.put(VEICULO_COLUMN_CHASSI, vec.getChassi());
+        contentValues.put(VEICULO_COLUMN_MARCA, vec.getMarca());
+        contentValues.put(VEICULO_COLUMN_MODELO, vec.getModelo());
+        contentValues.put(VEICULO_COLUMN_ATIVIDADE, idAtividade);
+        if( mDatabase.insert(VEICULO_TABLE_NAME, null, contentValues) != -1 ){
+            for ( String carct : vec.getCaracteristicas() ) {
+                insertVeiculoCaracteristica(vec.getChassi(),carct);
+            }
+            ret=true;
+        }
+        return ret;
     }
 
-    public boolean insertVeiculoCaracteristica  (String chassi, String caracteritica) {
-        SQLiteDatabase db = this.getWritableDatabase();
+
+    public void insertVeiculos(int idAtividade, List<Veiculo> lista){
+        for (Veiculo v :lista ) {
+            insertVeiculo(idAtividade,v);
+        }
+    }
+
+    /**
+     * metodo que insere uma caracteristica para um determinado veiculo
+     * @param chassi
+     * @param caracteritica
+     * @return
+     */
+    private boolean insertVeiculoCaracteristica  (String chassi, String caracteritica) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(VEICULO_CARACTERISTICAS_COLUMN_CHASSI, chassi);
         contentValues.put(VEICULO_CARACTERISTICAS_COLUMN_CARACTERISTICA, caracteritica);
-        db.insert(VEICULO_CARACTERISTICAS_TABLE_NAME, null, contentValues);
+        if( mDatabase.insert(VEICULO_CARACTERISTICAS_TABLE_NAME, null, contentValues) == -1 ) return false;
         return true;
     }
 
-    public int numberOfVeiculos(){
-        SQLiteDatabase db = this.getReadableDatabase();
-        int numRows = (int) DatabaseUtils.queryNumEntries(db, VEICULO_TABLE_NAME);
-        return numRows;
+    /**
+     * metodo que remove um veiculo com um determinado chassi
+     * @param chassi
+     * @return
+     */
+    public int deleteVeiculo(String chassi){
+        deleteAllCaracteristicasVeiculo(chassi);
+        return mDatabase.delete(VEICULO_TABLE_NAME,VEICULO_COLUMN_CHASSI + " = ?",new String[]{ chassi });
+    }
+
+
+    /**
+     * metodo que remove todos os veiculos de uma atividade
+     * @param idAtividade
+     */
+    public void deleteAllVeiculoAtividade(int idAtividade){
+        Cursor resVeiculos =  mDatabase.rawQuery("SELECT * FROM " + VEICULO_TABLE_NAME + " WHERE " + VEICULO_COLUMN_ATIVIDADE + " = ?", new String[]{ ""+idAtividade });
+        resVeiculos.moveToFirst();
+        while(resVeiculos.isAfterLast()==false){
+            deleteVeiculo(resVeiculos.getString(resVeiculos.getColumnIndex(VEICULO_COLUMN_CHASSI)));
+            resVeiculos.moveToNext();
+        }
+    }
+
+    /**
+     * metodo que remove todas as caracateristicas de um veiculo
+     * @param chassi
+     * @return
+     */
+    public int deleteAllCaracteristicasVeiculo(String chassi){
+        return mDatabase.delete(VEICULO_CARACTERISTICAS_TABLE_NAME,VEICULO_CARACTERISTICAS_COLUMN_CHASSI + " = ?", new String[]{ chassi });
     }
 
     /**
      *  Method getAllVeiculos que retira da base de dados todos os veiculos nela presente
      * @return
      */
-    public ArrayList<Veiculo> getAllVeiculos() {
+    public List<Veiculo> getAllVeiculos() {
         ArrayList<Veiculo> veiculos = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor resVeiculos =  db.rawQuery("select * from " + VEICULO_TABLE_NAME, null);
+        Cursor resVeiculos =  mDatabase.rawQuery("SELECT * FROM " + VEICULO_TABLE_NAME, null);
         resVeiculos.moveToFirst();
 
         while(resVeiculos.isAfterLast() == false){
             ArrayList<String> caracteristicas = new ArrayList<>();
             String chassi = resVeiculos.getString(resVeiculos.getColumnIndex(VEICULO_COLUMN_CHASSI));
 
-            String[] args = { chassi };
-
-            Cursor resCaracteristicas =  db.rawQuery( "select " + VEICULO_CARACTERISTICAS_COLUMN_CARACTERISTICA + " from " + VEICULO_CARACTERISTICAS_TABLE_NAME +
-                    " where " + VEICULO_CARACTERISTICAS_COLUMN_CHASSI + " = ? ", args  );
+            Cursor resCaracteristicas =  mDatabase.rawQuery( "SELECT " + VEICULO_CARACTERISTICAS_COLUMN_CARACTERISTICA + " FROM " + VEICULO_CARACTERISTICAS_TABLE_NAME +
+                    " WHERE " + VEICULO_CARACTERISTICAS_COLUMN_CHASSI + " = ? ", new String[] { chassi } );
 
             resCaracteristicas.moveToFirst();
-
             while (resCaracteristicas.isAfterLast() == false){
                 caracteristicas.add(resCaracteristicas.getString(resCaracteristicas.getColumnIndex(VEICULO_CARACTERISTICAS_COLUMN_CARACTERISTICA)));
                 resCaracteristicas.moveToNext();
@@ -118,35 +164,24 @@ public class VeiculoDAO extends SQLiteOpenHelper{
             veiculos.add(v);
             resVeiculos.moveToNext();
         }
-
         return veiculos;
     }
 
-
-    /**
-     * Method getAllVeiculos que retira da base de dados todos os veiculos referentes a uma atividade
-     * @param atividade
-     * @return
-     */
-    public ArrayList<Veiculo> getAllVeiculos(int atividade) {
+    public List<Veiculo> getAllVeiculos(int idAtividade){
         ArrayList<Veiculo> veiculos = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-
-
-        Cursor resVeiculos =  db.rawQuery("select * from " + VEICULO_TABLE_NAME + " where " + VEICULO_COLUMN_ATIVIDADE + " = ? ", new String[]{ ""+atividade } );
+        Cursor resVeiculos =  mDatabase.rawQuery("SELECT * FROM " + VEICULO_TABLE_NAME + " WHERE " + VEICULO_COLUMN_ATIVIDADE + " = ?", new String[]{ ""+idAtividade});
         resVeiculos.moveToFirst();
 
         while(resVeiculos.isAfterLast() == false){
             ArrayList<String> caracteristicas = new ArrayList<>();
             String chassi = resVeiculos.getString(resVeiculos.getColumnIndex(VEICULO_COLUMN_CHASSI));
 
-
-            Cursor resCaracteristicas =  db.rawQuery( "select " + VEICULO_CARACTERISTICAS_COLUMN_CARACTERISTICA + " from " + VEICULO_CARACTERISTICAS_TABLE_NAME +
-                    " where " + VEICULO_CARACTERISTICAS_COLUMN_CHASSI + " = ? ", new String[]{ chassi }  );
+            Cursor resCaracteristicas =  mDatabase.rawQuery( "SELECT " + VEICULO_CARACTERISTICAS_COLUMN_CARACTERISTICA + " FROM " + VEICULO_CARACTERISTICAS_TABLE_NAME +
+                    " WHERE " + VEICULO_CARACTERISTICAS_COLUMN_CHASSI + " = ? ", new String[] { chassi } );
 
             resCaracteristicas.moveToFirst();
-
             while (resCaracteristicas.isAfterLast() == false){
+                Log.i(TAG,"CARCATE: " + resCaracteristicas.getString(resCaracteristicas.getColumnIndex(VEICULO_CARACTERISTICAS_COLUMN_CARACTERISTICA)));
                 caracteristicas.add(resCaracteristicas.getString(resCaracteristicas.getColumnIndex(VEICULO_CARACTERISTICAS_COLUMN_CARACTERISTICA)));
                 resCaracteristicas.moveToNext();
             }
@@ -158,12 +193,11 @@ public class VeiculoDAO extends SQLiteOpenHelper{
                     caracteristicas
             );
 
+
+
             veiculos.add(v);
             resVeiculos.moveToNext();
-
-
         }
-
         return veiculos;
     }
 

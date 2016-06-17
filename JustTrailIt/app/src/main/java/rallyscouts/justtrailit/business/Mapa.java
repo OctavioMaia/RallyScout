@@ -2,6 +2,7 @@ package rallyscouts.justtrailit.business;
 
 import android.location.Location;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -9,20 +10,27 @@ import java.util.Map;
  */
 public class Mapa {
 
-    private String idMapa; // id na base de dados
+    private int idMapa; // id na base de dados
     private String nomeProva;
     private Map<Integer,Location> coord;
 
 
-    public Mapa(Map<Integer, Location> coord, String idMapa, String nomeProva) {
+    public Mapa(Map<Integer, Location> coord, int idMapa, String nomeProva) {
         this.coord = coord;
         this.idMapa = idMapa;
         this.nomeProva = nomeProva;
     }
 
-    public Mapa(String idMapa, String nomeProva) {
+    public Mapa(int idMapa, String nomeProva) {
         this.idMapa = idMapa;
         this.nomeProva = nomeProva;
+        this.coord = new HashMap<>();
+    }
+
+    public Mapa(int idMapa) {
+        this.idMapa = idMapa;
+        this.nomeProva=null;
+        this.coord=null;
     }
 
     public Map<Integer, Location> getCoord() {
@@ -33,11 +41,11 @@ public class Mapa {
         this.coord = coord;
     }
 
-    public String getIdMapa() {
+    public int getIdMapa() {
         return idMapa;
     }
 
-    public void setIdMapa(String idMapa) {
+    public void setIdMapa(int idMapa) {
         this.idMapa = idMapa;
     }
 
@@ -56,16 +64,15 @@ public class Mapa {
 
         Mapa mapa = (Mapa) o;
 
-        if (!idMapa.equals(mapa.idMapa)) return false;
-        if (nomeProva != null ? !nomeProva.equals(mapa.nomeProva) : mapa.nomeProva != null)
-            return false;
-        return !(coord != null ? !coord.equals(mapa.coord) : mapa.coord != null);
+        if (idMapa != mapa.idMapa) return false;
+        if (!nomeProva.equals(mapa.nomeProva)) return false;
+        return coord != null ? coord.equals(mapa.coord) : mapa.coord == null;
 
     }
 
     @Override
     public int hashCode() {
-        return idMapa.hashCode();
+        return idMapa;
     }
 
     public void addCoord(Integer ord, Location loc){

@@ -1,7 +1,13 @@
 package rallyscouts.justtrailit.business;
 
+import android.content.Context;
+
 import java.util.ArrayList;
 import java.util.Date;
+
+import rallyscouts.justtrailit.data.MapaDAO;
+import rallyscouts.justtrailit.data.NotaDAO;
+import rallyscouts.justtrailit.data.VeiculoDAO;
 
 /**
  * Created by rjaf on 09/06/16.
@@ -9,39 +15,11 @@ import java.util.Date;
 public class Atividade {
 
     private int idAtividade;
-    private Date inicioReconhecimento;
-    private Date fimReconhecimento;
     private String nomeEquipa;
-    private boolean inProgress;
-    private Mapa percurso;
-    private ArrayList<Nota> notas;
-    private ArrayList<Veiculo> veiculos;
 
-    public Atividade(Date fimReconhecimento, int idAtividade, Date inicioReconhecimento, boolean inProgress, String nomeEquipa, ArrayList<Nota> notas, Mapa percurso, ArrayList<Veiculo> veiculos) {
-        this.fimReconhecimento = fimReconhecimento;
+    public Atividade(int idAtividade, String nomeEquipa) {
         this.idAtividade = idAtividade;
-        this.inicioReconhecimento = inicioReconhecimento;
-        this.inProgress = inProgress;
         this.nomeEquipa = nomeEquipa;
-        this.notas = notas;
-        this.percurso = percurso;
-        this.veiculos = veiculos;
-    }
-
-    public Atividade(int idAtividade, boolean inProgress, String nomeEquipa, Mapa percurso, ArrayList<Veiculo> veiculos) {
-        this.idAtividade = idAtividade;
-        this.inProgress = inProgress;
-        this.nomeEquipa = nomeEquipa;
-        this.percurso = percurso;
-        this.veiculos = veiculos;
-    }
-
-    public Date getFimReconhecimento() {
-        return fimReconhecimento;
-    }
-
-    public void setFimReconhecimento(Date fimReconhecimento) {
-        this.fimReconhecimento = fimReconhecimento;
     }
 
     public int getIdAtividade() {
@@ -52,22 +30,6 @@ public class Atividade {
         this.idAtividade = idAtividade;
     }
 
-    public Date getInicioReconhecimento() {
-        return inicioReconhecimento;
-    }
-
-    public void setInicioReconhecimento(Date inicioReconhecimento) {
-        this.inicioReconhecimento = inicioReconhecimento;
-    }
-
-    public boolean isInProgress() {
-        return inProgress;
-    }
-
-    public void setInProgress(boolean inProgress) {
-        this.inProgress = inProgress;
-    }
-
     public String getNomeEquipa() {
         return nomeEquipa;
     }
@@ -76,28 +38,12 @@ public class Atividade {
         this.nomeEquipa = nomeEquipa;
     }
 
-    public ArrayList<Nota> getNotas() {
-        return notas;
-    }
-
-    public void setNotas(ArrayList<Nota> notas) {
-        this.notas = notas;
-    }
-
-    public Mapa getPercurso() {
-        return percurso;
-    }
-
-    public void setPercurso(Mapa percurso) {
-        this.percurso = percurso;
-    }
-
-    public ArrayList<Veiculo> getVeiculos() {
-        return veiculos;
-    }
-
-    public void setVeiculos(ArrayList<Veiculo> veiculos) {
-        this.veiculos = veiculos;
+    @Override
+    public String toString() {
+        return "Atividade{" +
+                ", idAtividade=" + idAtividade +
+                ", nomeEquipa='" + nomeEquipa + '\'' +
+                '}';
     }
 
     @Override
@@ -107,18 +53,7 @@ public class Atividade {
 
         Atividade atividade = (Atividade) o;
 
-        if (idAtividade != atividade.idAtividade) return false;
-        if (inProgress != atividade.inProgress) return false;
-        if (inicioReconhecimento != null ? !inicioReconhecimento.equals(atividade.inicioReconhecimento) : atividade.inicioReconhecimento != null)
-            return false;
-        if (fimReconhecimento != null ? !fimReconhecimento.equals(atividade.fimReconhecimento) : atividade.fimReconhecimento != null)
-            return false;
-        if (nomeEquipa != null ? !nomeEquipa.equals(atividade.nomeEquipa) : atividade.nomeEquipa != null)
-            return false;
-        if (percurso != null ? !percurso.equals(atividade.percurso) : atividade.percurso != null)
-            return false;
-        if (notas != null ? !notas.equals(atividade.notas) : atividade.notas != null) return false;
-        return !(veiculos != null ? !veiculos.equals(atividade.veiculos) : atividade.veiculos != null);
+        return idAtividade == atividade.idAtividade;
 
     }
 
