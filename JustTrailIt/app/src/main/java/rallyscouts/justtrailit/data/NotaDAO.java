@@ -61,18 +61,31 @@ public class NotaDAO {
         myDBadapter.close();
     }
 
-
     public boolean insertNota(int idAtividade, Nota nota){
         ContentValues contentValues = new ContentValues();
         contentValues.put(NOTA_COLUMN_ID_NOTA, nota.getIdNota());
+        Log.i(TAG,"NOTA:"+nota.getIdNota());
+
         contentValues.put(NOTA_COLUMN_ATIVIDADE, idAtividade);
+        Log.i(TAG,""+idAtividade);
+
         contentValues.put(NOTA_COLUMN_NOTA_TEXTUAL, nota.getNotaTextual());
+        Log.i(TAG,nota.getNotaTextual());
         contentValues.put(NOTA_COLUMN_AUDIO, nota.getVoice());
+        if(nota.getVoice()!=null){
+            Log.i(TAG,""+nota.getVoice().length);
+        }
+
         contentValues.put(NOTA_COLUMN_LATITUDE,nota.getLocalRegisto().getLatitude());
+        Log.i(TAG,""+nota.getLocalRegisto().getLatitude());
+
         contentValues.put(NOTA_COLUMN_LONGITUDE,nota.getLocalRegisto().getLongitude());
+        Log.i(TAG,""+nota.getLocalRegisto().getLongitude());
+
         if( mDatabase.insert(NOTA_TABLE_NAME, null, contentValues) == -1) return false ;
         for ( Bitmap im : nota.getImagens() ) {
             insertImagem(nota.getIdNota(),idAtividade,im);
+            Log.i(TAG,"IMAGE:"+im.getByteCount());
         }
         return true;
     }
@@ -84,17 +97,40 @@ public class NotaDAO {
         int size = imagem.getRowBytes() * imagem.getHeight();
         ByteBuffer byteBuffer = ByteBuffer.allocate(size);
         imagem.copyPixelsToBuffer(byteBuffer);
+
         contentValues.put(IMAGEM_COLUMN_IMAGE, byteBuffer.array());
         if( mDatabase.insert(IMAGEM_TABLE_NAME, null, contentValues) == -1) return false ;
         return true;
     }
 
-    public int getMaiorNota() {
+    public int getLargerID(int idAtividade){
+        int large = -1;
         Cursor nota = mDatabase.rawQuery(
-                "SELECT NVL(MAX( " + NOTA_COLUMN_ID_NOTA +" ),0)" + "FROM " + NOTA_TABLE_NAME,null);
-        int maiorNota = nota.getInt(1);
-        if(maiorNota==0) {return maiorNota;}
-            else {return maiorNota+1;}
+                "SELECT " + NOTA_COLUMN_ID_NOTA +
+                        " FROM " + NOTA_TABLE_NAME +
+                        " WHERE " + NOTA_COLUMN_ATIVIDADE + " = ?" , new String[]{ ""+idAtividade });
+        if(nota.getCount()==0) {
+            large = -1;
+        } else{
+            nota.moveToFirst();
+            while (nota.isAfterLast()==false){
+                if(nota.getInt(nota.getColumnIndex(NOTA_COLUMN_ID_NOTA)) > large) { large = nota.getInt(nota.getColumnIndex(NOTA_COLUMN_ID_NOTA));}
+                nota.moveToNext();
+            }
+            nota.close();
+        }
+        return large;
+
+    }
+
+    public int getMaiorNota(int idAtividade) {
+        Cursor nota = mDatabase.rawQuery(
+                "SELECT NVL(MAX( " + NOTA_COLUMN_ID_NOTA +" ),0)" +
+                        "FROM " + NOTA_TABLE_NAME +
+                        " WHERE " + NOTA_COLUMN_ATIVIDADE + " = ?" , new String[]{ ""+idAtividade });
+        int maior =  nota.getInt(0);
+        nota.close();
+        return maior;
     }
 
 
@@ -106,12 +142,19 @@ public class NotaDAO {
                 new String[]{ ""+idNota,""+idAtividade }
         );
 
+        resNota.moveToFirst();
         if(resNota.getCount()>0){
             Location loc = new Location("");
-            loc.setLatitude(resNota.getLong(resNota.getColumnIndex(NOTA_COLUMN_LATITUDE)));
-            loc.setLongitude(resNota.getLong(resNota.getColumnIndex(NOTA_COLUMN_LONGITUDE)));
-            not = new Nota(idNota,loc);
+            loc.setLatitude(resNota.getDouble(resNota.getColumnIndex(NOTA_COLUMN_LATITUDE)));
+            loc.setLongitude(resNota.getDouble(resNota.getColumnIndex(NOTA_COLUMN_LONGITUDE)));
+            not = new Nota(
+                    idNota,
+                    getAllImagens(idNota,idAtividade),
+                    loc,
+                    resNota.getString(resNota.getColumnIndex(NOTA_COLUMN_NOTA_TEXTUAL)),
+                    resNota.getBlob(resNota.getColumnIndex(NOTA_COLUMN_AUDIO)));
         }
+        resNota.close();
         return not;
     }
 
@@ -121,7 +164,7 @@ public class NotaDAO {
 
         Cursor resImagens = mDatabase.rawQuery(
                 "SELECT * FROM " + IMAGEM_TABLE_NAME +
-                        "WHERE " + IMAGEM_COLUMN_NOTA + " = ? AND " + IMAGEM_COLUMN_ATIVIDADE + " = ?",
+                        " WHERE " + IMAGEM_COLUMN_NOTA + " = ? AND " + IMAGEM_COLUMN_ATIVIDADE + " = ?",
                 new String[]{ ""+idNota, ""+idAtividade }
         );
 
@@ -132,6 +175,7 @@ public class NotaDAO {
             imagens.add(bm);
             resImagens.moveToNext();
         }
+        resImagens.close();
         return imagens;
     }
 
@@ -144,21 +188,23 @@ public class NotaDAO {
                 new String[]{""+idAtividade});
 
         res.moveToFirst();
-
         while(res.isAfterLast()==false){
-            Nota n = getNota(res.getInt(res.getColumnIndex(NOTA_COLUMN_ATIVIDADE)),idAtividade);
+            Nota n = getNota(res.getInt(res.getColumnIndex(NOTA_COLUMN_ID_NOTA)),idAtividade);
+            Log.i(TAG,n.toString());
             if(n!=null){
                 notas.add(n);
             }
             res.moveToNext();
         }
+        res.close();
         return notas;
 
     }
 
 
 
-    public boolean insertNota(int idNota, int idAtividade, String notaTextual, byte[] audio, float lat, float lng, List<Bitmap> imagens){
+
+    private boolean insertNota(int idNota, int idAtividade, String notaTextual, byte[] audio, float lat, float lng, List<Bitmap> imagens){
         ContentValues contentValues = new ContentValues();
         contentValues.put(NOTA_COLUMN_ID_NOTA, idNota);
         contentValues.put(NOTA_COLUMN_ATIVIDADE, idAtividade);
@@ -171,5 +217,14 @@ public class NotaDAO {
             insertImagem(idNota,idAtividade,im);
         }
         return true;
+    }
+
+    public int deleteAllImageAtividade(int idAtividade){
+        return mDatabase.delete(IMAGEM_TABLE_NAME,IMAGEM_COLUMN_ATIVIDADE + " = ?", new String[]{""+idAtividade});
+    }
+
+    public int deleteAllNotaAtividade(int idAtividade) {
+        deleteAllImageAtividade(idAtividade);
+        return mDatabase.delete(NOTA_TABLE_NAME, NOTA_COLUMN_ATIVIDADE + " = ?", new String[]{ ""+idAtividade });
     }
 }
