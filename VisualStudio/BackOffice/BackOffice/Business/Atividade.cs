@@ -236,9 +236,9 @@ namespace BackOffice.Business
             TimeSpan ts = this.fimReconhecimento - this.inicioReconhecimento;
             Double horas = ts.Hours;
 
-            string infoRec = "\tA realização deste reconheimento foi iniciada no dia " + this.inicioReconhecimento.ToShortDateString() +
+            string infoRec = "\tA realização deste reconhecimento foi iniciada no dia " + this.inicioReconhecimento.ToShortDateString() +
                 " às " + this.inicioReconhecimento.ToShortTimeString() + ",  sendo finalizado o seu reconhecimento no dia " + this.fimReconhecimento.ToShortDateString() +
-                " às " + this.fimReconhecimento.ToShortTimeString() + ", tendo por isso uma duração de " + horas + " Horas.";
+                " às " + this.fimReconhecimento.ToShortTimeString() + ", tendo por isso uma duração de " + horas + " horas.";
             p = new Paragraph(infoRec, TextoFont);
             p.FirstLineIndent = parID;
             p.IndentationLeft = marID;
@@ -250,7 +250,7 @@ namespace BackOffice.Business
             p.Alignment = Element.ALIGN_CENTER;
             doc.Add(p);
             ///
-            string veic = "\tPara a prova considerada foram os segintes " + this.veiculos.Count + " veiculos.";
+            string veic = "\tPara a prova considerada foram os seguintes " + this.veiculos.Count + " veículos.";
             p = new Paragraph(infoRec, TextoFont);
             p.FirstLineIndent = parID;
             p.IndentationLeft = marID;
@@ -258,11 +258,11 @@ namespace BackOffice.Business
             doc.Add(p);
             //
             List listaVec = new List(List.ORDERED, 20f);
-            listaVec.IndentationLeft = 20f;
+            //listaVec.IndentationLeft = 20f;
            // listaVec.PreSymbol = string.Format("{0}.", i);
             foreach (Veiculo v in this.veiculos)
             {
-                listaVec.Add("Chassi: " + v.chassi + " Marca: " + v.marca + " Modelo: " + v.modelo + "\n Caracteristicas ("+v.caracteristicas.Count+")");
+                listaVec.Add("Chassi: " + v.chassi + " Marca: " + v.marca + " Modelo: " + v.modelo + "\n Características ("+v.caracteristicas.Count+")");
                 List listaVecC = new List(List.ORDERED, 30f);
                 foreach(string c in v.caracteristicas)
                 {
@@ -286,8 +286,8 @@ namespace BackOffice.Business
             p.IndentationRight = marID;
             doc.Add(p);
             //
-            List listaNote = new List(List.ORDERED, 20f);
-            listaNote.IndentationLeft = 20f;
+           // List listaNote = new List(List.ORDERED, 20f);
+            //listaNote.IndentationLeft = 20f;
             this.notas.Sort();
             foreach (Nota n in this.notas)
             {
@@ -305,17 +305,22 @@ namespace BackOffice.Business
                         nv = voz.texto;
                     }
                 }
-                listaNote.Add("Nota numero "+ n.idNota +" recolhida em " + n.localRegisto.Latitude + " " +n.localRegisto.Longitude+".\n Nota Textual : "+ nt+"\n Nota de Voz: "+ nv);
-                List listaNoteI = new List(List.ORDERED, 30f);
-                foreach (System.Drawing.Image image in n.imagens)
-                {
-                    iTextSharp.text.Image pic = iTextSharp.text.Image.GetInstance(image, System.Drawing.Imaging.ImageFormat.Jpeg); //atençao ao jpeg
-                    pic.ScaleAbsolute(50f, pic.XYRatio * 50f); //pode estar ao contraririo
-                    listaNoteI.Add(pic);
-                }
-                listaVec.Add(listaNote);
+                string notas1 = ("Nota numero "+ n.idNota +" \nrecolhida em " + n.localRegisto.Latitude + " " +n.localRegisto.Longitude+".\n Nota Textual : "+ nt+"\n Nota de Voz: "+ nv);
+                 List listaNoteI = new List(List.ORDERED, 30f);
+                 foreach (System.Drawing.Image image in n.imagens)
+                 {
+                     iTextSharp.text.Image pic = iTextSharp.text.Image.GetInstance(image, System.Drawing.Imaging.ImageFormat.Bmp); //atençao ao jpeg
+                     pic.ScaleAbsolute(50f, pic.XYRatio * 50f); //pode estar ao contraririo
+                     listaNoteI.Add(pic);
+                 }
+                doc.Add(listaNoteI);
+                p = new Paragraph(notas1, TextoFont);
+                p.FirstLineIndent = parID+ marID;
+                p.IndentationLeft = marID+ marID;
+                p.IndentationRight = marID;
+                doc.Add(p);
             }
-            doc.Add(listaNote);
+            //doc.Add(listaNote);
             //pagina final
             doc.NewPage();
             string fim = "FIM";
@@ -337,7 +342,7 @@ namespace BackOffice.Business
             if (otherActividade != null)
                 return this.idAtividade.CompareTo(otherActividade.idAtividade);
             else
-                throw new ArgumentException("Object is not a Temperature");
+                throw new ArgumentException("Object is not a Atividade");
         }
 
         public Boolean isPendent()

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BackOffice.Presentation"
         mc:Ignorable="d"
-        Title="Gestão de Veiculos" Height="499.746" Width="895.82" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Icon="/BackOffice;component/icon.ico">
+        Title="Gestão de Veiculos" Height="499.746" Width="902.819" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Icon="/BackOffice;component/icon.ico">
     <Grid>
         <Label x:Name="labelModeloVeiculo_Copy1" Content="Chassi" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="27" Width="86" FontFamily="Arial" FontSize="18.667" FontWeight="Bold"/>
         <TextBox x:Name="textBoxChassi" HorizontalAlignment="Left" Height="27" Margin="159,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="721" FontFamily="Arial" FontSize="16"/>

@@ -53,26 +53,32 @@ namespace BackOffice.Presentation
         {
 
             String pathN = textBoxPath.Text;
-            if(!(this.path.Equals(pathN) && gerado))
+            if (pathN.Length == 0)
             {
-                try
+                System.Windows.Forms.MessageBox.Show("Deve Indicar uma localização para gerar os relatórios.", "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+            }
+            else {
+                if (!(this.path.Equals(pathN) && gerado))
                 {
+                    /* try
+                     {*/
                     this.backoffice.gerarRelatorios(path, current.idAtividade);
                     this.path = pathN;
                     gerado = true;
                     System.Windows.Forms.MessageBox.Show("Relatórios gerado com sucesso em " + path, "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    /*}
+                    catch (Exception ex)
+                    {
+                        System.Windows.Forms.MessageBox.Show(ex.Message.ToString(), "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }*/
                 }
-                catch (Exception ex)
+                else
                 {
-                    System.Windows.Forms.MessageBox.Show(ex.Message.ToString(), "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    System.Windows.Forms.MessageBox.Show("Os Relatórios já foram gerados em " + path, "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
-            }
-            else
-            {
-                System.Windows.Forms.MessageBox.Show("Os Relatórios já foram gerados em " + path, "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-            
 
+            }
            
         }
 

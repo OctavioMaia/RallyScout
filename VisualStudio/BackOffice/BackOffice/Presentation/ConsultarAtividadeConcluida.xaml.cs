@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -116,14 +117,29 @@ namespace BackOffice.Presentation
         private void buttonVerMapa_Click(object sender, RoutedEventArgs e)
         {
             VisualizadorMap vm = new VisualizadorMap();
-            vm.carregaMapa(this.selecionada);
-            vm.Visible = true;
+            if (this.selecionada != null)
+            {
+                vm.carregaMapa(this.selecionada);
+                vm.Visible = true;
+            }
+            else
+            {
+                System.Windows.Forms.MessageBox.Show("Por favor selecione uma atividade!", "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            
         }
 
         private void buttonGerar_Click(object sender, RoutedEventArgs e)
         {
-            GerirRelatorio gr = new GerirRelatorio(this.backoffice,this.selecionada);
-            gr.Visibility = Visibility.Visible;
+            if (this.selecionada != null)
+            {
+                GerirRelatorio gr = new GerirRelatorio(this.backoffice, this.selecionada);
+                gr.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                System.Windows.Forms.MessageBox.Show("Por favor selecione uma atividade!", "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         private void buttonRegressar_Click(object sender, RoutedEventArgs e)
