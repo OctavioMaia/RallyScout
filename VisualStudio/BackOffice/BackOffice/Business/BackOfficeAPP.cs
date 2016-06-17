@@ -19,6 +19,8 @@ using BackOffice.Data.DataBase;
 using System.Threading;
 using System.Windows.Shapes;
 using System.Windows.Controls;
+using System.Text.RegularExpressions;
+using System.Device.Location;
 
 namespace BackOffice.Business
 {
@@ -430,6 +432,75 @@ namespace BackOffice.Business
         }
 
 
-     
+        public void gerarJsonDebug(string output)
+        {
+            foreach(Atividade a in this.getAtividadesPorTerminar())
+            {
+                JustToBack novo = new JustToBack();
+                novo.email = a.batedor.email;
+                novo.idAtividade = a.idAtividade;
+                novo.password = null;
+                novo.notas = this.geraNotes(a.percurso);
+                string json = JsonConvert.SerializeObject(novo, Formatting.Indented);
+                string t = Regex.Replace(json, @"\t|\n|\r", "");
+                string outp = output + "\\novo_" + a.idAtividade + ".json";
+                System.IO.File.WriteAllText(outp,t);
+
+            }
+        }
+        private Note[] geraNotes(Mapa m)
+        {
+            int totalgera = Math.Min(20, m.cords.Count);
+            Note[] ret = new Note[totalgera];
+            Random rnd = new Random();
+            List<GeoCoordinate> posOK = new List<GeoCoordinate>();
+            for (int i =0; i < totalgera; i++)
+            {
+                int nc = rnd.Next(0, m.cords.Count - 1);
+                GeoCoordinate g = m.cords[nc];
+                while (this.verifica(posOK, g))
+                {
+                    nc = rnd.Next(0, m.cords.Count - 1);
+                    g = m.cords[nc];
+                }
+                ret[i] = geraNote(g.Latitude, g.Longitude,i);
+            }
+            return ret;
+        }
+
+        private bool verifica(List<GeoCoordinate> posOK, GeoCoordinate g)
+        {
+            foreach(GeoCoordinate g1 in posOK)
+            {
+                if(g1.Latitude.Equals(g.Latitude) && g1.Longitude.Equals(g.Longitude))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private Note geraNote(double lat, Double longit,int num)
+        {
+            Random rnd = new Random();
+            Note n = new Note();
+            n.local = new Cord(lat, longit);
+
+            n.idNota = num;
+            n.notaTextual = null;
+            int i = rnd.Next(0, 5);
+            if (i < 10) //esta ssim para gerar sempre
+            {
+                n.notaTextual = "Nota textual na corenada " + lat + " " + longit+" ";
+            }
+            n.audio = null;
+            n.imagem = null;
+            return n;
+        }
+
+
+
+
     }
 }
