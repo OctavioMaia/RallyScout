@@ -9,6 +9,8 @@ import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -94,11 +96,14 @@ public class NotaDAO {
         ContentValues contentValues = new ContentValues();
         contentValues.put(IMAGEM_COLUMN_NOTA, idNota);
         contentValues.put(IMAGEM_COLUMN_ATIVIDADE, idAtividade);
-        int size = imagem.getRowBytes() * imagem.getHeight();
-        ByteBuffer byteBuffer = ByteBuffer.allocate(size);
-        imagem.copyPixelsToBuffer(byteBuffer);
+        //int size = imagem.getRowBytes() * imagem.getHeight();
+        //ByteBuffer byteBuffer = ByteBuffer.allocate(size);
+        //imagem.copyPixelsToBuffer(byteBuffer);
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        imagem.compress(Bitmap.CompressFormat.PNG, 100, bos);
+        byte[] bArray = bos.toByteArray();
 
-        contentValues.put(IMAGEM_COLUMN_IMAGE, byteBuffer.array());
+        contentValues.put(IMAGEM_COLUMN_IMAGE, bArray);
         if( mDatabase.insert(IMAGEM_TABLE_NAME, null, contentValues) == -1) return false ;
         return true;
     }
@@ -171,7 +176,13 @@ public class NotaDAO {
         resImagens.moveToFirst();
         while(resImagens.isAfterLast()==false){
             byte[] byteArray = resImagens.getBlob(resImagens.getColumnIndex(IMAGEM_COLUMN_IMAGE));
-            Bitmap bm = BitmapFactory.decodeByteArray(byteArray, 0 ,byteArray.length);
+            Log.i(TAG,"Numero de bytes iamgem: " + byteArray.length);
+
+            Bitmap bm = BitmapFactory.decodeByteArray(byteArray,0,byteArray.length);
+
+            if (bm==null){
+                Log.i(TAG,"O bitmap é null");
+            }
             imagens.add(bm);
             resImagens.moveToNext();
         }
