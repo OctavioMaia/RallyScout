@@ -527,7 +527,7 @@ namespace BackOffice.Business
         private string[] bytesImagens()
         {
             string folderName = "C:\\Users\\Octávio\\Desktop\\image";
-            List<String> imagens = Directory.GetFiles(folderName, "*.*", SearchOption.AllDirectories).ToList();
+            List<String> imagens = Directory.GetFiles(folderName, "*.bmp*", SearchOption.AllDirectories).ToList();
             List<String> array = new List<String>();
             foreach(String s in imagens)
             {
@@ -539,22 +539,51 @@ namespace BackOffice.Business
             return array.ToArray();
         }
 
+        private string bytesAudio()
+        {
+            string folderName = "C:\\Users\\Octávio\\Desktop\\image";
+            List<String> imagens = Directory.GetFiles(folderName, "*.wav*", SearchOption.AllDirectories).ToList();
+            string ret = null;
+            if (imagens.Count > 0)
+            {
+                string s = imagens[0];
+                byte[] bytes = File.ReadAllBytes(s);
+                ret = BackOfficeAPP.fromBytes64(bytes);
+            }
+          
+
+            return ret;
+        }
+
         private Note geraNote(double lat, Double longit,int num)
         {
             Random rnd = new Random();
             Note n = new Note();
             n.local = new Cord(lat, longit);
 
-            n.imagem = bytesImagens();
+
+            
             n.idNota = num;
             n.notaTextual = null;
             int i = rnd.Next(0, 5);
             if (i < 10) //esta ssim para gerar sempre
             {
-                n.notaTextual = "Nota textual na corenada " + lat + " " + longit+" ";
+                n.notaTextual = "Nota textual na coordenada " + lat + " " + longit+" ";
             }
-            n.audio = null;
-            //n.imagem = null;
+          
+            i = rnd.Next(0, 10);
+
+            if (i < 11 && num==1)
+            {
+                n.imagem = bytesImagens();
+                n.audio = bytesAudio();
+            }
+            else
+            {
+                n.imagem = null;
+                n.audio = null;
+            }
+
             return n;
         }
 
