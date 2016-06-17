@@ -40,11 +40,10 @@ namespace BackOffice.Presentation
         {
             List<String> l = this.backoffice.getBatedoresMails();
 
-            foreach(String s in l)
+            foreach (String s in l)
             {
                 comboBox.Items.Add(s);
             }
-            
         }
 
         private void buttonAdicionarVeiculo_Click(object sender, RoutedEventArgs e)

@@ -25,10 +25,13 @@ namespace BackOffice.Presentation
         BackOfficeAPP backoffice;
         Atividade current;
         Boolean gerado;
+        String path;
 
-        public GerirRelatorio(BackOfficeAPP b)
+        public GerirRelatorio(BackOfficeAPP b, Atividade a)
         {
+            this.current = a;
             this.backoffice = b;
+            this.path = "";
             InitializeComponent();
         }
 
@@ -48,9 +51,29 @@ namespace BackOffice.Presentation
 
         private void buttonGerarRelatorio_Click(object sender, RoutedEventArgs e)
         {
-            String path = textBoxPath.Text;
-            this.backoffice.gerarRelatorios(path,current.idAtividade);
-            gerado = true;
+
+            String pathN = textBoxPath.Text;
+            if(!(this.path.Equals(pathN) && gerado))
+            {
+                try
+                {
+                    this.backoffice.gerarRelatorios(path, current.idAtividade);
+                    this.path = pathN;
+                    gerado = true;
+                    System.Windows.Forms.MessageBox.Show("Relatórios gerado com sucesso em " + path, "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.Forms.MessageBox.Show(ex.Message.ToString(), "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else
+            {
+                System.Windows.Forms.MessageBox.Show("Os Relatórios já foram gerados em " + path, "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            
+
+           
         }
 
         private void buttonEnviar_Click(object sender, RoutedEventArgs e)
@@ -61,24 +84,37 @@ namespace BackOffice.Presentation
             String texto = textRange.Text;
             String path = textBoxPath.Text;
 
-            if (destino.Length > 0 && assunto.Length>0 && texto.Length>0 && path.Length>0)
+            if (gerado)
             {
-                String piloto = path + "copiloto.pdf";
-                String general = path + "general.pdf";
+                if (destino.Length > 0 && assunto.Length > 0 && texto.Length > 0 && path.Length > 0)
+                {
+                    String piloto = System.IO.Path.Combine(path, "copiloto.pdf");
+                    String general = System.IO.Path.Combine(path, "general.pdf");
 
-                System.Windows.MessageBox.Show("piloto path: " + piloto + " general path: " + general);
+                    //System.Windows.MessageBox.Show("piloto path: " + piloto + " general path: " + general);
 
-                List<String> anexos = new List<String>();
-                anexos.Add(piloto);
-                anexos.Add(general);
+                    List<String> anexos = new List<String>();
+                    anexos.Add(piloto);
+                    anexos.Add(general);
 
-                this.backoffice.email_send(current.equipa.email, assunto, texto,anexos);
-
-                System.Windows.Forms.MessageBox.Show("Email enviado com sucesso.", "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    try
+                    {
+                        this.backoffice.email_send(current.equipa.email, assunto, texto, anexos);
+                        System.Windows.Forms.MessageBox.Show("Email enviado com sucesso.", "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Windows.Forms.MessageBox.Show(ex.Message.ToString(), "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                else
+                {
+                    System.Windows.Forms.MessageBox.Show("Por favor preencha o campo do Assunto.", "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
             else
             {
-                System.Windows.Forms.MessageBox.Show("Por favor preencha todos os campos.", "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                System.Windows.Forms.MessageBox.Show("Por favor gere os relatórios!", "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             
         }
