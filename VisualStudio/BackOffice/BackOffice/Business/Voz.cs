@@ -30,11 +30,22 @@ namespace BackOffice.Business
         public Voz(byte[] voice)
         {
             this.audio = voice;
-            this.texto = null;
+            this.texto = "";
         }
 
-
         public void convertAudio()
+        {
+            try
+            {
+                this.convertAudioI();
+            }
+            catch (Exception)
+            {
+                this.texto = "Impossível traduzir.";
+            }
+        }
+
+        private void convertAudioI()
         {
         //    string path  = Path.GetTempPath();
          //   path = path + string.Format("HH_mm_ss", DateTime.Now)+".wav";

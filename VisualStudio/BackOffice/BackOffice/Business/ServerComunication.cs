@@ -203,7 +203,7 @@ namespace BackOffice.Business
             {
                 byte[] voice = null;
                 if (no.audio != null) {
-                     voice = Encoding.ASCII.GetBytes(no.audio);
+                    voice = BackOfficeAPP.toBytes64(no.audio);
                     if (voice.Length == 0)
                     {
                         voice = null;
@@ -216,12 +216,9 @@ namespace BackOffice.Business
                 {
                     foreach (String s in no.imagem)
                     {
-                        byte[] ia = Encoding.ASCII.GetBytes(s);
-                        Image i;
-                        using (var ms = new MemoryStream(ia))
-                        {
-                            i = Image.FromStream(ms);
-                        }
+
+                        Image i = BackOfficeAPP.imageFromBitMapRep(s);
+                        
                         li.Add(i);
 
                     }

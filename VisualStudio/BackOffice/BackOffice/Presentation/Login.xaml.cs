@@ -34,9 +34,9 @@ namespace BackOffice.Presentation
         {
             string localFolder = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             string path = localFolder + "\\Config\\config.json";
-            string pathG = "C:\\Users\\joaom\\Desktop\\JSON";
-           // try
-           // {
+            string pathG = "C:\\Users\\Octávio\\Desktop\\JSON";
+            try
+            {
                /* System.Diagnostics.Debug.WriteLine(" Comecar 0....");
                 Console.Error.WriteLine(" Comecar 1....");*/
               //  Console.WriteLine(" Comecar 2....");
@@ -44,44 +44,21 @@ namespace BackOffice.Presentation
                 this.backoffice = new BackOfficeAPP(path);
                 this.backoffice.gerarJsonDebug(pathG); //into épara debug
                 InitializeComponent();
-           // }
-           /* catch(Exception e)
+            }
+            catch(Exception e)
             {
                 System.Windows.Forms.MessageBox.Show(e.Message.ToString(), "Error",MessageBoxButtons.OK, MessageBoxIcon.Error);
                 this.Close();
                 
-            }*/
+            }
         }
 
         private void buttonLogin_Click(object sender, RoutedEventArgs e)
         {
-
-            /*String user = textBoxUsername.Text;
-            String pw = passwordBox.Password.ToString();
-             
-            if(user.Equals(backoffice.email) && pw.Equals(backoffice.passMail)) {
-                RegistoAtividade ra = new RegistoAtividade(backoffice);
-                ra.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                System.Windows.Forms.MessageBox.Show("Credenciais incorretas!", "Warning",MessageBoxButtons.OK, MessageBoxIcon.Warning);
-
-            }*/
-
-            /* Atividade a = new Atividade(1, "equipateste", "teste", "C:\\Users\\Joao\\Desktop\\Mapas\\map.gpx", new List<Veiculo>(), new Equipa("equipa1","mail1"), new Batedor("mailbatedor","batedor","123"));
-             a.addNota(new Nota(1,"abc", 41.478254,-8.300161,null,null));
-             a.addNota(new Nota(2, "abc", 41.443217,-8.2916261, null, null));
-             a.addNota(new Nota(3, "def", 41.48096,-8.295004,null, null));
-             a.addNota(new Nota(4, "ghi", 41.509005,-8.25150, null, null));*/
             if (this.mainW == null)
             {
                 this.mainW = new MainWindow(this.backoffice, this);
             }
-             
-
-            //vm.carregaMapa(a);
-            //vm.updateComboBox(a);
             this.Visibility = Visibility.Hidden;
             this.mainW.Visibility = Visibility.Visible;
         }
@@ -97,7 +74,6 @@ namespace BackOffice.Presentation
                 this.backoffice.stopReceive();
             }
             this.Close();
-           // this.Visibility = Visibility.Hidden;
         }
     }
 }

@@ -21,6 +21,7 @@ using System.Windows.Shapes;
 using System.Windows.Controls;
 using System.Text.RegularExpressions;
 using System.Device.Location;
+using System.Linq;
 
 namespace BackOffice.Business
 {
@@ -128,6 +129,45 @@ namespace BackOffice.Business
             //
         }
 
+
+        public static System.Drawing.Image imageFromBitMapRep(string bipmap)
+        {
+            if (bipmap == null || bipmap.Length == 0) return null;
+            // byte[] imageData = System.Text.Encoding.ASCII.GetBytes(bipmap);
+            byte[] imageData = Convert.FromBase64String(bipmap);
+
+            Bitmap bmp;
+            using (var ms = new MemoryStream(imageData))
+            {
+                bmp = new Bitmap(ms);
+            }
+            //mage i = (Image)bmp;
+            return bmp;
+        }
+
+        public static string bitMapRepStringFromImaga(System.Drawing.Image image)
+        {
+            if (image == null) return null;
+            Bitmap bmp = new Bitmap(image);
+            ImageConverter converter = new ImageConverter();
+            byte[] bytes = (byte[])converter.ConvertTo(bmp, typeof(byte[]));
+            string ret = Convert.ToBase64String(bytes);
+            //string ret = System.Text.Encoding.ASCII.GetString(bytes);
+            return ret;
+        }
+
+        public static string fromBytes64(byte[] bytes)
+        {
+            string ret = Convert.ToBase64String(bytes);
+            //string ret = System.Text.Encoding.ASCII.GetString(bytes);
+            return ret;
+        }
+
+        public static byte[] toBytes64(string s)
+        {
+            byte[] bytes = Convert.FromBase64String(s);
+            return bytes;
+        }
 
         public void startReceive()
         {
@@ -436,16 +476,18 @@ namespace BackOffice.Business
         {
             foreach(Atividade a in this.getAtividadesPorTerminar())
             {
-                JustToBack novo = new JustToBack();
-                novo.email = a.batedor.email;
-                novo.idAtividade = a.idAtividade;
-                novo.password = null;
-                novo.notas = this.geraNotes(a.percurso);
-                string json = JsonConvert.SerializeObject(novo, Formatting.Indented);
-                string t = Regex.Replace(json, @"\t|\n|\r", "");
-                string outp = output + "\\novo_" + a.idAtividade + ".json";
-                System.IO.File.WriteAllText(outp,t);
-
+                if (a.inprogress)
+                {
+                    JustToBack novo = new JustToBack();
+                    novo.email = a.batedor.email;
+                    novo.idAtividade = a.idAtividade;
+                    novo.password = null;
+                    novo.notas = this.geraNotes(a.percurso);
+                    string json = JsonConvert.SerializeObject(novo, Formatting.Indented);
+                    string t = Regex.Replace(json, @"\t|\n|\r", "");
+                    string outp = output + "\\novo_" + a.idAtividade + ".json";
+                    System.IO.File.WriteAllText(outp, t);
+                }
             }
         }
         private Note[] geraNotes(Mapa m)
@@ -481,21 +523,67 @@ namespace BackOffice.Business
             return false;
         }
 
+
+        private string[] bytesImagens()
+        {
+            string folderName = "C:\\Users\\Octávio\\Desktop\\image";
+            List<String> imagens = Directory.GetFiles(folderName, "*.bmp*", SearchOption.AllDirectories).ToList();
+            List<String> array = new List<String>();
+            foreach(String s in imagens)
+            {
+               byte[] bytes = File.ReadAllBytes(s);
+                array.Add(BackOfficeAPP.fromBytes64(bytes));
+
+            }
+
+            return array.ToArray();
+        }
+
+        private string bytesAudio()
+        {
+            string folderName = "C:\\Users\\Octávio\\Desktop\\image";
+            List<String> imagens = Directory.GetFiles(folderName, "*.wav*", SearchOption.AllDirectories).ToList();
+            string ret = null;
+            if (imagens.Count > 0)
+            {
+                string s = imagens[0];
+                byte[] bytes = File.ReadAllBytes(s);
+                ret = BackOfficeAPP.fromBytes64(bytes);
+            }
+          
+
+            return ret;
+        }
+
         private Note geraNote(double lat, Double longit,int num)
         {
             Random rnd = new Random();
             Note n = new Note();
             n.local = new Cord(lat, longit);
 
+
+            
             n.idNota = num;
             n.notaTextual = null;
             int i = rnd.Next(0, 5);
             if (i < 10) //esta ssim para gerar sempre
             {
-                n.notaTextual = "Nota textual na corenada " + lat + " " + longit+" ";
+                n.notaTextual = "Nota textual na coordenada " + lat + " " + longit+" ";
             }
-            n.audio = null;
-            n.imagem = null;
+          
+            i = rnd.Next(0, 10);
+
+            if (i < 11 && num==1)
+            {
+                n.imagem = bytesImagens();
+                n.audio = bytesAudio();
+            }
+            else
+            {
+                n.imagem = null;
+                n.audio = null;
+            }
+
             return n;
         }
 

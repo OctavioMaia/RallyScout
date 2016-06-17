@@ -74,19 +74,19 @@ namespace BackOffice.Data.DataBase
             SqlConnection con = new SqlConnection(this.dbConf);
             con.Open();
             SqlTransaction tr =  con.BeginTransaction();
-            //try
-           // {
+            try
+            {
                 l = this.Values(con,tr);
                 tr.Commit();
-           // }catch(Exception e)
-            //{
-            //    tr.Rollback();
-            //}
-            //finally
-            //{
+            }catch(Exception e)
+            {
+                tr.Rollback();
+            }
+            finally
+            {
 
                 con.Close();
-            //}
+            }
             return l;
         }
 
@@ -126,18 +126,18 @@ namespace BackOffice.Data.DataBase
             con.Open();
             SqlTransaction  tr = con.BeginTransaction();
 
-            //try
-            //{
+            try
+            {
                 b = this.put(novo, con,tr);
                 tr.Commit();
-           /* }catch(Exception e)
+            }catch(Exception e)
             {
                 tr.Rollback();
-            }*/
-            /*finally
+            }
+            finally
             {
                 con.Close();
-            }*/
+            }
             return b;
         }
 
@@ -643,10 +643,12 @@ namespace BackOffice.Data.DataBase
                 //vai buscar cada imagem
                 while (readerIM.Read())
                 {
-                    byte[] imagem  = (byte[])reader["Image"];
-                    int num = reader.GetInt32(reader.GetOrdinal("id_Image"));
-                    var ms = new MemoryStream(imagem);
-                    d.Add(num, Image.FromStream(ms));
+                    var v = readerIM["id_Image"];
+                    byte[] imagem  = (byte[])readerIM["Image"];
+                    //int num = reader.GetInt32(readerIM.GetOrdinal("id_Image"));
+                    int num = (int)v;
+                    string s = BackOfficeAPP.fromBytes64(imagem);
+                    d.Add(num,BackOfficeAPP.imageFromBitMapRep(s));
                 }
                 readerIM.Close();
                 //meter as imagens por ordem
@@ -711,14 +713,29 @@ namespace BackOffice.Data.DataBase
             {
                 if (novo.asVoice())
                 {
-                    queryString = String.Format("INSERT INTO dbo.Nota " +
+                    /*queryString = String.Format("INSERT INTO dbo.Nota " +
                     "(id_Nota, NotaTextual, Audio, TextoConvertido,Latitude,Longitude,Atividade) " +
                     " VALUES " +
                     " ({0}, '{1}', {2}, '{3}', {4}, {5}, {6}); ",
                           novo.idNota, novo.notaTextual, novo.notasVoz.audio, novo.notasVoz.texto,
                           novo.localRegisto.Latitude.ToString().Replace(',', '.'), novo.localRegisto.Longitude.ToString().Replace(',', '.'),
-                          this.idAtividade);
-                }else
+                          this.idAtividade);*/
+
+                    queryString = "INSERT INTO dbo.Nota " +
+                   "(id_Nota, NotaTextual, Audio, TextoConvertido,Latitude,Longitude,Atividade) VALUES (@idNota, @notaTextual , @audio , @textoConvertido, @Lat,@Lon,@ativ); ";
+
+                    SqlCommand command = new SqlCommand(queryString, connection, tr);
+                    command.Parameters.AddWithValue("idNota", novo.idNota);
+                    command.Parameters.AddWithValue("notaTextual", novo.notaTextual);
+                    command.Parameters.AddWithValue("audio", novo.notasVoz.audio);
+                    command.Parameters.AddWithValue("textoConvertido", novo.notasVoz.texto);
+                    command.Parameters.AddWithValue("Lat", novo.localRegisto.Latitude.ToString().Replace(',', '.'));
+                    command.Parameters.AddWithValue("Lon", novo.localRegisto.Longitude.ToString().Replace(',', '.'));
+                    command.Parameters.AddWithValue("ativ", this.idAtividade);
+                    command.CommandTimeout = 60;
+                    command.ExecuteNonQuery();
+                }
+                else
                 {
                     queryString = String.Format("INSERT INTO dbo.Nota " +
                     "(id_Nota, NotaTextual, Audio, TextoConvertido,Latitude,Longitude,Atividade) " +
@@ -727,24 +744,33 @@ namespace BackOffice.Data.DataBase
                           novo.idNota, novo.notaTextual,
                           novo.localRegisto.Latitude.ToString().Replace(',', '.'), novo.localRegisto.Longitude.ToString().Replace(',', '.'),
                           this.idAtividade);
+
+                    SqlCommand command = new SqlCommand(queryString, connection,tr);
+                    command.CommandTimeout = 60;
+                    command.ExecuteNonQuery();
                 }
                 
 
-                SqlCommand command = new SqlCommand(queryString, connection,tr);
-                command.CommandTimeout = 60;
-                command.ExecuteNonQuery();
                 List<Image> images = novo.imagens;
                 String queryStringC;
                 int i = 0;
-                foreach (Image c in images)
+                foreach (Bitmap b in images)
                 {
-                    queryStringC = String.Format("INSERT INTO dbo.Imagem " +
-                    "(Imagem, Nota,Atividade,id_Image) " +
-                    " VALUES " +
-                    " ({0}, {1} , {2} , {3}); ",
-                          imageToByteArray(c), novo.idNota,this.idAtividade,i);
-                    command = new SqlCommand(queryString, connection,tr);
+                    Image c = (Image)b;
+                    String s = BackOfficeAPP.bitMapRepStringFromImaga(c);
+                    byte[] array = BackOfficeAPP.toBytes64(s);
+                    queryStringC = "INSERT INTO dbo.Imagem " +
+                    "(Image, Nota,Atividade,id_Image) VALUES (@img, @idNota , @idAtividade , @i); ";
+
+                    String x = BackOfficeAPP.fromBytes64(array);
+                    SqlCommand command = new SqlCommand(queryStringC, connection,tr);
+                    command.Parameters.AddWithValue("img", array);
+                    command.Parameters.AddWithValue("idNota", novo.idNota);
+                    command.Parameters.AddWithValue("idAtividade", this.idAtividade);
+                    command.Parameters.AddWithValue("i", i);
+                    //System.Text.Encoding.UTF8.GetString(array)
                     command.CommandTimeout = 60;
+                    //MessageBox.Show(System.Text.Encoding.UTF8.GetString(array));
                     command.ExecuteNonQuery();
                     i++;
                 }
