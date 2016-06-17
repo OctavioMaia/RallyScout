@@ -221,17 +221,17 @@ namespace BackOffice.Business
             string intro = "\tRelatório Completo da prova " + this.percurso.nomeProva +
                  " para a Equipa com o nome " + this.nomeEquipa + " (" + this.equipa.email + ").";
             p = new Paragraph(intro, TextoFont);
-            p.FirstLineIndent = parID;
+            /*p.FirstLineIndent = parID;
             p.IndentationLeft = marID;
-            p.IndentationRight = marID;
+            p.IndentationRight = marID;*/
             doc.Add(p);
             ///
             string infBta = "\tO reconhecimento foi efetuado pelo batedor " + this.batedor.nome +
                   " com o email de contacto " + this.batedor.email + ".";
             p = new Paragraph(infBta, TextoFont);
-            p.FirstLineIndent = parID;
+            /*p.FirstLineIndent = parID;
             p.IndentationLeft = marID;
-            p.IndentationRight = marID;
+            p.IndentationRight = marID;*/
             doc.Add(p);
             ///
             TimeSpan ts = this.fimReconhecimento - this.inicioReconhecimento;
@@ -241,9 +241,9 @@ namespace BackOffice.Business
                 " às " + this.inicioReconhecimento.ToShortTimeString() + ",  sendo finalizado o seu reconhecimento no dia " + this.fimReconhecimento.ToShortDateString() +
                 " às " + this.fimReconhecimento.ToShortTimeString() + ", tendo por isso uma duração de " + horas + " horas.";
             p = new Paragraph(infoRec, TextoFont);
-            p.FirstLineIndent = parID;
+            /*p.FirstLineIndent = parID;
             p.IndentationLeft = marID;
-            p.IndentationRight = marID;
+            p.IndentationRight = marID;*/
             doc.Add(p);
             ///Veiculos
             doc.NewPage();
@@ -253,9 +253,9 @@ namespace BackOffice.Business
             ///
             string veic = "\tPara a prova considerada foram os seguintes " + this.veiculos.Count + " veículos.";
             p = new Paragraph(infoRec, TextoFont);
-            p.FirstLineIndent = parID;
+            /*p.FirstLineIndent = parID;
             p.IndentationLeft = marID;
-            p.IndentationRight = marID;
+            p.IndentationRight = marID;*/
             doc.Add(p);
             //
             List listaVec = new List(List.ORDERED, 20f);
@@ -282,9 +282,9 @@ namespace BackOffice.Business
             ///
             string notas = "Para a prova considerada foram recolhidas " + this.notas.Count + " notas.";
             p = new Paragraph(notas, TextoFont);
-            p.FirstLineIndent = parID;
+            /*p.FirstLineIndent = parID;
             p.IndentationLeft = marID;
-            p.IndentationRight = marID;
+            p.IndentationRight = marID;*/
             doc.Add(p);
             //
             List listaNote = new List(List.ORDERED, 20f);
@@ -309,13 +309,16 @@ namespace BackOffice.Business
                 string notas1 = ("Nota numero " + n.idNota + " \nrecolhida em " + n.localRegisto.Latitude + " " + n.localRegisto.Longitude + ".\n Nota Textual : " + nt + "\n Nota de Voz: " + nv);
                 listaNote.Add(notas1);
                 List listaNoteI = new List(List.ORDERED, 30f);
+                listaNoteI.PreSymbol = string.Format("{0}.", 0);
                 foreach (System.Drawing.Image image in n.imagens)
                 {
                     iTextSharp.text.Image pic = iTextSharp.text.Image.GetInstance(image, System.Drawing.Imaging.ImageFormat.Jpeg); //atençao ao jpeg
-                    pic.ScaleAbsolute(50f, pic.XYRatio * 50f); //pode estar ao contraririo
-                    listaNoteI.Add(pic);
+                    //pic.ScaleAbsolute(50f, pic.XYRatio * 50f); //pode estar ao contraririo
+                    //listaNoteI.Add(pic);
+                    listaNoteI.Add("OLa");
+
                 }
-                listaVec.Add(listaNote);
+                listaVec.Add(listaNoteI);
             }
             doc.Add(listaNote);
             //pagina final
