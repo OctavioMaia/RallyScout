@@ -201,29 +201,38 @@ namespace BackOffice.Business
             Atividade a = new Atividade(u.idAtividade);
             foreach (Note no in u.notas)
             {
-                byte[] voice = Encoding.ASCII.GetBytes(no.audio);
-                if (voice.Length == 0)
-                {
-                    voice = null;
-                }
-                List<Image> li = new List<Image>();
-                foreach (String s in no.imagem)
-                {
-                    byte[] ia = Encoding.ASCII.GetBytes(s);
-                    Image i;
-                    using (var ms = new MemoryStream(ia))
+                byte[] voice = null;
+                if (no.audio != null) {
+                     voice = Encoding.ASCII.GetBytes(no.audio);
+                    if (voice.Length == 0)
                     {
-                        i = Image.FromStream(ms);
+                        voice = null;
                     }
-                    li.Add(i);
-
                 }
-                if (li.Count == 0)
+                 
+
+                List<Image> li = new List<Image>();
+                if (no.imagem != null)
                 {
-                    li = null;
+                    foreach (String s in no.imagem)
+                    {
+                        byte[] ia = Encoding.ASCII.GetBytes(s);
+                        Image i;
+                        using (var ms = new MemoryStream(ia))
+                        {
+                            i = Image.FromStream(ms);
+                        }
+                        li.Add(i);
+
+                    }
+                    if (li.Count == 0)
+                    {
+                        li = null;
+                    }
                 }
                 Nota n = new Nota(no.idNota, no.notaTextual, no.local.lat,
                     no.local.log, li, voice);
+                a.addNota(n);
             }
             return a;
 

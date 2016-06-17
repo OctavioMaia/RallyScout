@@ -207,11 +207,22 @@ namespace BackOffice.Presentation
             this.Name = "VisualizadorMap";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Visualizador Mapa";
+            this.Load += new System.EventHandler(this.VisualizadorMap_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
+
+        public void updateComboBox2(Atividade a)
+        {
+            this.ativ = a;
+            foreach (Nota n in this.ativ.notas)
+            {
+                comboBox1.Items.Add(n.idNota);
+            }
+        }
+
 
         public void carregaMapa(Atividade a)
         {
@@ -256,6 +267,7 @@ namespace BackOffice.Presentation
 
             r.Stroke.Width = 5;
             r.Stroke.Color = Color.SeaGreen;
+            this.updateComboBox2(a);
         }
 
         public void addMarker(GeoCoordinate gc)
