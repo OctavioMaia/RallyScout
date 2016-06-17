@@ -22,6 +22,7 @@ using System.Windows.Controls;
 using System.Text.RegularExpressions;
 using System.Device.Location;
 using System.Linq;
+using BackOffice.Extra;
 
 namespace BackOffice.Business
 {
@@ -486,7 +487,9 @@ namespace BackOffice.Business
                     string json = JsonConvert.SerializeObject(novo, Formatting.Indented);
                     string t = Regex.Replace(json, @"\t|\n|\r", "");
                     string outp = output + "\\novo_" + a.idAtividade + ".json";
+                    string outpZ = output + "\\novo_" + a.idAtividade + "ZIP.json";
                     System.IO.File.WriteAllText(outp, t);
+                    System.IO.File.WriteAllText(outpZ, Zip.zipStringBase64(t));
                 }
             }
         }
@@ -526,7 +529,7 @@ namespace BackOffice.Business
 
         private string[] bytesImagens()
         {
-            string folderName = "C:\\Users\\Octávio\\Desktop\\image";
+            string folderName = "Z:\\JSON\\REC";
             List<String> imagens = Directory.GetFiles(folderName, "*.bmp*", SearchOption.AllDirectories).ToList();
             List<String> array = new List<String>();
             foreach(String s in imagens)
@@ -541,7 +544,7 @@ namespace BackOffice.Business
 
         private string bytesAudio()
         {
-            string folderName = "C:\\Users\\Octávio\\Desktop\\image";
+            string folderName = "Z:\\JSON\\REC";
             List<String> imagens = Directory.GetFiles(folderName, "*.wav*", SearchOption.AllDirectories).ToList();
             string ret = null;
             if (imagens.Count > 0)
@@ -557,7 +560,7 @@ namespace BackOffice.Business
 
         private Note geraNote(double lat, Double longit,int num)
         {
-            Random rnd = new Random();
+            Random rnd = new Random(Environment.TickCount);
             Note n = new Note();
             n.local = new Cord(lat, longit);
 
@@ -566,21 +569,35 @@ namespace BackOffice.Business
             n.idNota = num;
             n.notaTextual = null;
             int i = rnd.Next(0, 5);
-            if (i < 10) //esta ssim para gerar sempre
+            if (i < 5) 
             {
                 n.notaTextual = "Nota textual na coordenada " + lat + " " + longit+" ";
             }
           
             i = rnd.Next(0, 10);
 
-            if (i < 11 && num==1)
+            if (i < 7)
             {
+
                 n.imagem = bytesImagens();
+            }
+            else
+            {
+
+                n.imagem = null;
+            }
+            
+            
+
+            i = rnd.Next(0, 10);
+            if (i < 3)
+            {
+                
                 n.audio = bytesAudio();
             }
             else
             {
-                n.imagem = null;
+                
                 n.audio = null;
             }
 

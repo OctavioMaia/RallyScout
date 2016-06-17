@@ -148,6 +148,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extra\Zip.cs" />
     <Compile Include="Presentation\ConsultaBatedor.xaml.cs">
       <DependentUpon>ConsultaBatedor.xaml</DependentUpon>
     </Compile>
