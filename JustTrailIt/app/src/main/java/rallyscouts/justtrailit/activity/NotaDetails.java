@@ -3,6 +3,7 @@ package rallyscouts.justtrailit.activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
+import android.nfc.Tag;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -26,11 +27,15 @@ import java.util.concurrent.TimeUnit;
 
 import rallyscouts.justtrailit.R;
 import rallyscouts.justtrailit.business.Nota;
+import rallyscouts.justtrailit.data.NotaDAO;
 
 public class NotaDetails extends AppCompatActivity {
 
-    private static final String TAG = "NotaDetails";
+    public static final String TAG = "NotaDetails";
+    public static final String ID_NOTA = "idNota";
+    public static final String ID_ATIVIDADE = "idAtividade";
 
+    private NotaDAO notas;
     private Nota nota;
     private MediaPlayer mediaPlayer;
 
@@ -50,12 +55,18 @@ public class NotaDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nota_details);
 
-        this.nota = (Nota) getIntent().getExtras().getSerializable("nota");
+        this.notas = new NotaDAO(NotaDetails.this);
+        this.nota = notas.getNota(getIntent().getExtras().getInt(ID_NOTA),getIntent().getExtras().getInt(ID_ATIVIDADE));
+
         this.notaTextual = (TextView) findViewById(R.id.textView_NotaTextual);
         this.tl = (TableLayout) findViewById(R.id.imagensLayout);
         this.start = (Button) findViewById(R.id.button_Play);
         this.pause = (Button) findViewById(R.id.button_Pause);
         this.stop = (Button) findViewById(R.id.button_Stop);
+
+        if(nota==null){
+            Toast.makeText(getApplicationContext(), "Nota null" , Toast.LENGTH_LONG).show();
+        }
 
         String text = nota.getNotaTextual();
         if(text!=null){
@@ -66,16 +77,22 @@ public class NotaDetails extends AppCompatActivity {
 
         LayoutInflater inflater = (LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
+        Toast.makeText(getApplicationContext(), "Vou criar " + nota.getImagens().size(), Toast.LENGTH_LONG).show();
+
         for (Bitmap bitmap : nota.getImagens() ) {
             ImageView iv = (ImageView) inflater.inflate(
                     R.layout.item_image, null);
-
+            Log.i(TAG,"IMAGEM BYTES"+bitmap.getByteCount());
             iv.setImageBitmap(bitmap);
+            iv.setLayoutParams( new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT));
 
             tl.addView(iv);
+            Toast.makeText(getApplicationContext(), "Vou criar o ImageView" , Toast.LENGTH_LONG).show();
         }
 
-        if(nota.getVoice().length>0){
+        if( nota.getVoice()!=null && nota.getVoice().length>0){
             stop.setEnabled(false);
 
             start.setOnClickListener(new View.OnClickListener() {

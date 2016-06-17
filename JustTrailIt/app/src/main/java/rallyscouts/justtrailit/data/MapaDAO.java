@@ -116,8 +116,8 @@ public class MapaDAO {
     public Map<Integer,Location> getCoordenadas(int idMapa){
         Map<Integer,Location> coord = new HashMap<>();
         Cursor res = mDatabase.rawQuery("SELECT * FROM " + MAPA_COORDENADAS_TABLE_NAME + " WHERE " + MAPA_COORDENADAS_COLUMN_MAPA + " = ?" , new String[]{ ""+idMapa } );
-        res.moveToFirst();
         if(res.getCount()>0){
+            res.moveToFirst();
             while(res.isAfterLast() == false){
                 Location loc = new Location("");
                 loc.setLatitude(res.getDouble(res.getColumnIndex(MAPA_COORDENADAS_COLUMN_LATITUDE)));
@@ -130,7 +130,7 @@ public class MapaDAO {
         return coord;
     }
 
-    public int deleteMapaCoordenadas(int idMapa){
+    private int deleteMapaCoordenadas(int idMapa){
         return mDatabase.delete(MAPA_COORDENADAS_TABLE_NAME,MAPA_COORDENADAS_COLUMN_MAPA + " = ?", new String[]{ ""+idMapa });
     }
 
