@@ -130,6 +130,45 @@ namespace BackOffice.Business
         }
 
 
+        public static System.Drawing.Image imageFromBitMapRep(string bipmap)
+        {
+            if (bipmap == null || bipmap.Length == 0) return null;
+            // byte[] imageData = System.Text.Encoding.ASCII.GetBytes(bipmap);
+            byte[] imageData = Convert.FromBase64String(bipmap);
+
+            Bitmap bmp;
+            using (var ms = new MemoryStream(imageData))
+            {
+                bmp = new Bitmap(ms);
+            }
+            //mage i = (Image)bmp;
+            return bmp;
+        }
+
+        public static string bitMapRepStringFromImaga(System.Drawing.Image image)
+        {
+            if (image == null) return null;
+            Bitmap bmp = new Bitmap(image);
+            ImageConverter converter = new ImageConverter();
+            byte[] bytes = (byte[])converter.ConvertTo(bmp, typeof(byte[]));
+            string ret = Convert.ToBase64String(bytes);
+            //string ret = System.Text.Encoding.ASCII.GetString(bytes);
+            return ret;
+        }
+
+        public static string fromBytes64(byte[] bytes)
+        {
+            string ret = Convert.ToBase64String(bytes);
+            //string ret = System.Text.Encoding.ASCII.GetString(bytes);
+            return ret;
+        }
+
+        public static byte[] toBytes64(string s)
+        {
+            byte[] bytes = Convert.FromBase64String(s);
+            return bytes;
+        }
+
         public void startReceive()
         {
             if (this.comuTrhead == null || !this.comuTrhead.IsAlive)
@@ -492,10 +531,9 @@ namespace BackOffice.Business
             List<String> array = new List<String>();
             foreach(String s in imagens)
             {
-                System.Drawing.Image i = System.Drawing.Image.FromFile(s);
-                MemoryStream ms = new MemoryStream();
-                i.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
-                array.Add(System.Text.Encoding.Default.GetString(ms.ToArray()));
+               byte[] bytes = File.ReadAllBytes(s);
+                array.Add(BackOfficeAPP.fromBytes64(bytes));
+
             }
 
             return array.ToArray();
