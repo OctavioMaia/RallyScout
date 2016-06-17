@@ -15,7 +15,7 @@ public class DBAdapter extends SQLiteOpenHelper {
 
     public static final String TAG = "DBAdapter";
     public static final String DATABASE_NAME = "JustTrailIt";
-    public static final int DATABASE_VERSION = 24;
+    public static final int DATABASE_VERSION = 31;
 
     private static final String CREATE_TABLE_ATIVIDADE =
             "CREATE TABLE " + AtividadeDAO.ATIVIDADE_TABLE_NAME + " ( " +
@@ -91,48 +91,54 @@ public class DBAdapter extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         Log.v(TAG,db.getPath());
-
-        db.execSQL(CREATE_TABLE_ATIVIDADE);
-        db.execSQL(CREATE_TABLE_BATEDOR);
-        db.execSQL(CREATE_TABLE_MAPA);
-        db.execSQL(CREATE_TABLE_MAPA_COORDENADAS);
-        db.execSQL(CREATE_TABLE_NOTA);
-        db.execSQL(CREATE_TABLE_IMAGEM);
-        db.execSQL(CREATE_TABLE_VEICULO);
-        db.execSQL(CREATE_TABLE_VEICULO_CARACTERISTICAS);
-/*
         try {
+            db.execSQL(CREATE_TABLE_ATIVIDADE);
         }catch (android.database.SQLException eSQL){
             Log.e(TAG, "Error creating table " + AtividadeDAO.ATIVIDADE_TABLE_NAME);
+            eSQL.printStackTrace();
         }
         try {
+            db.execSQL(CREATE_TABLE_BATEDOR);
         }catch (android.database.SQLException eSQL){
             Log.e(TAG, "Error creating table " + BatedorDAO.BATEDOR_TABLE_NAME);
+            eSQL.printStackTrace();
         }
         try {
+            db.execSQL(CREATE_TABLE_MAPA);
         }catch (android.database.SQLException eSQL){
             Log.e(TAG, "Error creating the table " + MapaDAO.MAPA_TABLE_NAME);
+            eSQL.printStackTrace();
         }
         try {
+            db.execSQL(CREATE_TABLE_MAPA_COORDENADAS);
         }catch (android.database.SQLException eSQL){
             Log.e(TAG, "Error creating the table " + MapaDAO.MAPA_COORDENADAS_TABLE_NAME);
+            eSQL.printStackTrace();
         }
         try {
+            db.execSQL(CREATE_TABLE_NOTA);
         }catch (android.database.SQLException eSQL){
             Log.e(TAG, "Error creating the table " + NotaDAO.NOTA_TABLE_NAME);
+            eSQL.printStackTrace();
         }
         try {
+            db.execSQL(CREATE_TABLE_IMAGEM);
         }catch (android.database.SQLException eSQL){
             Log.e(TAG, "Error creating the table " + NotaDAO.IMAGEM_TABLE_NAME);
+            eSQL.printStackTrace();
         }
         try {
-        }catch (android.database.SQLException eSQL){
-            Log.e(TAG, "Error creating the table " + VeiculoDAO.VEICULO_CARACTERISTICAS_TABLE_NAME);
-        }
-        try {
+            db.execSQL(CREATE_TABLE_VEICULO);
         }catch (android.database.SQLException eSQL){
             Log.e(TAG, "Error creating the table " + VeiculoDAO.VEICULO_TABLE_NAME);
-        }*/
+            eSQL.printStackTrace();
+        }
+        try {
+            db.execSQL(CREATE_TABLE_VEICULO_CARACTERISTICAS);
+        }catch (android.database.SQLException eSQL){
+            Log.e(TAG, "Error creating the table " + VeiculoDAO.VEICULO_CARACTERISTICAS_TABLE_NAME);
+            eSQL.printStackTrace();
+        }
     }
 
     @Override

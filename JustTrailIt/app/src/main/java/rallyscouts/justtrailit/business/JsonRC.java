@@ -146,14 +146,13 @@ public class JsonRC {
                     JSONObject coord =  percurso.getJSONObject(i);
 
                     Location loc = new Location("");
-                    Log.i("COORDMAPA","lat: " + coord.getLong("lat") + " log: " + coord.getLong("log"));
+                    Log.i(TAG,"lat: " + coord.getDouble("lat") + " log: " + coord.getDouble("log"));
                     loc.setLatitude(coord.getDouble("lat"));
                     loc.setLongitude(coord.getDouble("log"));
 
                     coords.put(i,loc);
                 }catch (JSONException e){
                     Log.w(TAG, "Não foi possivel ler a coordenada nr " + i);
-
                 }
             }
             map.setCoord(coords);

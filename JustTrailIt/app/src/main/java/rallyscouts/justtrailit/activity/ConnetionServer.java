@@ -27,20 +27,7 @@ public class ConnetionServer extends AppCompatActivity {
 
         this.ip = (EditText) findViewById(R.id.editText_adress);
         this.port = (EditText) findViewById(R.id.editText_port);
-
-        ip.setOnClickListener( new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                ip.setText("");
-            }
-        });
-
-        port.setOnClickListener( new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                port.setText("");
-            }
-        });
+        port.setText("6969");
     }
 
     public void saveConfigs(View v){
@@ -53,7 +40,6 @@ public class ConnetionServer extends AppCompatActivity {
             this.finish();
         } catch (UnknownHostException e) {
             Toast.makeText(getApplicationContext(),"Invalid IP: " + ip.getText().toString() , Toast.LENGTH_LONG).show();
-
         }
     }
 }
