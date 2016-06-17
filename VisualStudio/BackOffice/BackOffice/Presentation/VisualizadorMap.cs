@@ -55,7 +55,11 @@ namespace BackOffice.Presentation
                     {
                         this.selecionada = n;
                         this.richTextBox1.Text = this.selecionada.notaTextual;
-                        this.richTextBox2.Text = this.selecionada.notasVoz.texto;
+                        if (this.selecionada.notasVoz != null)
+                        {
+                            this.richTextBox2.Text = this.selecionada.notasVoz.texto;
+
+                        }
                         GeoCoordinate gc = this.selecionada.localRegisto;
 
                         if (this.anterior != null)
@@ -65,7 +69,7 @@ namespace BackOffice.Presentation
                         addMarker(gc); //add marker ao mapa
 
                         this.imagens = this.selecionada.imagens;
-                        if (this.imagens != null)
+                        if (this.imagens != null && this.imagens.Count!=0)
                             pictureBox1.Image = imagens[this.indice];
                         break;
                     }
@@ -119,6 +123,11 @@ namespace BackOffice.Presentation
             {
                 System.Windows.Forms.MessageBox.Show("Ficheiro áudio nulo", "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
+        }
+
+        private void VisualizadorMap_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
