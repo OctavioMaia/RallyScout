@@ -202,19 +202,130 @@ namespace BackOffice.Business
 
         public void generateReportGlobal(string path)
         {
+            float parID = 15f;
+            float marID = 15f;
             var NotaFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 18, BaseColor.BLACK);
             var TitleFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 20, BaseColor.BLACK);
-            var distFont = FontFactory.GetFont(FontFactory.HELVETICA, 12, BaseColor.BLACK);
+            var Huge = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 72, BaseColor.BLACK);
+            var TextoFont = FontFactory.GetFont(FontFactory.HELVETICA, 18, BaseColor.BLACK); ;
             Document doc = new Document(iTextSharp.text.PageSize.LETTER, 10, 10, 42, 35);
             PdfWriter wri = PdfWriter.GetInstance(doc, new FileStream(path, FileMode.Create));
             doc.Open();
-            Paragraph p = new Paragraph("Relatório Temporario vazio", TitleFont);
+
+            Paragraph p = new Paragraph("Relatório Completo da Atividade número " + this.idAtividade+"\n\n", TitleFont);
             p.Alignment = Element.ALIGN_CENTER;
             doc.Add(p);
-
-            //TODO
-
             
+            ////
+            string intro = "\tRelatório Completo da prova " + this.percurso.nomeProva +
+                  " para a Equipa com o nome " + this.nomeEquipa + " (" + this.equipa.email + ").";
+            p = new Paragraph(intro, TextoFont);
+            p.FirstLineIndent = parID;
+            p.IndentationLeft = marID;
+            p.IndentationRight = marID;
+            doc.Add(p);
+            ///
+            string infBta = "\tO reconhecimento foi efetuado pelo batedor " + this.batedor.nome +
+                  " com o email de contacto " + this.batedor.email +".";
+            p = new Paragraph(infBta, TextoFont);
+            p.FirstLineIndent = parID;
+            p.IndentationLeft = marID;
+            p.IndentationRight = marID;
+            doc.Add(p);
+            ///
+            TimeSpan ts = this.fimReconhecimento - this.inicioReconhecimento;
+            Double horas = ts.Hours;
+
+            string infoRec = "\tA realização deste reconheimento foi iniciada no dia " + this.inicioReconhecimento.ToShortDateString() +
+                " às " + this.inicioReconhecimento.ToShortTimeString() + ",  sendo finalizado o seu reconhecimento no dia " + this.fimReconhecimento.ToShortDateString() +
+                " às " + this.fimReconhecimento.ToShortTimeString() + ", tendo por isso uma duração de " + horas + " Horas.";
+            p = new Paragraph(infoRec, TextoFont);
+            p.FirstLineIndent = parID;
+            p.IndentationLeft = marID;
+            p.IndentationRight = marID;
+            doc.Add(p);
+            ///Veiculos
+            doc.NewPage();
+            p = new Paragraph("Informação dos Veiculos\n\n", TitleFont);
+            p.Alignment = Element.ALIGN_CENTER;
+            doc.Add(p);
+            ///
+            string veic = "\tPara a prova considerada foram os segintes " + this.veiculos.Count + " veiculos.";
+            p = new Paragraph(infoRec, TextoFont);
+            p.FirstLineIndent = parID;
+            p.IndentationLeft = marID;
+            p.IndentationRight = marID;
+            doc.Add(p);
+            //
+            List listaVec = new List(List.ORDERED, 20f);
+            listaVec.IndentationLeft = 20f;
+           // listaVec.PreSymbol = string.Format("{0}.", i);
+            foreach (Veiculo v in this.veiculos)
+            {
+                listaVec.Add("Chassi: " + v.chassi + " Marca: " + v.marca + " Modelo: " + v.modelo + "\n Caracteristicas ("+v.caracteristicas.Count+")");
+                List listaVecC = new List(List.ORDERED, 30f);
+                foreach(string c in v.caracteristicas)
+                {
+                    listaVecC.Add(c);
+                }
+                listaVec.Add(listaVecC);
+            }
+            doc.Add(listaVec);
+
+
+            ///Notas
+            doc.NewPage();
+            p = new Paragraph("Informação das Notas\n\n", TitleFont);
+            p.Alignment = Element.ALIGN_CENTER;
+            doc.Add(p);
+            ///
+            string notas = "Para a prova considerada foram recolhidas " + this.notas.Count + " notas.";
+            p = new Paragraph(notas, TextoFont);
+            p.FirstLineIndent = parID;
+            p.IndentationLeft = marID;
+            p.IndentationRight = marID;
+            doc.Add(p);
+            //
+            List listaNote = new List(List.ORDERED, 20f);
+            listaNote.IndentationLeft = 20f;
+            this.notas.Sort();
+            foreach (Nota n in this.notas)
+            {
+                string nt = n.notaTextual;
+                if (nt == null)
+                {
+                    nt = "";
+                }
+                string nv = "";
+                Voz voz = n.notasVoz;
+                if (voz != null)
+                {
+                    if (voz.texto != null)
+                    {
+                        nv = voz.texto;
+                    }
+                }
+                listaNote.Add("Nota numero "+ n.idNota +" recolhida em " + n.localRegisto.Latitude + " " +n.localRegisto.Latitude+".\n Nota Textual : "+ nt+"\n Nota de Voz: "+ nv);
+                List listaNoteI = new List(List.ORDERED, 30f);
+                foreach (System.Drawing.Image image in n.imagens)
+                {
+                    iTextSharp.text.Image pic = iTextSharp.text.Image.GetInstance(image, System.Drawing.Imaging.ImageFormat.Jpeg); //atençao ao jpeg
+                    pic.ScaleAbsolute(50f, pic.XYRatio * 50f); //pode estar ao contraririo
+                    listaNoteI.Add(pic);
+                }
+                listaVec.Add(listaNote);
+            }
+            doc.Add(listaNote);
+            //pagina final
+            doc.NewPage();
+            string fim = "FIM";
+            for(int i = 0; i < 3; i++)
+            {
+                fim = "\n" + fim;
+            }
+            p = new Paragraph(fim, Huge);
+            p.Alignment = Element.ALIGN_CENTER;
+            doc.Add(p);
             doc.Close();
         }
 

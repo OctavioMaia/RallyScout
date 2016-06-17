@@ -25,11 +25,13 @@ namespace BackOffice.Presentation
         BackOfficeAPP backoffice;
         Atividade current;
         Boolean gerado;
+        String path;
 
         public GerirRelatorio(BackOfficeAPP b, Atividade a)
         {
             this.current = a;
             this.backoffice = b;
+            this.path = "";
             InitializeComponent();
         }
 
@@ -49,9 +51,29 @@ namespace BackOffice.Presentation
 
         private void buttonGerarRelatorio_Click(object sender, RoutedEventArgs e)
         {
-            String path = textBoxPath.Text;
-            this.backoffice.gerarRelatorios(path,current.idAtividade);
-            gerado = true;
+
+            String pathN = textBoxPath.Text;
+            if(!(this.path.Equals(pathN) && gerado))
+            {
+                try
+                {
+                    this.backoffice.gerarRelatorios(path, current.idAtividade);
+                    this.path = pathN;
+                    gerado = true;
+                    System.Windows.Forms.MessageBox.Show("Relatórios gerado com sucesso em " + path, "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.Forms.MessageBox.Show(ex.Message.ToString(), "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else
+            {
+                System.Windows.Forms.MessageBox.Show("Os Relatórios já foram gerados em " + path, "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            
+
+           
         }
 
         private void buttonEnviar_Click(object sender, RoutedEventArgs e)

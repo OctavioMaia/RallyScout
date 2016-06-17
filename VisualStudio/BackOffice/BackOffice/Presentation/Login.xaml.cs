@@ -34,22 +34,23 @@ namespace BackOffice.Presentation
         {
             string localFolder = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             string path = localFolder + "\\Config\\config.json";
-            //path = "C:\\Users\\Documents\\GitHub\\RallyScout\\ExemplosJson\\config.json";
-            try
-            {
+            string pathG = "C:\\Users\\joaom\\Desktop\\JSON";
+           // try
+           // {
                /* System.Diagnostics.Debug.WriteLine(" Comecar 0....");
                 Console.Error.WriteLine(" Comecar 1....");*/
               //  Console.WriteLine(" Comecar 2....");
 
                 this.backoffice = new BackOfficeAPP(path);
+                this.backoffice.gerarJsonDebug(pathG); //into épara debug
                 InitializeComponent();
-            }
-            catch(Exception e)
+           // }
+           /* catch(Exception e)
             {
                 System.Windows.Forms.MessageBox.Show(e.Message.ToString(), "Error",MessageBoxButtons.OK, MessageBoxIcon.Error);
                 this.Close();
                 
-            }
+            }*/
         }
 
         private void buttonLogin_Click(object sender, RoutedEventArgs e)

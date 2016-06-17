@@ -125,18 +125,19 @@ namespace BackOffice.Data.DataBase
             SqlConnection con = new SqlConnection(this.dbConf);
             con.Open();
             SqlTransaction  tr = con.BeginTransaction();
-            try
-            {
+
+            //try
+            //{
                 b = this.put(novo, con,tr);
                 tr.Commit();
-            }catch(Exception e)
+           /* }catch(Exception e)
             {
                 tr.Rollback();
-            }
-            finally
+            }*/
+            /*finally
             {
                 con.Close();
-            }
+            }*/
             return b;
         }
 
@@ -541,7 +542,7 @@ namespace BackOffice.Data.DataBase
                     "(NrCoordenada, Longitude,Latitude,Mapa) " +
                     " VALUES " +
                     " ({0}, {1},{2}, {3}); ",
-                          key,cords[key].Latitude.ToString().Replace(',','.'),cords[key].Latitude.ToString().Replace(',', '.'), novo.idMapa);
+                          key,cords[key].Longitude.ToString().Replace(',','.'),cords[key].Latitude.ToString().Replace(',', '.'), novo.idMapa);
                     command = new SqlCommand(queryStringC, connection,tr);
                     command.CommandTimeout = 60;
                     command.ExecuteNonQuery();
@@ -616,7 +617,13 @@ namespace BackOffice.Data.DataBase
             if (reader.Read())
             {
                 string notaText = reader["NotaTextual"] as string;
-                byte[] audio = (byte[])reader["Audio"];
+                var au = reader["Audio"];
+                byte[] audio = null;
+                if (reader.IsDBNull(3)==false)
+                {
+                    audio = (byte[])reader["Audio"];
+                }
+                
                 string textoConvert = reader["TextoConvertido"] as string;
                 double longitude = (double)reader["Latitude"];
                 double latitude = (double)reader["Longitude"];
@@ -632,7 +639,7 @@ namespace BackOffice.Data.DataBase
 
                 SqlCommand commandIM = new SqlCommand(queryStringImagem, connection,tr);
                 commandIM.CommandTimeout = 60;
-                SqlDataReader readerIM = command.ExecuteReader();
+                SqlDataReader readerIM = commandIM.ExecuteReader();
                 //vai buscar cada imagem
                 while (readerIM.Read())
                 {
@@ -669,7 +676,7 @@ namespace BackOffice.Data.DataBase
                 var id_Nota = reader[0];
 
 
-                r.Add(Int32.Parse(id_Nota as string));
+                r.Add(Int32.Parse(id_Nota.ToString()));
 
             }
             reader.Close();
@@ -702,13 +709,26 @@ namespace BackOffice.Data.DataBase
             String queryString;
             if (n == null) //inserie
             {
-                queryString = String.Format("INSERT INTO dbo.Nota " +
-                    "(idNota, NotaTextual, Audio, TextoConvertido,Latidude,Longitude,Atividade) " +
+                if (novo.asVoice())
+                {
+                    queryString = String.Format("INSERT INTO dbo.Nota " +
+                    "(id_Nota, NotaTextual, Audio, TextoConvertido,Latitude,Longitude,Atividade) " +
                     " VALUES " +
                     " ({0}, '{1}', {2}, '{3}', {4}, {5}, {6}); ",
-                          novo.idNota,novo.notaTextual,novo.voice,novo.notasVoz.texto,
-                          novo.localRegisto.Latitude,novo.localRegisto.Longitude,
+                          novo.idNota, novo.notaTextual, novo.notasVoz.audio, novo.notasVoz.texto,
+                          novo.localRegisto.Latitude.ToString().Replace(',', '.'), novo.localRegisto.Longitude.ToString().Replace(',', '.'),
                           this.idAtividade);
+                }else
+                {
+                    queryString = String.Format("INSERT INTO dbo.Nota " +
+                    "(id_Nota, NotaTextual, Audio, TextoConvertido,Latitude,Longitude,Atividade) " +
+                    " VALUES " +
+                    " ({0}, '{1}', null, null, {2}, {3}, {4}); ",
+                          novo.idNota, novo.notaTextual,
+                          novo.localRegisto.Latitude.ToString().Replace(',', '.'), novo.localRegisto.Longitude.ToString().Replace(',', '.'),
+                          this.idAtividade);
+                }
+                
 
                 SqlCommand command = new SqlCommand(queryString, connection,tr);
                 command.CommandTimeout = 60;
