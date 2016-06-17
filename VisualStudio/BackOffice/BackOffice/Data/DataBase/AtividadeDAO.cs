@@ -722,7 +722,7 @@ namespace BackOffice.Data.DataBase
                           this.idAtividade);*/
 
                     queryString = "INSERT INTO dbo.Nota " +
-                   "(id_Nota, NotaTextual, Audio, TextoConvertido,Latitude,Longitude,Atividade) VALUES (@idNota, '@notaTextual' , @audio , '@textoConvertido', @Lat,@Lon,@ativ); ";
+                   "(id_Nota, NotaTextual, Audio, TextoConvertido,Latitude,Longitude,Atividade) VALUES (@idNota, @notaTextual , @audio , @textoConvertido, @Lat,@Lon,@ativ); ";
 
                     SqlCommand command = new SqlCommand(queryString, connection, tr);
                     command.Parameters.AddWithValue("idNota", novo.idNota);

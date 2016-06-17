@@ -127,6 +127,7 @@ namespace BackOffice.Presentation
             this.pictureBox1.Location = new System.Drawing.Point(1024, 324);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(389, 251);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 6;
             this.pictureBox1.TabStop = false;
             // 
@@ -273,7 +274,7 @@ namespace BackOffice.Presentation
         public void addMarker(GeoCoordinate gc)
         {
             GMapOverlay markersOverlay = new GMapOverlay("markers");
-            GMarkerGoogle marker = new GMarkerGoogle(new PointLatLng(gc.Latitude, gc.Longitude),GMarkerGoogleType.yellow);
+            GMarkerGoogle marker = new GMarkerGoogle(new PointLatLng(gc.Longitude, gc.Latitude),GMarkerGoogleType.yellow); //troquei a ordem desta merda
             gmap.Overlays.Add(markersOverlay);
             markersOverlay.Markers.Add(marker);
             this.index=gmap.Overlays.IndexOf(markersOverlay);

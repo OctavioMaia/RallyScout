@@ -305,7 +305,7 @@ namespace BackOffice.Business
                         nv = voz.texto;
                     }
                 }
-                listaNote.Add("Nota numero "+ n.idNota +" recolhida em " + n.localRegisto.Latitude + " " +n.localRegisto.Latitude+".\n Nota Textual : "+ nt+"\n Nota de Voz: "+ nv);
+                listaNote.Add("Nota numero "+ n.idNota +" recolhida em " + n.localRegisto.Latitude + " " +n.localRegisto.Longitude+".\n Nota Textual : "+ nt+"\n Nota de Voz: "+ nv);
                 List listaNoteI = new List(List.ORDERED, 30f);
                 foreach (System.Drawing.Image image in n.imagens)
                 {
