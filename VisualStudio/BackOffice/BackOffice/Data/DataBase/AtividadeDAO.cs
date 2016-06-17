@@ -625,8 +625,8 @@ namespace BackOffice.Data.DataBase
                 }
                 
                 string textoConvert = reader["TextoConvertido"] as string;
-                double longitude = (double)reader["Latitude"];
-                double latitude = (double)reader["Longitude"];
+                double longitude = (double)reader["Longitude"];  
+                double latitude = (double)reader["Latitude"];
 
                 GeoCoordinate local = new GeoCoordinate(latitude, longitude);
 
