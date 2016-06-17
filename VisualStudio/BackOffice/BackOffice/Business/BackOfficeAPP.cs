@@ -21,6 +21,7 @@ using System.Windows.Shapes;
 using System.Windows.Controls;
 using System.Text.RegularExpressions;
 using System.Device.Location;
+using System.Linq;
 
 namespace BackOffice.Business
 {
@@ -436,16 +437,18 @@ namespace BackOffice.Business
         {
             foreach(Atividade a in this.getAtividadesPorTerminar())
             {
-                JustToBack novo = new JustToBack();
-                novo.email = a.batedor.email;
-                novo.idAtividade = a.idAtividade;
-                novo.password = null;
-                novo.notas = this.geraNotes(a.percurso);
-                string json = JsonConvert.SerializeObject(novo, Formatting.Indented);
-                string t = Regex.Replace(json, @"\t|\n|\r", "");
-                string outp = output + "\\novo_" + a.idAtividade + ".json";
-                System.IO.File.WriteAllText(outp,t);
-
+                if (a.inprogress)
+                {
+                    JustToBack novo = new JustToBack();
+                    novo.email = a.batedor.email;
+                    novo.idAtividade = a.idAtividade;
+                    novo.password = null;
+                    novo.notas = this.geraNotes(a.percurso);
+                    string json = JsonConvert.SerializeObject(novo, Formatting.Indented);
+                    string t = Regex.Replace(json, @"\t|\n|\r", "");
+                    string outp = output + "\\novo_" + a.idAtividade + ".json";
+                    System.IO.File.WriteAllText(outp, t);
+                }
             }
         }
         private Note[] geraNotes(Mapa m)
@@ -481,12 +484,30 @@ namespace BackOffice.Business
             return false;
         }
 
+
+        private string[] bytesImagens()
+        {
+            string folderName = "C:\\Users\\Octávio\\Desktop\\image";
+            List<String> imagens = Directory.GetFiles(folderName, "*.*", SearchOption.AllDirectories).ToList();
+            List<String> array = new List<String>();
+            foreach(String s in imagens)
+            {
+                System.Drawing.Image i = System.Drawing.Image.FromFile(s);
+                MemoryStream ms = new MemoryStream();
+                i.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
+                array.Add(System.Text.Encoding.Default.GetString(ms.ToArray()));
+            }
+
+            return array.ToArray();
+        }
+
         private Note geraNote(double lat, Double longit,int num)
         {
             Random rnd = new Random();
             Note n = new Note();
             n.local = new Cord(lat, longit);
 
+            n.imagem = bytesImagens();
             n.idNota = num;
             n.notaTextual = null;
             int i = rnd.Next(0, 5);
@@ -495,7 +516,7 @@ namespace BackOffice.Business
                 n.notaTextual = "Nota textual na corenada " + lat + " " + longit+" ";
             }
             n.audio = null;
-            n.imagem = null;
+            //n.imagem = null;
             return n;
         }
 

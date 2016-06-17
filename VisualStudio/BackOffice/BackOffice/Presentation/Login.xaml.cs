@@ -34,7 +34,7 @@ namespace BackOffice.Presentation
         {
             string localFolder = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             string path = localFolder + "\\Config\\config.json";
-            string pathG = "C:\\Users\\joaom\\Desktop\\JSON";
+            string pathG = "C:\\Users\\Octávio\\Desktop\\JSON";
            // try
            // {
                /* System.Diagnostics.Debug.WriteLine(" Comecar 0....");
