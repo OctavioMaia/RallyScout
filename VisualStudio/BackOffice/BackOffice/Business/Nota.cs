@@ -28,7 +28,7 @@ namespace BackOffice.Business
             this.notasVoz = new Voz(voz);
             if (this.voice != null)
             {
-                this.notasVoz.convertAudio();
+                //this.notasVoz.convertAudio();
             }else
             {
                 this.notasVoz = null;
