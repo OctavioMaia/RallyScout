@@ -25,6 +25,9 @@ namespace BackOffice.Presentation
         public VisualizadorMap()
         {
             InitializeComponent();
+            this.button1.Enabled = false;
+            this.button2.Enabled = false;
+            this.button3.Enabled = false;
         }
 
         public void updateComboBox(Atividade a)
@@ -40,6 +43,9 @@ namespace BackOffice.Presentation
         {
             if (comboBox1.SelectedItem != null)
             {
+                this.button1.Enabled = true;
+                this.button2.Enabled = true;
+                this.button3.Enabled = true;
                 int id = int.Parse(comboBox1.SelectedItem.ToString());
                 List<Nota> l = ativ.notas;
 
@@ -49,7 +55,11 @@ namespace BackOffice.Presentation
                     {
                         this.selecionada = n;
                         this.richTextBox1.Text = this.selecionada.notaTextual;
-                        this.richTextBox2.Text = this.selecionada.notasVoz.texto;
+                        if (this.selecionada.notasVoz != null)
+                        {
+                            this.richTextBox2.Text = this.selecionada.notasVoz.texto;
+
+                        }
                         GeoCoordinate gc = this.selecionada.localRegisto;
 
                         if (this.anterior != null)
@@ -59,7 +69,7 @@ namespace BackOffice.Presentation
                         addMarker(gc); //add marker ao mapa
 
                         this.imagens = this.selecionada.imagens;
-                        if (this.imagens != null)
+                        if (this.imagens != null && this.imagens.Count!=0)
                             pictureBox1.Image = imagens[this.indice];
                         break;
                     }
@@ -67,7 +77,7 @@ namespace BackOffice.Presentation
             }
             else
             {
-                MessageBox.Show("erro parse");
+                System.Windows.Forms.MessageBox.Show("Erro parse", "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
              
         }
@@ -80,7 +90,7 @@ namespace BackOffice.Presentation
             }
             else
             {
-                MessageBox.Show("Não existem imagens anteriores a esta.");
+                System.Windows.Forms.MessageBox.Show("Não existem imagens anteriores a esta!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             
         }
@@ -94,7 +104,7 @@ namespace BackOffice.Presentation
             }
             else
             {
-                MessageBox.Show("Não existem imagens posteriores a esta.");
+                System.Windows.Forms.MessageBox.Show("Não existem imagens posteriores a esta!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -111,8 +121,13 @@ namespace BackOffice.Presentation
             }
             else
             {
-                MessageBox.Show("Sound null");
+                System.Windows.Forms.MessageBox.Show("Ficheiro áudio nulo", "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
+        }
+
+        private void VisualizadorMap_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

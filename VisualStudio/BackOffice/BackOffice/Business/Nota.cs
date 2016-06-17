@@ -29,6 +29,9 @@ namespace BackOffice.Business
             if (this.voice != null)
             {
                 this.notasVoz.convertAudio();
+            }else
+            {
+                this.notasVoz = null;
             }
 
         }
@@ -41,6 +44,10 @@ namespace BackOffice.Business
             this.imagens = imagens;
             this.voice = voice;
             this.notasVoz = notasVoz;
+            if (this.voice == null)
+            {
+                this.notasVoz = null;
+            }
         }
 
         public bool asVoice()

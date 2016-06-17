@@ -7,6 +7,7 @@ import android.media.Image;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by rjaf on 09/06/16.
@@ -16,15 +17,17 @@ public class Nota implements Serializable{
     private int idNota;
     private String notaTextual;
     private Location localRegisto;
-    private ArrayList<Bitmap> imagens;
+    private List<Bitmap> imagens;
     private byte[] voice;
 
     public Nota(Integer idNota, Location localRegisto) {
         this.idNota = idNota;
         this.localRegisto = localRegisto;
+        this.notaTextual="";
+        this.imagens = new ArrayList<>();
     }
 
-    public Nota(Integer idNota, ArrayList<Bitmap> imagens, Location localRegisto, String notaTextual, byte[] voice) {
+    public Nota(Integer idNota, List<Bitmap> imagens, Location localRegisto, String notaTextual, byte[] voice) {
         this.idNota = idNota;
         this.imagens = imagens;
         this.localRegisto = localRegisto;
@@ -40,11 +43,11 @@ public class Nota implements Serializable{
         this.idNota = idNota;
     }
 
-    public ArrayList<Bitmap> getImagens() {
+    public List<Bitmap> getImagens() {
         return imagens;
     }
 
-    public void setImagens(ArrayList<Bitmap> imagens) {
+    public void setImagens(List<Bitmap> imagens) {
         this.imagens = imagens;
     }
 
@@ -93,6 +96,21 @@ public class Nota implements Serializable{
         int result = idNota;
         result = 31 * result + localRegisto.hashCode();
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Nota{" +
+                "idNota=" + idNota +
+                ", notaTextual='" + notaTextual + '\'' +
+                ", localRegisto=" + localRegisto +
+                ", imagens=" + imagens +
+                ", voice=" + Arrays.toString(voice) +
+                '}';
+    }
+
+    public boolean addImagem(Bitmap bitmap){
+        return imagens.add(bitmap);
     }
 
 }
