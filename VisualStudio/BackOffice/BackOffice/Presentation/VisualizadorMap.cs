@@ -47,6 +47,7 @@ namespace BackOffice.Presentation
             this.button2.Enabled = false;
             this.button3.Enabled = false;
             this.pictureBox1.Image = null;
+            this.indice = 0;
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -155,7 +156,7 @@ namespace BackOffice.Presentation
             }
             else
             {
-                System.Windows.Forms.MessageBox.Show("Ficheiro áudio nulo", "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                System.Windows.Forms.MessageBox.Show("Ficheiro áudio nulo", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
