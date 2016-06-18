@@ -40,20 +40,34 @@ namespace BackOffice.Presentation
 
         private void UpdateComboBox()
         {
-            List<String> l = this.backoffice.getBatedoresMails();
-
-            foreach (String s in l)
+            try
             {
-                comboBox.Items.Add(s);
+                List<String> l = this.backoffice.getBatedoresMails();
+
+                foreach (String s in l)
+                {
+                    comboBox.Items.Add(s);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void buttonAdicionarVeiculo_Click(object sender, RoutedEventArgs e)
         {
-            l = new List<Veiculo>();
-            InserirVeiculo i = new InserirVeiculo(backoffice,l,this);
-            i.Visibility = Visibility.Visible;
-            this.Visibility = Visibility.Hidden;
+            try
+            {
+                l = new List<Veiculo>();
+                InserirVeiculo i = new InserirVeiculo(backoffice, l, this);
+                i.Visibility = Visibility.Visible;
+                this.Visibility = Visibility.Hidden;
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void buttonProcurarFicheiro_Click(object sender, RoutedEventArgs e)
@@ -93,6 +107,10 @@ namespace BackOffice.Presentation
                 System.Windows.Forms.MessageBox.Show("Ficheiro .gpx inválido!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 
             }catch(MapaVazioException ex)
+            {
+                System.Windows.Forms.MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
             {
                 System.Windows.Forms.MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }

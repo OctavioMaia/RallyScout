@@ -63,18 +63,19 @@ namespace BackOffice.Presentation
             else {
                 if (!(this.path.Equals(pathN) && gerado))
                 {
-                    /* try
-                     {*/
-                    this.path = pathN;
-                    this.backoffice.gerarRelatorios(path, current.idAtividade);
+                    try
+                    {
+            
+                        this.path = pathN;
+                        this.backoffice.gerarRelatorios(path, current.idAtividade);
                     
-                    gerado = true;
-                    System.Windows.Forms.MessageBox.Show("Relatórios gerado com sucesso em " + path, "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    /*}
+                        gerado = true;
+                        System.Windows.Forms.MessageBox.Show("Relatórios gerado com sucesso em " + path, "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
                     catch (Exception ex)
                     {
                         System.Windows.Forms.MessageBox.Show(ex.Message.ToString(), "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }*/
+                    }
                 }
                 else
                 {

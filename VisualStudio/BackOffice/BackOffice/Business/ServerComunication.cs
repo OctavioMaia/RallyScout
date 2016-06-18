@@ -23,14 +23,12 @@ namespace BackOffice.Business
     {
         public int listenigPort { get; set; }
         public String dbConf { get; set; }
-       // public System.Net.IPAddress listeningIP { get; set; }
         private Boolean on;
         private CancellationTokenSource cancellation { get; set; }
         public ServerComunication(int port, string db)
         {
             this.dbConf = db;
             this.listenigPort = port;
-           // this.listeningIP = Dns.Resolve("localhost").AddressList[0];
             this.cancellation = new CancellationTokenSource();
             this.on = false;
         }
@@ -75,13 +73,13 @@ namespace BackOffice.Business
                 {
                     Console.WriteLine(" ESpera cliente ");
 
-                    // TcpClient clientSocket = serverSocket.AcceptTcpClient();
                     TcpClient clientSocket = await Task.Run(
                                                    () => serverSocket.AcceptTcpClientAsync(),
                                                this.cancellation.Token);
+                    Socket s = clientSocket.Client;
+                    IPEndPoint ipe = (IPEndPoint)s.RemoteEndPoint;
 
-                    Console.WriteLine(" Novo cliente ");
-                    //System.Diagnostics.Debug.WriteLine("Novo cliente");
+                    Console.WriteLine(" Novo cliente em " + ipe.ToString());
 
 
                     ClinetHandler ch = new ClinetHandler(clientSocket, this.dbConf); //nova thread para cliente
@@ -96,11 +94,7 @@ namespace BackOffice.Business
                 }
                 this.on = false;
                 Console.WriteLine("FIM");
-                //System.Diagnostics.Debug.WriteLine("FIM");
             }
-
-
-
 
         }
     }
@@ -132,47 +126,38 @@ namespace BackOffice.Business
         private void Run()
         {
 
-            //this.writeData("OLA");
             String jsonCheg = this.readData();
-            //Console.WriteLine(" jsonCheg: " + jsonCheg);
-            
-            //this.writeData("REcebi " + jsonCheg);
-
-
 
             try
             {
                 JustToBack content = this.fromString(jsonCheg);
-                //MessageBox.Show("pass");
                 if (content.password != null)//veio a pass quero uma atividade para ele
                 {
-                    //MessageBox.Show("sendANtes");
                     this.sendAtividade(content);
-                    //MessageBox.Show("sendDepois");
                 }
                 else //veio uma atividade completa
                 {
-                    //MessageBox.Show("processaBatidaAntes");
                     this.processaBatida(content);
-                    // MessageBox.Show("processaBatidaDepois");
                 }
             }
             catch (Exception e)
             {
                 BackToJust atOK = new BackToJust(-3);
                 this.writeData(this.jsonFrom(atOK));
-               // MessageBox.Show("estourei");
             }
 
-
-
             //fechar as comunicaçoes da tread para terminar
-            
+
+            Socket s = mySocket.Client;
+            IPEndPoint ipe = (IPEndPoint)s.RemoteEndPoint;
+
+            string st =" Saiu cliente  " + ipe.ToString();
+
             this.writerStream.Close();
             this.readStream.Close();
             this.netstream.Close();
             this.mySocket.Close();
-            Console.WriteLine(" Saiu Cliente");
+            Console.WriteLine(st);
 
         }
 
@@ -352,5 +337,6 @@ namespace BackOffice.Business
         }
 
     }
+    
 }
 

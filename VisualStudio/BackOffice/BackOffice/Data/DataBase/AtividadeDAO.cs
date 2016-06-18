@@ -37,6 +37,7 @@ namespace BackOffice.Data.DataBase
             }catch(Exception e)
             {
                 tr.Rollback();
+                throw e;
             }
             finally
             {
@@ -59,6 +60,7 @@ namespace BackOffice.Data.DataBase
             }catch(Exception e)
             {
                 tr.Rollback();
+                throw e;
             }
             finally
             {
@@ -81,6 +83,7 @@ namespace BackOffice.Data.DataBase
             }catch(Exception e)
             {
                 tr.Rollback();
+                throw e;
             }
             finally
             {
@@ -103,6 +106,7 @@ namespace BackOffice.Data.DataBase
             }catch(Exception e)
             {
                 tr.Rollback();
+                throw e;
             }
             finally
             {
@@ -117,7 +121,7 @@ namespace BackOffice.Data.DataBase
         }
 
 
-        //TODO VER aui
+
         public Atividade put(Atividade novo)
         {
             Atividade b = null;
@@ -133,6 +137,7 @@ namespace BackOffice.Data.DataBase
             }catch(Exception e)
             {
                 tr.Rollback();
+                throw e;
             }
             finally
             {
@@ -182,7 +187,6 @@ namespace BackOffice.Data.DataBase
             return b;
         }
 
-        //TODO daqui para baixo
 
         private Atividade put(Atividade novo, SqlConnection connection,SqlTransaction tr)
         {
@@ -251,7 +255,7 @@ namespace BackOffice.Data.DataBase
             List<Nota> notas = nd.Values(connection,tr);
             Batedor bate = null;
 
-            //buscar merdas a tabela de atvidades
+
             DataTable results = new DataTable();
 
             string queryString = String.Format("SELECT * from dbo.Atividade " +
@@ -266,7 +270,7 @@ namespace BackOffice.Data.DataBase
                 DateTime fimR = Convert.ToDateTime(reader["FimReconhecimento"]);
                 bool inProg = (bool)reader["InProgress"];
                 var v =  Convert.ToBoolean(reader["Done"]);
-                //MessageBox.Show(v.GetType().ToString());
+
                 bool done = (bool)v;
                 string mailEquipa = reader["Equipa_Email"] as string;
                 string nomeEquipa = reader["Equipa_Nome"] as string;
@@ -281,11 +285,10 @@ namespace BackOffice.Data.DataBase
     }
     internal class VeiculosDAO
     {
-      //  public string dbConf { get; set; }
+
         public int idatividade { get; set; }
         public VeiculosDAO( int atividade)
         {
-         //   this.dbConf = conf;
             this.idatividade = atividade;
         }
 
@@ -337,8 +340,7 @@ namespace BackOffice.Data.DataBase
                           this.idatividade);
             SqlCommand command = new SqlCommand(queryString, connection,tr);
             command.CommandTimeout = 60;
-            //command.Transaction = connection.
-            //MessageBox.Show(connection.State.ToString());
+
             SqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
@@ -395,9 +397,7 @@ namespace BackOffice.Data.DataBase
             }
             else//update
             {
-                // UPDATE dbo.Batedor
-                // SET Nome = 'ze', Password = 'novo', HorasDeReconhecimento = 10, N_Atividades = 10
-                // WHERE Email = 'a@a.pt';
+
                 queryString = String.Format("UPDATE dbo.Veiculo " +
                     " SET Marca = '{0}', Modelo = '{1}' " +
                     " WHERE Chassi = '{2}'  AND Atividade = {3} ;",
@@ -470,7 +470,6 @@ namespace BackOffice.Data.DataBase
                     var longit = readerC[1];
                     var lat = readerC[2];
 
-                    //MessageBox.Show("lat" + Double.Parse(lat.ToString().Replace(',','.'), CultureInfo.InvariantCulture) + "long" + Double.Parse(longit.ToString().Replace(',', '.'), CultureInfo.InvariantCulture));
                     GeoCoordinate gnew = new GeoCoordinate(Double.Parse(lat.ToString().Replace(',', '.'), CultureInfo.InvariantCulture), Double.Parse(longit.ToString().Replace(',', '.'), CultureInfo.InvariantCulture));
                     cords.Add(Int32.Parse(idC.ToString()), gnew);
                 }
@@ -646,7 +645,6 @@ namespace BackOffice.Data.DataBase
                 {
                     var v = readerIM["id_Image"];
                     byte[] imagem  = (byte[])readerIM["Image"];
-                    //int num = reader.GetInt32(readerIM.GetOrdinal("id_Image"));
                     int num = (int)v;
                     string s = BackOfficeAPP.fromBytes64(imagem);
                     d.Add(num,BackOfficeAPP.imageFromBitMapRep(s));
@@ -658,7 +656,6 @@ namespace BackOffice.Data.DataBase
                     images.Add(d[i]);
                 }
                 n = new Nota(id, notaText, local, images, audio,new Voz(audio, textoConvert));
-               // b = new Veiculo(modelo as string, marca as string, chass as string, caract);
             }
             reader.Close();
             return n;
@@ -714,13 +711,6 @@ namespace BackOffice.Data.DataBase
             {
                 if (novo.asVoice())
                 {
-                    /*queryString = String.Format("INSERT INTO dbo.Nota " +
-                    "(id_Nota, NotaTextual, Audio, TextoConvertido,Latitude,Longitude,Atividade) " +
-                    " VALUES " +
-                    " ({0}, '{1}', {2}, '{3}', {4}, {5}, {6}); ",
-                          novo.idNota, novo.notaTextual, novo.notasVoz.audio, novo.notasVoz.texto,
-                          novo.localRegisto.Latitude.ToString().Replace(',', '.'), novo.localRegisto.Longitude.ToString().Replace(',', '.'),
-                          this.idAtividade);*/
 
                     queryString = "INSERT INTO dbo.Nota " +
                    "(id_Nota, NotaTextual, Audio, TextoConvertido,Latitude,Longitude,Atividade) VALUES (@idNota, @notaTextual , @audio , @textoConvertido, @Lat,@Lon,@ativ); ";
@@ -771,9 +761,7 @@ namespace BackOffice.Data.DataBase
                         command.Parameters.AddWithValue("idNota", novo.idNota);
                         command.Parameters.AddWithValue("idAtividade", this.idAtividade);
                         command.Parameters.AddWithValue("i", i);
-                        //System.Text.Encoding.UTF8.GetString(array)
                         command.CommandTimeout = 60;
-                        //MessageBox.Show(System.Text.Encoding.UTF8.GetString(array));
                         command.ExecuteNonQuery();
                         i++;
                     }
