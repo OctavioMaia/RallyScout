@@ -63,8 +63,9 @@ namespace BackOffice.Presentation
                 {
                     /* try
                      {*/
-                    this.backoffice.gerarRelatorios(path, current.idAtividade);
                     this.path = pathN;
+                    this.backoffice.gerarRelatorios(path, current.idAtividade);
+                    
                     gerado = true;
                     System.Windows.Forms.MessageBox.Show("Relatórios gerado com sucesso em " + path, "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     /*}
@@ -94,8 +95,8 @@ namespace BackOffice.Presentation
             {
                 if (destino.Length > 0 && assunto.Length > 0 && texto.Length > 0 && path.Length > 0)
                 {
-                    String piloto = System.IO.Path.Combine(path, "copiloto.pdf");
-                    String general = System.IO.Path.Combine(path, "general.pdf");
+                    String piloto = System.IO.Path.Combine(path, "copiloto_AT_"+this.current.idAtividade+".pdf");
+                    String general = System.IO.Path.Combine(path, "general_AT_"+ this.current.idAtividade + ".pdf");
 
                     //System.Windows.MessageBox.Show("piloto path: " + piloto + " general path: " + general);
 

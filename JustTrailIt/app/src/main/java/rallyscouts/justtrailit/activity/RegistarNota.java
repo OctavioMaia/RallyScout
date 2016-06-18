@@ -8,6 +8,7 @@ import android.location.Location;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
+import android.nfc.Tag;
 import android.os.Build;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -30,6 +31,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 import rallyscouts.justtrailit.R;
 import rallyscouts.justtrailit.business.Nota;
@@ -63,10 +65,11 @@ public class RegistarNota extends AppCompatActivity {
     private File myTempAudio;
 
 
-    private boolean whileIsRecording;
-
-    int frequency = 11025,channelConfiguration = AudioFormat.CHANNEL_CONFIGURATION_MONO;
-    int audioEncoding = AudioFormat.ENCODING_PCM_16BIT;
+    private boolean isRecording;
+    private static final int sizeMaxAudio =  2097152;
+    private int bytesRead;
+    private byte[] bufferAudio = new byte[sizeMaxAudio];
+    private Thread recordingThread = null;
 
 
     @Override
@@ -77,7 +80,7 @@ public class RegistarNota extends AppCompatActivity {
 
         this.notas = new NotaDAO(RegistarNota.this);
 
-        this.whileIsRecording = false;
+        this.isRecording = false;
 
         Location loc = new Location("");
         loc.setLatitude(getIntent().getExtras().getDouble(LOC_LATITUDE));
@@ -93,6 +96,9 @@ public class RegistarNota extends AppCompatActivity {
 
         this.mensagem = (EditText)findViewById(R.id.id_InserirTexto);
 
+        this.startPause = (ImageButton) findViewById(R.id.imageButton_Start_PauseRecord);
+        this.stop = (ImageButton) findViewById(R.id.imageButton_Stop);
+
         this.registarImagem = (Button) findViewById(R.id.button_RegistarImagem);
         this.analisarNota = (Button) findViewById(R.id.button_AnalisarNota);
         this.submit = (Button) findViewById(R.id.button_SubmissaoNota);
@@ -103,19 +109,19 @@ public class RegistarNota extends AppCompatActivity {
                 requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO},
                         MY_PERMISSIONS_REQUEST_MICROPHONE_RECORD_AUDIO);
             } else {
+                this.startPause.setEnabled(true);
+                this.stop.setEnabled(false);
                 Log.d(TAG, "Already granted access to audio");
-                initializeAudio();
             }
             //camera premission request
             if (ContextCompat.checkSelfPermission(this,Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO},
                         MY_PERMISSIONS_REQUEST_MICROPHONE_RECORD_AUDIO);
             } else {
+                this.startPause.setEnabled(true);
+                this.stop.setEnabled(false);
                 Log.d(TAG, "Already granted access to camera");
-                initializeAudio();
             }
-        }else{
-            initializeAudio();
         }
     }
 
@@ -126,57 +132,12 @@ public class RegistarNota extends AppCompatActivity {
     }
 
     public void confirmarSubmissao(View v) {
-        //Falta definir a voz a latitude e a longitude.
         notaToSave.setNotaTextual(mensagem.getText().toString());
         notas.insertNota(idAtividade,notaToSave);
         finish();
     }
 
 
-    /*
-    private void initializeAudio(){
-        try {
-            myTempAudio = File.createTempFile("createSound1", "mp3", getCacheDir());
-            myTempAudio.deleteOnExit();
-
-
-            DataOutputStream dos = new DataOutputStream(
-                    new BufferedOutputStream(new FileOutputStream(
-                            myTempAudio)));
-
-            int bufferSize = AudioRecord.getMinBufferSize(frequency,
-                    channelConfiguration, audioEncoding);
-
-            this.audioRecorder = new AudioRecord(
-                    MediaRecorder.AudioSource.MIC,
-                    11025,
-                    AudioFormat.CHANNEL_CONFIGURATION_MONO,
-                    AudioFormat.ENCODING_PCM_16BIT,
-                    bufferSize);
-
-
-
-
-
-
-
-
-            FileInputStream myFileSound = new FileInputStream(myTempAudio);
-
-            this.startPause = (ImageButton) findViewById(R.id.imageButton_Start_PauseRecord);
-            this.stop = (ImageButton) findViewById(R.id.imageButton_Stop);
-            this.stop.setEnabled(false);
-            mediaRecorder=new MediaRecorder();
-            mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-            mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
-            mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
-            mediaRecorder.setOutputFile(myFileSound.getFD());
-        } catch (IOException e) {
-            this.stop.setEnabled(false);
-            this.startPause.setEnabled(false);
-        }
-    }
-*/
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
@@ -189,7 +150,6 @@ public class RegistarNota extends AppCompatActivity {
 
                 if (camaraImage.getByteCount()>0){
                     Toast.makeText(getApplicationContext(), "Recebi a imagem com alguma coisa" , Toast.LENGTH_LONG).show();
-
                 }
                 notaToSave.addImagem(camaraImage);
             }
@@ -202,7 +162,8 @@ public class RegistarNota extends AppCompatActivity {
             case MY_PERMISSIONS_REQUEST_MICROPHONE_RECORD_AUDIO: {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.d(TAG, "Permission Granted");
-                    initializeAudio();
+                    this.startPause.setEnabled(true);
+                    this.stop.setEnabled(false);
                 } else {
                     Log.d(TAG, "Permission Failed");
                     Toast.makeText(getApplicationContext(), "You must allow permission record audio to your mobile device.", Toast.LENGTH_SHORT).show();
@@ -218,44 +179,35 @@ public class RegistarNota extends AppCompatActivity {
 
     public void startRecordAudio(View v){
 
-        try {
-            myTempAudio = File.createTempFile("createSound1", "mp3", getCacheDir());
+        this.startPause.setEnabled(false);
+        this.stop.setEnabled(true);
 
-            myTempAudio.deleteOnExit();
+        final int bufferSize = AudioRecord.getMinBufferSize(8000, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_8BIT);
 
-            DataOutputStream dos = new DataOutputStream(
-                    new BufferedOutputStream(new FileOutputStream(
-                            myTempAudio)));
+        this.audioRecorder = new AudioRecord(
+                MediaRecorder.AudioSource.MIC,
+                8000,
+                AudioFormat.CHANNEL_CONFIGURATION_MONO,
+                AudioFormat.ENCODING_PCM_8BIT,
+                bufferSize);
 
-            int bufferSize = AudioRecord.getMinBufferSize(frequency,
-                    channelConfiguration, audioEncoding);
+        audioRecorder.startRecording();
+        isRecording = true;
 
-            this.audioRecorder = new AudioRecord(
-                    MediaRecorder.AudioSource.MIC,
-                    11025,
-                    AudioFormat.CHANNEL_CONFIGURATION_MONO,
-                    AudioFormat.ENCODING_PCM_16BIT,
-                    bufferSize);
+        recordingThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                bytesRead = 0;
+                while (isRecording && bytesRead < sizeMaxAudio) {
+                    // gets the voice output from microphone to byte format
 
-            audioRecorder.startRecording();
+                    bytesRead += audioRecorder.read(bufferAudio, 0, sizeMaxAudio);
+                    Log.d(TAG,"Audio recive" + bufferAudio.toString());
+                }
+            }
+        });
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-
-
-        /*
-        try {
-            mediaRecorder.prepare();
-            mediaRecorder.start();
-            this.startPause.setEnabled(false);
-            this.stop.setEnabled(true);
-            Toast.makeText(getApplicationContext(), "Recording started", Toast.LENGTH_LONG).show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
+        recordingThread.start();
     }
 
 
@@ -264,46 +216,10 @@ public class RegistarNota extends AppCompatActivity {
         this.startPause.setEnabled(false);
         this.stop.setEnabled(false);
 
-
         audioRecorder.stop();
+        isRecording = false;
+        notaToSave.setVoice(bufferAudio);
 
-        try {
-            DataInputStream dis = new DataInputStream(
-                    new BufferedInputStream(new FileInputStream(
-                            myTempAudio)));
-
-            byte[] buffer = new byte[4096];
-
-            dis.readFully(buffer,0,buffer.length);
-
-            notaToSave.setVoice(buffer);
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        /*
-
-        try {
-            FileInputStream fis = new FileInputStream(myTempAudio);
-
-            FileInputStream reader = new FileInputStream(myTempAudio);
-            byte[] buffer = new byte[4096];
-            reader.read(buffer);
-
-            notaToSave.setVoice(buffer);
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        mediaRecorder.release();
-
-*/
         Toast.makeText(getApplicationContext(), "Audio recorded successfully",Toast.LENGTH_LONG).show();
     }
 }

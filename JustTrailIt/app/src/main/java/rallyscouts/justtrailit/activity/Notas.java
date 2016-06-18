@@ -120,6 +120,7 @@ public class Notas extends AppCompatActivity implements OnMapReadyCallback,Adapt
         route.color( Color.parseColor("#CC0000FF") );
         route.width( 5 );
         route.visible( true );
+        route.geodesic(true);
 
 
 

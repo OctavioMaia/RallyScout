@@ -15,7 +15,7 @@ public class DBAdapter extends SQLiteOpenHelper {
 
     public static final String TAG = "DBAdapter";
     public static final String DATABASE_NAME = "JustTrailIt";
-    public static final int DATABASE_VERSION = 31;
+    public static final int DATABASE_VERSION = 42;
 
     private static final String CREATE_TABLE_ATIVIDADE =
             "CREATE TABLE " + AtividadeDAO.ATIVIDADE_TABLE_NAME + " ( " +

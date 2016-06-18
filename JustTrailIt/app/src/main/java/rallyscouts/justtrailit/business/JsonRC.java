@@ -28,11 +28,33 @@ public class JsonRC {
 
     public static final String TAG = "JsonClass";
 
+    private static final String EMAIL = "email";
+    private static final String PASSWORD = "password";
+    private static final String ATIVIDADE = "idAtividade";
+    private static final String NOME_EQUIPA = "nomeEquipa";
+    private static final String MAPA = "mapa";
+    private static final String NOME_PROVA = "nomeProva";
+    private static final String VEICULOS = "veiculos";
+    private static final String PERCURSO = "percurso";
+    private static final String NOTAS = "notas";
+    private static final String ID_NOTA = "idNota";
+    private static final String NOTA_TEXTUAL = "notaTextual";
+    private static final String LOCAL = "local";
+    private static final String IMAGEM = "imagem";
+    private static final String AUDIO = "audio";
+    private static final String LATITUDE = "lat";
+    private static final String LONGITUDE = "log";
+    private static final String CHASSI = "chassi";
+    private static final String MARCA = "marca";
+    private static final String MODELO = "modelo";
+    private static final String CARACTERISTICAS = "caracteristicas";
+
     public static int reciveACK(String jsonString){
         int idAtividade = -1;
         try {
             JSONObject recive = new JSONObject(jsonString);
-            idAtividade = recive.getInt("idAtividade");
+            Log.i(TAG,"ACK: " + recive.toString());
+            idAtividade = recive.getInt(ATIVIDADE);
         } catch (JSONException e) {
             Log.w(TAG,"Erro ao receber o Json ACK");
         }
@@ -43,8 +65,9 @@ public class JsonRC {
 
         JSONObject download = new JSONObject();
         try {
-            download.put("email",emailBatedor);
-            download.put("password",password);
+            download.put(EMAIL,emailBatedor);
+            download.put(PASSWORD,password);
+            Log.i(TAG,download.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -65,18 +88,18 @@ public class JsonRC {
 
         try {
             JSONObject recive = new JSONObject(jsonString);
-            int idAtividade = recive.getInt("idAtividade");
+            int idAtividade = recive.getInt(ATIVIDADE);
             Log.i(TAG,"Atividade: " + idAtividade);
             if (idAtividade >= 0) {
                 //não é codigo de erro
                 batedorLogin.setAtividade(idAtividade);
                 batedores.updateBatedor(batedorLogin);
 
-                atividades.insertAtividade(idAtividade, recive.getString("nomeEquipa"));
+                atividades.insertAtividade(idAtividade, recive.getString(NOME_EQUIPA));
 
                 try {
                     //ler mapa agora
-                    JSONObject mapaJson = recive.getJSONObject("mapa");
+                    JSONObject mapaJson = recive.getJSONObject(MAPA);
                     Mapa mapaRead = readMapa(idAtividade,mapaJson);
                     mapa.insertMapa(mapaRead);
 
@@ -86,7 +109,7 @@ public class JsonRC {
 
                 try {
                     //ler veiculos agora agora
-                    JSONArray veiculosJson = recive.getJSONArray("veiculos");
+                    JSONArray veiculosJson = recive.getJSONArray(VEICULOS);
                     List<Veiculo> veiculosRead = readVeiculos(veiculosJson);
                     veiculos.insertVeiculos(idAtividade,veiculosRead);
                 } catch (JSONException e) {
@@ -106,20 +129,19 @@ public class JsonRC {
         return ret;
     }
 
-
     public static JSONObject sendAtividade(Batedor batedorLogin, List<Nota> notas){
         JSONObject send = new JSONObject();
 
         try {
-            send.put("idAtividade",batedorLogin.getAtividade());
-            send.put("email",batedorLogin.getEmail());
+            send.put(ATIVIDADE,batedorLogin.getAtividade());
+            send.put(EMAIL,batedorLogin.getEmail());
 
             JSONArray listaNotas = new JSONArray();
             for ( Nota n : notas) {
                 listaNotas.put(createNota(n));
             }
 
-            send.put("notas",listaNotas);
+            send.put(NOTAS,listaNotas);
 
         } catch (JSONException e) {
             Log.e(TAG,"Não foi possivel criar o Json para envio da atividade " + batedorLogin.getAtividade());
@@ -133,22 +155,22 @@ public class JsonRC {
         Mapa map = new Mapa(idAtividade);
 
         try {
-            map.setNomeProva(mapaJson.getString("nomeProva"));
+            map.setNomeProva(mapaJson.getString(NOME_PROVA));
         } catch (JSONException e) {
             Log.w(TAG, "Não foi possivel ler a key nomeProva do Json recebido");
         }
 
         try {
-            JSONArray percurso = mapaJson.getJSONArray("percurso");
+            JSONArray percurso = mapaJson.getJSONArray(PERCURSO);
             Map<Integer,Location> coords = new HashMap<>();
             for (int i = 0; i < percurso.length(); i++) {
                 try{
                     JSONObject coord =  percurso.getJSONObject(i);
 
                     Location loc = new Location("");
-                    Log.i(TAG,"lat: " + coord.getDouble("lat") + " log: " + coord.getDouble("log"));
-                    loc.setLatitude(coord.getDouble("lat"));
-                    loc.setLongitude(coord.getDouble("log"));
+                    Log.i(TAG,"Pos: " + i + " lat: " + coord.getDouble(LATITUDE) + " log: " + coord.getDouble(LONGITUDE));
+                    loc.setLatitude(coord.getDouble(LATITUDE));
+                    loc.setLongitude(coord.getDouble(LONGITUDE));
 
                     coords.put(i,loc);
                 }catch (JSONException e){
@@ -174,36 +196,34 @@ public class JsonRC {
                 JSONObject veiculo = veiculosJson.getJSONObject(i);
 
                 try {
-                    vec.setChassi(veiculo.getString("chassi"));
+                    vec.setChassi(veiculo.getString(CHASSI));
                 } catch (JSONException e) {
                     Log.w(TAG, "Não foi possivel ler o chassi do veiculo na posição " + i);
                 }
 
                 try {
-                    vec.setMarca(veiculo.getString("marca"));
+                    vec.setMarca(veiculo.getString(MARCA));
                 } catch (JSONException e) {
                     Log.w(TAG, "Não foi possivel ler o marca do veiculo na posição " + i);
                 }
 
                 try {
-                    vec.setModelo(veiculo.getString("modelo"));
+                    vec.setModelo(veiculo.getString(MODELO));
                 } catch (JSONException e) {
                     Log.w(TAG, "Não foi possivel ler o modelo do veiculo na posição " + i);
                 }
 
                 try {
-                    JSONArray caract = veiculo.getJSONArray("caracteristicas");
-                    Log.w(TAG, "Numero de caracteristicas " + caract.length() + " - " + vec.getChassi());
+                    JSONArray caract = veiculo.getJSONArray(CARACTERISTICAS);
+                    Log.w(TAG, "Número de caracteristicas " + caract.length() + " - " + vec.getChassi());
                     for (int j = 0; j < caract.length(); j++) {
-                        Log.w(TAG, "caracteristicas " + caract.getString(j));
+                        Log.w(TAG, "Caract: " + caract.getString(j));
                         vec.addCaract(caract.getString(j));
                     }
                 } catch (JSONException e) {
-                    Log.w(TAG, "Não foi possivel ler as caracteristicas do veiculo na posição " + i);
+                    Log.w(TAG, "Não foi possivel ler as caracteristicas do veiculo " + i);
                 }
-
                 veiculos.add(vec);
-
             } catch (JSONException e) {
                 Log.w(TAG, "Não foi possivel ler o veiculo na posição " + i);
             }
@@ -214,14 +234,15 @@ public class JsonRC {
     private static JSONObject createNota(Nota nota){
         JSONObject notaJson = new JSONObject();
 
-
         try {
-            notaJson.put("idNota",nota.getIdNota());
-            notaJson.put("notaTextual",nota.getNotaTextual());
-            notaJson.put("local",createLocal(nota.getLocalRegisto()));
-            notaJson.put("imagem", createImagens(nota.getImagens()));
+            notaJson.put(ID_NOTA,nota.getIdNota());
+            notaJson.put(NOTA_TEXTUAL,nota.getNotaTextual());
+            notaJson.put(LOCAL,createLocal(nota.getLocalRegisto()));
+            if(nota.getImagens().size()>0){
+                notaJson.put(IMAGEM, createImagens(nota.getImagens()));
+            }
             if(nota.getVoice()!=null){
-                notaJson.put("audio", Base64.encodeToString(nota.getVoice(),Base64.DEFAULT) );
+                notaJson.put(AUDIO, Base64.encodeToString(nota.getVoice(),Base64.DEFAULT) );
             }
         } catch (JSONException e) {
             Log.e(TAG,"Não foi possivel criar o Json para a nota " + nota.getIdNota());
@@ -234,11 +255,11 @@ public class JsonRC {
         JSONObject localJson = new JSONObject();
 
         try {
-            localJson.put("lat",loc.getLatitude());
-            localJson.put("log",loc.getLongitude());
+            localJson.put(LATITUDE,loc.getLatitude());
+            localJson.put(LONGITUDE,loc.getLongitude());
         } catch (JSONException e) {
             Log.w(TAG, "Não foi possivel criar o local de registo");
-            return localJson = null;
+            localJson = null;
         }
         return localJson;
     }

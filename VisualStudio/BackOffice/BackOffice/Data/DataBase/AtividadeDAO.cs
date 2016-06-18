@@ -625,8 +625,8 @@ namespace BackOffice.Data.DataBase
                 }
                 
                 string textoConvert = reader["TextoConvertido"] as string;
-                double longitude = (double)reader["Latitude"];
-                double latitude = (double)reader["Longitude"];
+                double longitude = (double)reader["Longitude"];  
+                double latitude = (double)reader["Latitude"];
 
                 GeoCoordinate local = new GeoCoordinate(latitude, longitude);
 
@@ -754,25 +754,28 @@ namespace BackOffice.Data.DataBase
                 List<Image> images = novo.imagens;
                 String queryStringC;
                 int i = 0;
-                foreach (Bitmap b in images)
+                if (images != null)
                 {
-                    Image c = (Image)b;
-                    String s = BackOfficeAPP.bitMapRepStringFromImaga(c);
-                    byte[] array = BackOfficeAPP.toBytes64(s);
-                    queryStringC = "INSERT INTO dbo.Imagem " +
-                    "(Image, Nota,Atividade,id_Image) VALUES (@img, @idNota , @idAtividade , @i); ";
+                    foreach (Bitmap b in images)
+                    {
+                        Image c = (Image)b;
+                        String s = BackOfficeAPP.bitMapRepStringFromImaga(c);
+                        byte[] array = BackOfficeAPP.toBytes64(s);
+                        queryStringC = "INSERT INTO dbo.Imagem " +
+                        "(Image, Nota,Atividade,id_Image) VALUES (@img, @idNota , @idAtividade , @i); ";
 
-                    String x = BackOfficeAPP.fromBytes64(array);
-                    SqlCommand command = new SqlCommand(queryStringC, connection,tr);
-                    command.Parameters.AddWithValue("img", array);
-                    command.Parameters.AddWithValue("idNota", novo.idNota);
-                    command.Parameters.AddWithValue("idAtividade", this.idAtividade);
-                    command.Parameters.AddWithValue("i", i);
-                    //System.Text.Encoding.UTF8.GetString(array)
-                    command.CommandTimeout = 60;
-                    //MessageBox.Show(System.Text.Encoding.UTF8.GetString(array));
-                    command.ExecuteNonQuery();
-                    i++;
+                        String x = BackOfficeAPP.fromBytes64(array);
+                        SqlCommand command = new SqlCommand(queryStringC, connection, tr);
+                        command.Parameters.AddWithValue("img", array);
+                        command.Parameters.AddWithValue("idNota", novo.idNota);
+                        command.Parameters.AddWithValue("idAtividade", this.idAtividade);
+                        command.Parameters.AddWithValue("i", i);
+                        //System.Text.Encoding.UTF8.GetString(array)
+                        command.CommandTimeout = 60;
+                        //MessageBox.Show(System.Text.Encoding.UTF8.GetString(array));
+                        command.ExecuteNonQuery();
+                        i++;
+                    }
                 }
             }/*
             else//update

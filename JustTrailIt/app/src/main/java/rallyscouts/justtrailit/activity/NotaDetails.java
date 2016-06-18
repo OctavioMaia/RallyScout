@@ -1,5 +1,6 @@
 package rallyscouts.justtrailit.activity;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.media.AudioFormat;
@@ -7,6 +8,7 @@ import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.media.MediaPlayer;
 import android.nfc.Tag;
+import android.os.Build;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -37,13 +39,15 @@ public class NotaDetails extends AppCompatActivity {
 
     private NotaDAO notas;
     private Nota nota;
-    private MediaPlayer mediaPlayer;
+    private AudioTrack audioTrack;
 
     private Button start,pause,stop;
     private TextView notaTextual;
     private LinearLayout tl;
     private SeekBar seekbar;
 
+
+    private MediaPlayer mediaPlayer;
     private Handler myHandler = new Handler();;
     private double startTime = 0;
     private double finalTime = 0;
@@ -104,23 +108,34 @@ public class NotaDetails extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Não tem voz" , Toast.LENGTH_LONG).show();
         }
 
-
-        AudioTrack at = new AudioTrack();
-
-        at.stop();
-        at.play();
-
         if( nota.getVoice()!=null && nota.getVoice().length>0){
             pause.setEnabled(false);
             stop.setEnabled(false);
 
-            at = new AudioTrack(AudioManager.STREAM_MUSIC, 44100,
-                    AudioFormat.CHANNEL_CONFIGURATION_MONO, AudioFormat.ENCODING_PCM_16BIT,
-                    minBufferSize, AudioTrack.MODE_STREAM);
-
             start.setOnClickListener(new View.OnClickListener() {
+                @TargetApi(Build.VERSION_CODES.LOLLIPOP)
                 @Override
                 public void onClick(View v) {
+
+                    int minBufferSize = AudioTrack.getMinBufferSize(8000, AudioFormat.CHANNEL_CONFIGURATION_MONO, AudioFormat.ENCODING_PCM_8BIT);
+
+                    audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, 8000,
+                            AudioFormat.CHANNEL_CONFIGURATION_MONO, AudioFormat.ENCODING_PCM_8BIT,
+                            minBufferSize, AudioTrack.MODE_STREAM);
+
+                    audioTrack.setStereoVolume(1.0f,1.0f);
+
+                    audioTrack.setVolume(audioTrack.getMaxVolume());
+
+                    audioTrack.play();
+
+
+
+                    audioTrack.write(nota.getVoice(), 0, 2097152);
+
+                    Log.i(TAG,"Bytes audio: " + new String(nota.getVoice()));
+
+                    Toast.makeText(getApplicationContext(), "Play " + audioTrack.getPositionNotificationPeriod(),Toast.LENGTH_SHORT).show();
 
                     /*
                     mediaPlayer = playByteArray(nota.getVoice());
@@ -128,12 +143,14 @@ public class NotaDetails extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Playing sound",Toast.LENGTH_SHORT).show();
                     mediaPlayer.start();
 
-                    seekbar.setProgress(mediaPlayer.getCurrentPosition());
-                    myHandler.postDelayed(UpdateSongTime,100);
+                   // seekbar.setProgress(mediaPlayer.getCurrentPosition());
+                    //myHandler.postDelayed(UpdateSongTime,100);
+                    */
+
                     pause.setEnabled(true);
                     stop.setEnabled(true);
                     start.setEnabled(false);
-                    */
+
                 }
             });
 
@@ -142,7 +159,7 @@ public class NotaDetails extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Toast.makeText(getApplicationContext(), "Pausing sound",Toast.LENGTH_SHORT).show();
-                    mediaPlayer.pause();
+                    audioTrack.pause();
                     stop.setEnabled(true);
                     start.setEnabled(true);
                     pause.setEnabled(false);
@@ -153,7 +170,8 @@ public class NotaDetails extends AppCompatActivity {
             stop.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mediaPlayer.seekTo(0);
+                    audioTrack.stop();
+                    audioTrack.release();
                     pause.setEnabled(false);
                     stop.setEnabled(false);
                     start.setEnabled(true);
@@ -166,17 +184,17 @@ public class NotaDetails extends AppCompatActivity {
         }
     }
 
-
+/*
     private Runnable UpdateSongTime = new Runnable() {
         public void run() {
             startTime = mediaPlayer.getCurrentPosition();
             seekbar.setProgress((int)startTime);
             myHandler.postDelayed(this, 100);
         }
-    };
+    };*/
 
 
-
+/*
     private MediaPlayer playByteArray(byte[] mp3SoundByteArray) {
         MediaPlayer mediaPlayer = null;
         try {
@@ -212,5 +230,7 @@ public class NotaDetails extends AppCompatActivity {
         }
         return mediaPlayer;
     }
+
+*/
 
 }
