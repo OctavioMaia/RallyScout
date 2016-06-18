@@ -427,8 +427,11 @@ namespace BackOffice.Business
         public void gerarRelatorios(string path, int atividade_id)
         {
 
-            String pathPiloto = System.IO.Path.Combine(path, "copiloto.pdf");
-            String pathGlobal = System.IO.Path.Combine(path, "general.pdf");
+            String pathPiloto = System.IO.Path.Combine(path, path, "copiloto_AT_" + atividade_id + ".pdf");
+            String pathGlobal = System.IO.Path.Combine(path, "general_AT_" + atividade_id + ".pdf");
+
+            /*String piloto = System.IO.Path.Combine(path, "copiloto_AT_" + this.current.idAtividade + ".pdf");
+            String general = System.IO.Path.Combine(path, "general_AT_" + this.current.idAtividade + ".pdf");*/
 
             Atividade a = this.getAtividade(atividade_id);
             if (this.getAtividadesPorTerminarID().Contains(atividade_id))
