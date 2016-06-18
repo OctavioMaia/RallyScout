@@ -65,6 +65,11 @@ namespace BackOffice.Presentation
 
         private void buttonSair_Click(object sender, RoutedEventArgs e)
         {
+            this.Close();
+        }
+
+        private void window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
             if (this.mainW != null)
             {
                 this.mainW.Close();
@@ -73,7 +78,6 @@ namespace BackOffice.Presentation
             {
                 this.backoffice.stopReceive();
             }
-            this.Close();
         }
     }
 }

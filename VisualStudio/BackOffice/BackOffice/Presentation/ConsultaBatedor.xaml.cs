@@ -23,6 +23,7 @@ namespace BackOffice.Presentation
         BackOfficeAPP backoffice;
         List<Batedor> lista;
         Window anterior;
+        bool cancel;
 
         public ConsultaBatedor(BackOfficeAPP b,Window w)
         {
@@ -30,6 +31,7 @@ namespace BackOffice.Presentation
             this.backoffice = b;
             InitializeComponent();
             UpdateComboBox();
+            this.cancel =false;
         }
 
         private void UpdateComboBox()
@@ -67,8 +69,17 @@ namespace BackOffice.Presentation
 
         private void button_Click(object sender, RoutedEventArgs e)
         {
+            this.cancel = true;
             this.Close();
             this.anterior.Visibility = Visibility.Visible;
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (!this.cancel)
+            {
+                e.Cancel = true;
+            }
         }
     }
 }

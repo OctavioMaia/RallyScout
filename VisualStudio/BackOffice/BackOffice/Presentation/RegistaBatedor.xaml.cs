@@ -23,11 +23,13 @@ namespace BackOffice.Presentation
     {
         BackOfficeAPP backoffice;
         Window anterior;
+        Boolean cancelar;
 
         public RegistaBatedor(BackOfficeAPP b,Window w)
         {
             this.anterior = w;
             this.backoffice = b;
+            this.cancelar = false;
             InitializeComponent();
         }
 
@@ -43,6 +45,7 @@ namespace BackOffice.Presentation
                 {
                     Batedor b = new Batedor(email, nome, password);
                     backoffice.registarBatedor(b);
+                    this.cancelar = true;
                     this.Close();
                     this.anterior.Visibility = Visibility.Visible;
                 }
@@ -59,8 +62,17 @@ namespace BackOffice.Presentation
 
         private void button_Copy_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
             this.anterior.Visibility = Visibility.Visible;
+            this.cancelar = true;
+            this.Close();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (!this.cancelar)
+            {
+                e.Cancel = true;
+            }
         }
     }
 }

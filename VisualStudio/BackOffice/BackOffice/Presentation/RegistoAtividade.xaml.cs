@@ -27,6 +27,7 @@ namespace BackOffice.Presentation
         List<Veiculo> l { get; set; }
         BackOfficeAPP backoffice;
         Window anterior;
+        bool cancelar;
 
         public RegistoAtividade(BackOfficeAPP b, Window w)
         {
@@ -34,6 +35,7 @@ namespace BackOffice.Presentation
             this.backoffice = b;
             InitializeComponent();
             UpdateComboBox();
+            this.cancelar = false;
         }
 
         private void UpdateComboBox()
@@ -73,6 +75,7 @@ namespace BackOffice.Presentation
                     if (System.IO.Path.GetExtension(trajeto).Equals(".gpx"))
                     {
                         backoffice.registarAtividade(mailBatedor, trajeto, nomeProva, nomeEquipa, emailEquipa, l);
+                        this.cancelar = true;
                         this.Close();
                         this.anterior.Visibility = Visibility.Visible;
                     }
@@ -97,8 +100,17 @@ namespace BackOffice.Presentation
 
         private void buttonCancelar_Click(object sender, RoutedEventArgs e)
         {
+            this.cancelar = true;
             this.Close();
             this.anterior.Visibility = Visibility.Visible;
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (!this.cancelar)
+            {
+                e.Cancel = true;
+            }
         }
     }
 }

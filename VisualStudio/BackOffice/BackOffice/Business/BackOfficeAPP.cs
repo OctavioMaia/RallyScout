@@ -181,7 +181,7 @@ namespace BackOffice.Business
 
         public void stopReceive()
         {
-            if(this.comuTrhead != null && this.comuTrhead.IsAlive)
+            if(!(this.comuTrhead == null || !this.comuTrhead.IsAlive))
             {
                 this.comunica.Stop();
                 this.comuTrhead.Abort();

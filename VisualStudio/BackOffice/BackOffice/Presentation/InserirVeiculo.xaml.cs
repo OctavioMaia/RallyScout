@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -20,6 +21,7 @@ namespace BackOffice.Presentation
         List<Veiculo> veiculos;
         BackOfficeAPP backoffice;
         Window anterior;
+        bool cancelar;
 
         public InserirVeiculo(BackOfficeAPP b, List<Veiculo> l,Window w)
         {
@@ -28,6 +30,7 @@ namespace BackOffice.Presentation
             this.veiculos = l;
             InitializeComponent();
             listaVeiculos.Items.Remove(listaVeiculos.Items.GetItemAt(0));
+            this.cancelar = false;
         }
        
         private void buttonAdicionarVeiculo_Click(object sender, RoutedEventArgs e)
@@ -48,12 +51,16 @@ namespace BackOffice.Presentation
             Veiculo v = new Veiculo(modelo, marca, chassi, carateristicasSplit);
             veiculos.Add(v);
 
-            //cenas
+            if (!tudoPreenchido())
+            {
+                System.Windows.Forms.MessageBox.Show("Unico campo permitido vazio é caracteristicas.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             
             var lista = new String[] { chassi, marca, modelo };
 
             this.listaVeiculos.Items.Add(new MyItem { Chassi = chassi, Marca = marca, Modelo = modelo});
-            
+            this.clear();
         }
 
         private void buttonRemoverVeiculo_Click(object sender, RoutedEventArgs e)
@@ -75,8 +82,41 @@ namespace BackOffice.Presentation
 
         private void buttonOK_Click(object sender, RoutedEventArgs e)
         {
+            this.cancelar = true;
             this.Close();
             this.anterior.Visibility = Visibility.Visible;
+        }
+        private void clear()
+        {
+            textBoxChassi.Text="";
+            textBoxMarca.Text="";
+            textBoxModelo.Text="";
+            textBoxCarateristicas.Text="";
+        }
+        private bool tudoPreenchido()
+        {
+            if(textBoxChassi.Text==null || textBoxChassi.Text.Equals(""))
+            {
+                return false;
+            }
+            if (textBoxMarca.Text == null || textBoxMarca.Text.Equals(""))
+            {
+                return false;
+            }
+            if (textBoxModelo.Text == null || textBoxModelo.Text.Equals(""))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (!this.cancelar)
+            {
+                e.Cancel = true;
+            }
         }
     }
 
