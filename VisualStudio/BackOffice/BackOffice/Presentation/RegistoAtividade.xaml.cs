@@ -69,7 +69,7 @@ namespace BackOffice.Presentation
             String emailEquipa = textBoxEmailEquipa.Text;
             string mailBatedor = comboBox.SelectedItem as string;
             try {
-                if (trajeto.Length > 0 && nomeProva.Length > 0 && nomeEquipa.Length > 0 && emailEquipa.Length > 0 && mailBatedor.Length > 0) {
+                if (trajeto.Length > 0 && nomeProva.Length > 0 && nomeEquipa.Length > 0 && emailEquipa.Length > 0 && mailBatedor !=null &&mailBatedor.Length > 0) {
                     if (System.IO.Path.GetExtension(trajeto).Equals(".gpx"))
                     {
                         backoffice.registarAtividade(mailBatedor, trajeto, nomeProva, nomeEquipa, emailEquipa, l);

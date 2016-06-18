@@ -142,7 +142,11 @@ namespace BackOffice.Business
             this.inprogress = false;
             this.done = true;
             this.fimReconhecimento = DateTime.Now;
-            this.batedor.updateHorasAndActiv(((fimReconhecimento.Millisecond - inicioReconhecimento.Millisecond) *1.0) / (1000 * 60 * 60.0));
+
+            TimeSpan ts = this.fimReconhecimento - this.inicioReconhecimento;
+
+            Double horas = Math.Round((ts.Hours * 60.0 + ts.Minutes) / 60.0, 3);
+            this.batedor.updateHorasAndActiv(horas);
         }
 
         public void stopReconhecimento(Atividade toUpdateFrom)
@@ -235,7 +239,7 @@ namespace BackOffice.Business
             doc.Add(p);
             ///
             TimeSpan ts = this.fimReconhecimento - this.inicioReconhecimento;
-            Double horas = ts.Hours;
+            Double horas = Math.Round((ts.Hours * 60.0 + ts.Minutes) / 60.0,3);
 
             string infoRec = "\tA realização deste reconhecimento foi iniciada no dia " + this.inicioReconhecimento.ToShortDateString() +
                 " às " + this.inicioReconhecimento.ToShortTimeString() + ",  sendo finalizado o seu reconhecimento no dia " + this.fimReconhecimento.ToShortDateString() +
@@ -306,21 +310,34 @@ namespace BackOffice.Business
                         nv = voz.texto;
                     }
                 }
-                string notas1 = ("Nota numero " + n.idNota + " \nrecolhida em " + n.localRegisto.Latitude + " " + n.localRegisto.Longitude + ".\n Nota Textual : " + nt + "\n Nota de Voz: " + nv);
+                string notas1 = ("Nota numero " + n.idNota + " \nrecolhida em " + n.localRegisto.Latitude + " " + n.localRegisto.Longitude + ".\n Nota Textual : " + nt + "\n Nota de Voz: " + nv+
+                    "Imagens "  + n.imagens.Count + "\n");
                 listaNote.Add(notas1);
-                List listaNoteI = new List(List.ORDERED, 30f);
-                listaNoteI.PreSymbol = string.Format("{0}.", 0);
-                foreach (System.Drawing.Image image in n.imagens)
-                {
-                    iTextSharp.text.Image pic = iTextSharp.text.Image.GetInstance(image, System.Drawing.Imaging.ImageFormat.Jpeg); //atençao ao jpeg
-                    //pic.ScaleAbsolute(50f, pic.XYRatio * 50f); //pode estar ao contraririo
-                    //listaNoteI.Add(pic);
-                    listaNoteI.Add("OLa");
 
-                }
-                listaVec.Add(listaNoteI);
+                
             }
             doc.Add(listaNote);
+            //pagina imagens
+            doc.NewPage();
+            p = new Paragraph("Anexo de imagens \n\n", TitleFont);
+            p.Alignment = Element.ALIGN_CENTER;
+            doc.Add(p);
+            int notan = 1;
+            foreach (Nota n in this.notas)
+            {
+                int inum = 1;
+                foreach (System.Drawing.Image image in n.imagens)
+                {
+                    iTextSharp.text.Image pic = iTextSharp.text.Image.GetInstance(image, System.Drawing.Imaging.ImageFormat.Bmp); //é bmp
+
+                    this.addPDFImage(pic, doc, inum, n.imagens.Count,notan);
+                    inum++;
+                    //listaNoteI.Add("OLa");
+
+                }
+            }
+            // listaVec.Add(listaNoteI);
+
             //pagina final
             doc.NewPage();
             string fim = "FIM";
@@ -355,6 +372,37 @@ namespace BackOffice.Business
         }
 
 
+        private void addPDFImage(iTextSharp.text.Image pic, Document document,int num,int tot,int not)
+        {
+            var caption = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 8, BaseColor.BLACK);
+            if (pic.Height > pic.Width)
+            {
+                //Maximum height is 800 pixels.
+                float percentage = 0.0f;
+                percentage = 350 / pic.Height;
+                pic.ScalePercent(percentage * 100);
+            }
+            else
+            {
+                //Maximum width is 600 pixels.
+                float percentage = 0.0f;
+                percentage = 270 / pic.Width;
+                pic.ScalePercent(percentage * 100);
+            }
+
+            pic.Border = iTextSharp.text.Rectangle.BOX;
+            pic.BorderColor = iTextSharp.text.BaseColor.BLACK;
+            pic.BorderWidth = 3f;
+            pic.Alignment = Element.ALIGN_CENTER;
+            Paragraph p = new Paragraph("Imagem número " +  num + " de " + tot +" da nota " +not+"\n", caption);
+            p.Alignment = Element.ALIGN_CENTER;
+            document.Add(pic);
+            document.Add(p);
+
+            p = new Paragraph("\n\n");
+            document.Add(p);
+
+        }
     }
 
 
