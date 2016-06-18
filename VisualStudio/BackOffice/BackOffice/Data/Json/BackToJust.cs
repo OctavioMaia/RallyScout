@@ -64,7 +64,6 @@ namespace BackOffice.Data.Json
 
         public BackToJust(int erro)
         {
-            //pode dar merda os nulos ao crar o json
             this.idAtividade = erro;
             this.email = null;
             this.nomeEquipa = null;

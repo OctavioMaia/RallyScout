@@ -12,7 +12,6 @@ namespace BackOffice.Data.DataBase
 {
     public class BatedorDAO
     {
-      //  public SqlConnection con { get; set; } //= new SqlConnection(b.database);
         public string dbConf { get; set; }
         public BatedorDAO(string conf)
         {
@@ -57,6 +56,7 @@ namespace BackOffice.Data.DataBase
             }catch(Exception e)
             {
                 tr.Rollback();
+                throw e;
             }
             finally
             {
@@ -101,6 +101,7 @@ namespace BackOffice.Data.DataBase
             }catch(Exception e)
             {
                 tr.Rollback();
+                throw e;
             }
             finally
             {
@@ -123,6 +124,7 @@ namespace BackOffice.Data.DataBase
             catch (Exception e)
             {
                 tr.Rollback();
+                throw e;
             }
             finally
             {
@@ -166,6 +168,7 @@ namespace BackOffice.Data.DataBase
             catch (Exception e)
             {
                 tr.Rollback();
+                throw e;
             }
             finally
             {
@@ -188,21 +191,13 @@ namespace BackOffice.Data.DataBase
                     " ('{0}', '{1}', '{2}', {3}, {4}); ",
                           novo.email,novo.nome,novo.password,novo.ficha.horasEmReConhecimento,novo.ficha.nAtividades);
 
-                
-                //INSERT INTO dbo.Batedor
-                // (Email, Nome, Password, HorasDeReconhecimento, N_Atividades)
-                //VALUES
-                //('a@a.pt', 'sandra', '1', 5.5, 1);
             }
             else//update
             {
-                // UPDATE dbo.Batedor
-                // SET Nome = 'ze', Password = 'novo', HorasDeReconhecimento = 10, N_Atividades = 10
-                // WHERE Email = 'a@a.pt';
                 queryString = String.Format("UPDATE dbo.Batedor " +
                     " SET Nome = '{0}', Password = '{1}', HorasDeReconhecimento = {2}, N_Atividades = {3} " +
                     " WHERE Email = '{4}' ",
-                          novo.nome, novo.password, novo.ficha.horasEmReConhecimento, novo.ficha.nAtividades,novo.email);
+                          novo.nome, novo.password, (novo.ficha.horasEmReConhecimento.ToString().Replace(',', '.')), novo.ficha.nAtividades,novo.email);
             }
             SqlCommand command = new SqlCommand(queryString, connection,tr);
             command.CommandTimeout = 60;
@@ -225,6 +220,7 @@ namespace BackOffice.Data.DataBase
             }catch(Exception e)
             {
                 tr.Rollback();
+                throw e;
             }
             finally
             {

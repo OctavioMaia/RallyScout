@@ -26,12 +26,14 @@ namespace BackOffice.Presentation
         Atividade current;
         Boolean gerado;
         String path;
+        bool cancelar;
 
         public GerirRelatorio(BackOfficeAPP b, Atividade a)
         {
             this.current = a;
             this.backoffice = b;
             this.path = "";
+            this.cancelar = false;
             InitializeComponent();
         }
 
@@ -61,18 +63,19 @@ namespace BackOffice.Presentation
             else {
                 if (!(this.path.Equals(pathN) && gerado))
                 {
-                    /* try
-                     {*/
-                    this.path = pathN;
-                    this.backoffice.gerarRelatorios(path, current.idAtividade);
+                    try
+                    {
+            
+                        this.path = pathN;
+                        this.backoffice.gerarRelatorios(path, current.idAtividade);
                     
-                    gerado = true;
-                    System.Windows.Forms.MessageBox.Show("Relatórios gerado com sucesso em " + path, "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    /*}
+                        gerado = true;
+                        System.Windows.Forms.MessageBox.Show("Relatórios gerado com sucesso em " + path, "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
                     catch (Exception ex)
                     {
                         System.Windows.Forms.MessageBox.Show(ex.Message.ToString(), "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }*/
+                    }
                 }
                 else
                 {
@@ -128,7 +131,16 @@ namespace BackOffice.Presentation
 
         private void buttonRegressar_Click(object sender, RoutedEventArgs e)
         {
-            this.Visibility = Visibility.Hidden;
+            this.cancelar = true;
+            this.Close();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (!this.cancelar)
+            {
+                e.Cancel = true;
+            }
         }
     }
 }

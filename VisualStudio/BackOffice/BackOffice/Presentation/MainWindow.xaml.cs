@@ -56,92 +56,137 @@ namespace BackOffice.Presentation
 
         private void buttonServer_Click(object sender, RoutedEventArgs e)
         {
-            if (!started)
+            try
             {
+                if (!started)
+                {
 
                     ellipse.Fill = new SolidColorBrush(Colors.Green);
                     this.buttonServer.Content = "Stop";
-                this.buttonServer.IsEnabled = false;
+                    this.buttonServer.IsEnabled = false;
                     this.backoffice.startReceive();
-                    
+
                     started = true;
 
-                
-            }
-            else
-            {
+
+                }
+                else
+                {
 
                     this.backoffice.stopReceive();
                     ellipse.Fill = new SolidColorBrush(Colors.Red);
                     this.buttonServer.Content = "Start";
                     started = false;
 
+                }
+            }
+            catch (Exception ex)
+            {
+                    System.Windows.Forms.MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void buttonRegistaAtividade_Click(object sender, RoutedEventArgs e)
         {
-            if (this.backoffice.getBatedores().Count > 0)
+            try
             {
-                RegistoAtividade ra = new RegistoAtividade(this.backoffice,this);
-                ra.Visibility = Visibility.Visible;
-                this.Visibility = Visibility.Hidden;
+                if (this.backoffice.getBatedores().Count > 0)
+                {
+                    RegistoAtividade ra = new RegistoAtividade(this.backoffice, this);
+                    ra.Visibility = Visibility.Visible;
+                    this.Visibility = Visibility.Hidden;
+                }
+                else
+                {
+                    //MessageBox.Show();
+                    System.Windows.Forms.MessageBox.Show("Não existem batedores no sistema!", "Warning",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
-            else
-            {
-                //MessageBox.Show();
-                System.Windows.Forms.MessageBox.Show("Não existem batedores no sistema!", "Warning",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            catch (Exception ex) {
+                System.Windows.Forms.MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+
+
         }
 
         private void buttonConsultaAtividade_Click(object sender, RoutedEventArgs e)
         {
-            if (this.backoffice.getAtividadesTerminadas().Count > 0)
+            try
             {
-                ConsultarAtividadeConcluida cac = new ConsultarAtividadeConcluida(this.backoffice,this);
-                cac.Visibility = Visibility.Visible;
-                this.Visibility = Visibility.Hidden;
+                if (this.backoffice.getAtividadesTerminadas().Count > 0)
+                {
+                    ConsultarAtividadeConcluida cac = new ConsultarAtividadeConcluida(this.backoffice, this);
+                    cac.Visibility = Visibility.Visible;
+                    this.Visibility = Visibility.Hidden;
+                }
+                else
+                {
+                    // MessageBox.Show();
+                    System.Windows.Forms.MessageBox.Show("Não existem atividades terminadas no sistema!", "Warning",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
-            else
-            {
-               // MessageBox.Show();
-                System.Windows.Forms.MessageBox.Show("Não existem atividades terminadas no sistema!", "Warning",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            catch (Exception ex) {
+                System.Windows.Forms.MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void buttonRegistaBatedir_Click(object sender, RoutedEventArgs e)
         {
-            RegistaBatedor rb = new RegistaBatedor(this.backoffice,this);
-            rb.Visibility = Visibility.Visible;
-            this.Visibility = Visibility.Hidden;
+            try
+            {
+                RegistaBatedor rb = new RegistaBatedor(this.backoffice, this);
+                rb.Visibility = Visibility.Visible;
+                this.Visibility = Visibility.Hidden;
+            }
+            catch (Exception ex) {
+                System.Windows.Forms.MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void buttonConsultaBatedor_Click(object sender, RoutedEventArgs e)
         {
-            if (this.backoffice.getBatedores().Count > 0) {
-                ConsultaBatedor cb = new ConsultaBatedor(this.backoffice,this);
-                cb.Visibility = Visibility.Visible;
-                this.Visibility = Visibility.Hidden;
-            }
-            else
+            try
             {
-               // MessageBox.Show("Não existem batedores no sistema!");
-                System.Windows.Forms.MessageBox.Show("Não existem batedores no sistema!", "Warning",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                if (this.backoffice.getBatedores().Count > 0)
+                {
+                    ConsultaBatedor cb = new ConsultaBatedor(this.backoffice, this);
+                    cb.Visibility = Visibility.Visible;
+                    this.Visibility = Visibility.Hidden;
+                }
+                else
+                {
+                    // MessageBox.Show("Não existem batedores no sistema!");
+                    System.Windows.Forms.MessageBox.Show("Não existem batedores no sistema!", "Warning",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+            catch (Exception ex) {
+                System.Windows.Forms.MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void buttonLogout_Click(object sender, RoutedEventArgs e)
         {
-            this.Visibility = Visibility.Hidden;
-            this.anterior.Visibility = Visibility.Visible;
+            try
+            {
+                this.Visibility = Visibility.Hidden;
+                this.anterior.Visibility = Visibility.Visible;
+            }
+            catch (Exception ex) {
+                System.Windows.Forms.MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void comboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            e.Cancel = true;
         }
     }
 }

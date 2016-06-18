@@ -23,11 +23,13 @@ namespace BackOffice.Presentation
     {
         BackOfficeAPP backoffice;
         Window anterior;
+        Boolean cancelar;
 
         public RegistaBatedor(BackOfficeAPP b,Window w)
         {
             this.anterior = w;
             this.backoffice = b;
+            this.cancelar = false;
             InitializeComponent();
         }
 
@@ -36,31 +38,47 @@ namespace BackOffice.Presentation
             String email = textBoxEmail.Text;
             String nome = textBoxNome.Text;
             String password = passwordBox.Password.ToString();
-
-            if(email.Length>0 && nome.Length>0 && password.Length > 0)
+            try
             {
-                if (!backoffice.existeBatedor(email))
+                if (email.Length > 0 && nome.Length > 0 && password.Length > 0)
                 {
-                    Batedor b = new Batedor(email, nome, password);
-                    backoffice.registarBatedor(b);
-                    this.Close();
-                    this.anterior.Visibility = Visibility.Visible;
+                    if (!backoffice.existeBatedor(email))
+                    {
+                        Batedor b = new Batedor(email, nome, password);
+                        backoffice.registarBatedor(b);
+                        this.cancelar = true;
+                        this.Close();
+                        this.anterior.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        System.Windows.Forms.MessageBox.Show("Já existe um batedor com esse email!", "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    }
                 }
                 else
                 {
-                    System.Windows.Forms.MessageBox.Show("Já existe um batedor com esse email!", "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    System.Windows.Forms.MessageBox.Show("Verifique se introduziu todos os parametros!", "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
-            else
+            catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show("Verifique se introduziu todos os parametros!", "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                System.Windows.Forms.MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void button_Copy_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
             this.anterior.Visibility = Visibility.Visible;
+            this.cancelar = true;
+            this.Close();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (!this.cancelar)
+            {
+                e.Cancel = true;
+            }
         }
     }
 }

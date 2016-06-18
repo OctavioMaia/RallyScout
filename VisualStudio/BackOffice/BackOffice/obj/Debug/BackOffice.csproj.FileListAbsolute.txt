@@ -105,3 +105,7 @@ D:\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\BackOffice.g.r
 D:\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\BackOffice.Presentation.VisualizadorMap.resources
 D:\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\BackOffice.Properties.Resources.resources
 D:\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\BackOffice.csproj.GenerateResource.Cache
+D:\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\bin\Debug\BackOffice.exe.manifest
+D:\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\bin\Debug\BackOffice.application
+D:\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\BackOffice.exe.manifest
+D:\GitHub\RallyScout\VisualStudio\BackOffice\BackOffice\obj\Debug\BackOffice.application

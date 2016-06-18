@@ -24,16 +24,16 @@ namespace BackOffice.Presentation
         BackOfficeAPP backoffice;
         List<Atividade> atividades;
         Atividade selecionada;
-        Boolean gerado;
         Window anterior;
+        Boolean cancelar;
 
         public ConsultarAtividadeConcluida(BackOfficeAPP b, Window w)
         {
             this.anterior = w;
             this.backoffice = b;
-            this.gerado = false;
             InitializeComponent();
             this.atividades = this.backoffice.getAtividadesTerminadas();
+            this.cancelar = false;
             UpdateComboBox();
             
         }
@@ -144,8 +144,18 @@ namespace BackOffice.Presentation
 
         private void buttonRegressar_Click(object sender, RoutedEventArgs e)
         {
+            this.cancelar = true;
             this.Close();
             this.anterior.Visibility = Visibility.Visible;
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (!this.cancelar)
+            {
+                e.Cancel = true;
+
+            }
         }
     }
 

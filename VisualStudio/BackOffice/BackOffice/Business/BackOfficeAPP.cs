@@ -45,10 +45,6 @@ namespace BackOffice.Business
         private Thread comuTrhead;
 
 
-        //é para apagar 
-        public Dictionary<int, Atividade> atividadeFE { get; set; }
-        public Dictionary<int, Atividade> atividadeTERM { get; set; }
-
         public BackOfficeAPP(String confJSON)
         {
             string json;
@@ -124,17 +120,12 @@ namespace BackOffice.Business
             this.atividades = new AtividadeDAO(this.database);
             this.batedores = new BatedorDAO(this.database);
 
-            //Isto é para apagar
-            this.atividadeFE = new Dictionary<int, Atividade>();
-            this.atividadeTERM = new Dictionary<int, Atividade>();
-            //
         }
 
 
         public static System.Drawing.Image imageFromBitMapRep(string bipmap)
         {
             if (bipmap == null || bipmap.Length == 0) return null;
-            // byte[] imageData = System.Text.Encoding.ASCII.GetBytes(bipmap);
             byte[] imageData = Convert.FromBase64String(bipmap);
 
             Bitmap bmp;
@@ -142,7 +133,6 @@ namespace BackOffice.Business
             {
                 bmp = new Bitmap(ms);
             }
-            //mage i = (Image)bmp;
             return bmp;
         }
 
@@ -153,14 +143,12 @@ namespace BackOffice.Business
             ImageConverter converter = new ImageConverter();
             byte[] bytes = (byte[])converter.ConvertTo(bmp, typeof(byte[]));
             string ret = Convert.ToBase64String(bytes);
-            //string ret = System.Text.Encoding.ASCII.GetString(bytes);
             return ret;
         }
 
         public static string fromBytes64(byte[] bytes)
         {
             string ret = Convert.ToBase64String(bytes);
-            //string ret = System.Text.Encoding.ASCII.GetString(bytes);
             return ret;
         }
 
@@ -181,7 +169,7 @@ namespace BackOffice.Business
 
         public void stopReceive()
         {
-            if(this.comuTrhead != null && this.comuTrhead.IsAlive)
+            if(!(this.comuTrhead == null || !this.comuTrhead.IsAlive))
             {
                 this.comunica.Stop();
                 this.comuTrhead.Abort();
@@ -222,13 +210,11 @@ namespace BackOffice.Business
 
         private void guardaNovaAtividade(Atividade a)
         {
-            //Isto é para apagar
-            this.atividadeFE.Add(a.idAtividade, a);
-            //
+
             this.atividades.put(a);
         }
 
-        private int getNextAtividadeID() //pode dar merda
+        private int getNextAtividadeID()
         {
             List<Int32> l = this.atividades.keySet();
             if (l.Count == 0) return 0;
@@ -251,9 +237,6 @@ namespace BackOffice.Business
             Batedor b = this.getBatedor(mailBatedor);
             Atividade a = new Atividade(idAtividade, mailEquipa, nomeprova, mapPath, lv, new Equipa(nomeEquipa, mailEquipa), b);
             this.guardaNovaAtividade(a);
-            //depois apagar
-            //String s = this.jsonFrom(idAtividade);
-            //System.IO.File.WriteAllText("C:\\Users\\Octávio\\Desktop\\novo.json", s);
         }
 
 
@@ -369,69 +352,13 @@ namespace BackOffice.Business
         }
 
 
-        public JustToBack formJson(string json) //atividade parcial atençap 
-        {
-            JustToBack u;
-            using (var sr = new StringReader(json))
-            using (var jr = new JsonTextReader(sr))
-            {
-                var js = new JsonSerializer();
-                u= js.Deserialize<JustToBack>(jr);
-               
-            }
-            return u;
-        }
-
-        public Atividade formJson(JustToBack u) //atençao que isto retorna um atividade parcial
-        {
-            Atividade a = new Atividade(u.idAtividade);
-            foreach (Note no in u.notas)
-            {
-                byte[] voice = Encoding.ASCII.GetBytes(no.audio);
-                if (voice.Length == 0)
-                {
-                    voice = null;
-                }
-                List<System.Drawing.Image> li = new List<System.Drawing.Image>();
-                foreach(String s in no.imagem)
-                {
-                    byte[] ia = Encoding.ASCII.GetBytes(s);
-                    System.Drawing.Image i;
-                    using (var ms = new MemoryStream(ia)) 
-                    {
-                        i= System.Drawing.Image.FromStream(ms);
-                    }
-                    li.Add(i);
-                    
-                }
-                if (li.Count == 0)
-                {
-                    li = null;
-                }
-                Nota n = new Nota(no.idNota, no.notaTextual, no.local.lat,
-                    no.local.log, li, voice);
-            }
-            return a;
-
-        }
-
-        private string jsonFrom(int idAtividade) //retorna string do json par enviar 
-        {
-            Atividade a = this.getAtividade(idAtividade);
-            BackToJust jsonClass = new BackToJust(a);
-            string json = JsonConvert.SerializeObject(jsonClass, Formatting.Indented);
-            return json;
-        }
-
-
         public void gerarRelatorios(string path, int atividade_id)
         {
 
             String pathPiloto = System.IO.Path.Combine(path, path, "copiloto_AT_" + atividade_id + ".pdf");
             String pathGlobal = System.IO.Path.Combine(path, "general_AT_" + atividade_id + ".pdf");
 
-            /*String piloto = System.IO.Path.Combine(path, "copiloto_AT_" + this.current.idAtividade + ".pdf");
-            String general = System.IO.Path.Combine(path, "general_AT_" + this.current.idAtividade + ".pdf");*/
+
 
             Atividade a = this.getAtividade(atividade_id);
             if (this.getAtividadesPorTerminarID().Contains(atividade_id))
@@ -440,7 +367,6 @@ namespace BackOffice.Business
             }
             a.generateReportCopiloto(pathPiloto);
             
-            //TODO este metodo ainda nao faz nada
             a.generateReportGlobal(pathGlobal);
             
         }
@@ -496,6 +422,7 @@ namespace BackOffice.Business
                 }
             }
         }
+
         private Note[] geraNotes(Mapa m)
         {
             int totalgera = Math.Min(20, m.cords.Count);
@@ -579,7 +506,7 @@ namespace BackOffice.Business
           
             i = rnd.Next(0, 10);
 
-            if (i < 7)
+            if (i < 11)
             {
 
                 n.imagem = bytesImagens();
@@ -593,7 +520,7 @@ namespace BackOffice.Business
             
 
             i = rnd.Next(0, 10);
-            if (i < 3)
+            if (i < 11)
             {
                 
                 n.audio = bytesAudio();

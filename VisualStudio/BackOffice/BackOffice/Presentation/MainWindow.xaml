@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BackOffice.Presentation"
         mc:Ignorable="d"
-        Title="Menu" Height="242.222" Width="525.334" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" FontFamily="Arial" Icon="/BackOffice;component/icon.ico">
+        Title="Menu" Height="242.222" Width="525.334" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" FontFamily="Arial" Icon="/BackOffice;component/icon.ico" Closing="Window_Closing">
     <Grid Margin="0,0,0,4">
         <Label x:Name="labelIP" Content="IP" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,10,0,0" Height="27" Width="30" FontSize="14" FontWeight="Bold"/>
         <Label x:Name="labelPorta" Content="Porta" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="256,10,0,0" Height="27" Width="45" FontSize="14" FontWeight="Bold"/>
