@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BackOffice.Presentation"
-        mc:Ignorable="d" Height="358.667" Width="609.532" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" FontFamily="Arial" Title="Gerar Relatório" Icon="/BackOffice;component/icon.ico">
+        mc:Ignorable="d" Height="358.667" Width="609.532" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" FontFamily="Arial" Title="Gerar Relatório" Icon="/BackOffice;component/icon.ico" Closing="Window_Closing">
     <Grid Margin="0,0,0,-1">
         <Label x:Name="labelLocalizacao" Content="Localização" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="93" FontFamily="Arial" FontSize="14" FontWeight="Bold"/>
         <TextBox x:Name="textBoxPath" HorizontalAlignment="Left" Height="26" Margin="116,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="374" FontFamily="Arial" VerticalContentAlignment="Center" IsEnabled="False"/>

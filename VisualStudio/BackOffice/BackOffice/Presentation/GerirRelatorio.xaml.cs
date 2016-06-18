@@ -26,12 +26,14 @@ namespace BackOffice.Presentation
         Atividade current;
         Boolean gerado;
         String path;
+        bool cancelar;
 
         public GerirRelatorio(BackOfficeAPP b, Atividade a)
         {
             this.current = a;
             this.backoffice = b;
             this.path = "";
+            this.cancelar = false;
             InitializeComponent();
         }
 
@@ -128,7 +130,16 @@ namespace BackOffice.Presentation
 
         private void buttonRegressar_Click(object sender, RoutedEventArgs e)
         {
-            this.Visibility = Visibility.Hidden;
+            this.cancelar = true;
+            this.Close();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (!this.cancelar)
+            {
+                e.Cancel = true;
+            }
         }
     }
 }

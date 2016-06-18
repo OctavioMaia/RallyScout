@@ -104,8 +104,13 @@ namespace BackOffice.Presentation
                         addMarker(gc); //add marker ao mapa
 
                         this.imagens = this.selecionada.imagens;
-                        if (this.imagens != null && this.imagens.Count!=0)
-                            pictureBox1.Image = imagens[this.indice];
+                        if (this.imagens != null && this.imagens.Count != 0)
+                        {
+                            //pictureBox1.Image = imagens[this.indice];
+                            pictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
+                            pictureBox1.Image = VisualizadorMap.ScaleImage(imagens[this.indice], this.pictureBox1.Width, this.pictureBox1.Height);
+                        }
+                            
                         break;
                     }
                 }
@@ -121,7 +126,10 @@ namespace BackOffice.Presentation
         {
             if (this.imagens != null &&  indice > 0) {
                 indice--;
-                pictureBox1.Image = imagens[this.indice];
+                //pictureBox1.Image = imagens[this.indice];
+                pictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
+                pictureBox1.Image = VisualizadorMap.ScaleImage(imagens[this.indice], this.pictureBox1.Width, this.pictureBox1.Height);
+
             }
             else
             {
@@ -135,7 +143,8 @@ namespace BackOffice.Presentation
             if (this.imagens!=null &&  indice+1 < this.imagens.Count)
             {
                 indice++;
-                pictureBox1.Image = imagens[this.indice];
+                pictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
+                pictureBox1.Image = VisualizadorMap.ScaleImage(imagens[this.indice], this.pictureBox1.Width, this.pictureBox1.Height);
             }
             else
             {
@@ -163,6 +172,30 @@ namespace BackOffice.Presentation
         private void VisualizadorMap_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+
+
+        public static Image ScaleImage(Image image, int maxWidth, int maxHeight)
+        {
+            var ratioX = (double)maxWidth / image.Width;
+            var ratioY = (double)maxHeight / image.Height;
+            var ratio = Math.Min(ratioX, ratioY);
+
+            var newWidth = (int)(image.Width * ratio);
+            var newHeight = (int)(image.Height * ratio);
+
+            var newImage = new Bitmap(newWidth, newHeight);
+
+            using (var graphics = Graphics.FromImage(newImage))
+                graphics.DrawImage(image, 0, 0, newWidth, newHeight);
+
+            return newImage;
         }
     }
 }
