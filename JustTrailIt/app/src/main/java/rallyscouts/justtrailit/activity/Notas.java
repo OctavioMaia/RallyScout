@@ -87,7 +87,11 @@ public class Notas extends AppCompatActivity implements OnMapReadyCallback,Adapt
                 res.add(n.getIdNota());
             }
         }
-        Toast.makeText(getApplicationContext(), "Numero de notas: " + res.size(), Toast.LENGTH_LONG).show();
+        if(res.size()==0){
+            Toast.makeText(getApplicationContext(), "Não existem notas", Toast.LENGTH_LONG).show();
+        }else{
+            Toast.makeText(getApplicationContext(), "Numero de notas: " + res.size(), Toast.LENGTH_LONG).show();
+        }
         return res;
     }
 

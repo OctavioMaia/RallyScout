@@ -5,7 +5,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
+import android.media.AudioFormat;
+import android.media.AudioRecord;
 import android.media.MediaRecorder;
+import android.nfc.Tag;
 import android.os.Build;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -19,9 +22,16 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 import rallyscouts.justtrailit.R;
 import rallyscouts.justtrailit.business.Nota;
@@ -51,8 +61,16 @@ public class RegistarNota extends AppCompatActivity {
 
     private Button registarImagem,analisarNota,submit;
     private ImageButton startPause,stop;
-    private MediaRecorder mediaRecorder;
+    private AudioRecord audioRecorder;
     private File myTempAudio;
+
+
+    private boolean isRecording;
+    private static final int sizeMaxAudio =  2097152;
+    private int bytesRead;
+    private byte[] bufferAudio = new byte[sizeMaxAudio];
+    private Thread recordingThread = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -62,6 +80,8 @@ public class RegistarNota extends AppCompatActivity {
 
         this.notas = new NotaDAO(RegistarNota.this);
 
+        this.isRecording = false;
+
         Location loc = new Location("");
         loc.setLatitude(getIntent().getExtras().getDouble(LOC_LATITUDE));
         loc.setLongitude(getIntent().getExtras().getDouble(LOC_LONGUITUDE));
@@ -69,12 +89,15 @@ public class RegistarNota extends AppCompatActivity {
         this.idAtividade = getIntent().getExtras().getInt(ID_ATIVIDADE);
         this.notaToSave = new Nota(getIntent().getExtras().getInt(ID_NOTA),loc);
 
-        this.setTitle("Registar Nota: " + idAtividade +
+        this.setTitle("Registar Nota: " + this.notaToSave.getIdNota() +
                 " Lat: " + this.notaToSave.getLocalRegisto().getLatitude() +
                 " Lng: " + this.notaToSave.getLocalRegisto().getLongitude()
         );
 
         this.mensagem = (EditText)findViewById(R.id.id_InserirTexto);
+
+        this.startPause = (ImageButton) findViewById(R.id.imageButton_Start_PauseRecord);
+        this.stop = (ImageButton) findViewById(R.id.imageButton_Stop);
 
         this.registarImagem = (Button) findViewById(R.id.button_RegistarImagem);
         this.analisarNota = (Button) findViewById(R.id.button_AnalisarNota);
@@ -86,19 +109,19 @@ public class RegistarNota extends AppCompatActivity {
                 requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO},
                         MY_PERMISSIONS_REQUEST_MICROPHONE_RECORD_AUDIO);
             } else {
+                this.startPause.setEnabled(true);
+                this.stop.setEnabled(false);
                 Log.d(TAG, "Already granted access to audio");
-                initializeAudio();
             }
             //camera premission request
             if (ContextCompat.checkSelfPermission(this,Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO},
                         MY_PERMISSIONS_REQUEST_MICROPHONE_RECORD_AUDIO);
             } else {
+                this.startPause.setEnabled(true);
+                this.stop.setEnabled(false);
                 Log.d(TAG, "Already granted access to camera");
-                initializeAudio();
             }
-        }else{
-            initializeAudio();
         }
     }
 
@@ -109,32 +132,11 @@ public class RegistarNota extends AppCompatActivity {
     }
 
     public void confirmarSubmissao(View v) {
-        //Falta definir a voz a latitude e a longitude.
         notaToSave.setNotaTextual(mensagem.getText().toString());
         notas.insertNota(idAtividade,notaToSave);
         finish();
     }
 
-    private void initializeAudio(){
-        try {
-            myTempAudio = File.createTempFile("createSound", "mp3", getCacheDir());
-            myTempAudio.deleteOnExit();
-
-            FileInputStream myFileSound = new FileInputStream(myTempAudio);
-
-            this.startPause = (ImageButton) findViewById(R.id.imageButton_Start_PauseRecord);
-            this.stop = (ImageButton) findViewById(R.id.imageButton_Stop);
-            this.stop.setEnabled(false);
-            mediaRecorder=new MediaRecorder();
-            mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-            mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-            mediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
-            mediaRecorder.setOutputFile(myFileSound.getFD());
-        } catch (IOException e) {
-            this.stop.setEnabled(false);
-            this.startPause.setEnabled(false);
-        }
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
@@ -148,7 +150,6 @@ public class RegistarNota extends AppCompatActivity {
 
                 if (camaraImage.getByteCount()>0){
                     Toast.makeText(getApplicationContext(), "Recebi a imagem com alguma coisa" , Toast.LENGTH_LONG).show();
-
                 }
                 notaToSave.addImagem(camaraImage);
             }
@@ -161,7 +162,8 @@ public class RegistarNota extends AppCompatActivity {
             case MY_PERMISSIONS_REQUEST_MICROPHONE_RECORD_AUDIO: {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.d(TAG, "Permission Granted");
-                    initializeAudio();
+                    this.startPause.setEnabled(true);
+                    this.stop.setEnabled(false);
                 } else {
                     Log.d(TAG, "Permission Failed");
                     Toast.makeText(getApplicationContext(), "You must allow permission record audio to your mobile device.", Toast.LENGTH_SHORT).show();
@@ -176,24 +178,47 @@ public class RegistarNota extends AppCompatActivity {
     }
 
     public void startRecordAudio(View v){
-        try {
-            mediaRecorder.prepare();
-            mediaRecorder.start();
-            this.startPause.setEnabled(false);
-            Toast.makeText(getApplicationContext(), "Recording started", Toast.LENGTH_LONG).show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        this.startPause.setEnabled(false);
+        this.stop.setEnabled(true);
+
+        final int bufferSize = AudioRecord.getMinBufferSize(8000, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_8BIT);
+
+        this.audioRecorder = new AudioRecord(
+                MediaRecorder.AudioSource.MIC,
+                8000,
+                AudioFormat.CHANNEL_CONFIGURATION_MONO,
+                AudioFormat.ENCODING_PCM_8BIT,
+                bufferSize);
+
+        audioRecorder.startRecording();
+        isRecording = true;
+
+        recordingThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                bytesRead = 0;
+                while (isRecording && bytesRead < sizeMaxAudio) {
+                    // gets the voice output from microphone to byte format
+
+                    bytesRead += audioRecorder.read(bufferAudio, 0, sizeMaxAudio);
+                    Log.d(TAG,"Audio recive" + bufferAudio.toString());
+                }
+            }
+        });
+
+        recordingThread.start();
     }
 
 
     public void stopRecordAudio(View v){
+
         this.startPause.setEnabled(false);
         this.stop.setEnabled(false);
 
-        mediaRecorder.stop();
-        mediaRecorder.release();
-        mediaRecorder  = null;
+        audioRecorder.stop();
+        isRecording = false;
+        notaToSave.setVoice(bufferAudio);
 
         Toast.makeText(getApplicationContext(), "Audio recorded successfully",Toast.LENGTH_LONG).show();
     }
