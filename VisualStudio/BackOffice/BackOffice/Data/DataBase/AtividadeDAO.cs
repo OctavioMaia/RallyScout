@@ -189,25 +189,26 @@ namespace BackOffice.Data.DataBase
             Atividade b = this.get(novo.idAtividade, connection,tr);
             String queryString=null;
             BatedorDAO bd = new BatedorDAO(this.dbConf);
-            bd.put(novo.batedor, connection,tr);
+            
             if (b == null) //inserie
             {
                 queryString = String.Format("INSERT INTO dbo.Atividade " +
                     "(id_Atividade, InicioReconhecimento, FimReconhecimento, InProgress,Equipa_Email,Equipa_Nome,Batedor,Done) " +
                     " VALUES " +
                     " ({0}, '{1}', '{2}', {3},'{4}','{5}','{6}',{7}); ",
-                          novo.idAtividade, novo.inicioReconhecimento.Date.ToString("yyyy-MM-dd HH:mm:ss"), 
-                          novo.fimReconhecimento.Date.ToString("yyyy-MM-dd HH:mm:ss"), Convert.ToInt32(novo.inprogress),
+                          novo.idAtividade, novo.inicioReconhecimento.ToString("yyyy-MM-dd HH':'mm':'ss"), 
+                          novo.fimReconhecimento.ToString("yyyy-MM-dd HH':'mm':'ss"), Convert.ToInt32(novo.inprogress),
                           novo.equipa.email,novo.equipa.nome,
                           novo.batedor.email, Convert.ToInt32(novo.done));
 
             }
             else//update
             {
+                bd.put(novo.batedor, connection, tr);
                 queryString = String.Format("UPDATE dbo.Atividade " +
                     " SET InicioReconhecimento = '{0}' , FimReconhecimento= '{1}' , InProgress= {2} ,Equipa_Email= '{3}' ,Equipa_Nome= '{4}' ,Batedor= '{5}' ,Done= {6}" +
                     " WHERE id_Atividade= {7} ;",
-                          novo.inicioReconhecimento.Date.ToString("yyyy-MM-dd HH:mm:ss"), novo.fimReconhecimento.Date.ToString("yyyy-MM-dd HH:mm:ss"), Convert.ToInt32(novo.inprogress), novo.equipa.email,novo.equipa.nome,novo.batedor.email, Convert.ToInt32(novo.done),novo.idAtividade);
+                          novo.inicioReconhecimento.ToString("yyyy-MM-dd HH':'mm':'ss"), novo.fimReconhecimento.ToString("yyyy-MM-dd HH':'mm':'ss"), Convert.ToInt32(novo.inprogress), novo.equipa.email,novo.equipa.nome,novo.batedor.email, Convert.ToInt32(novo.done),novo.idAtividade);
 
             }
             SqlCommand command = new SqlCommand(queryString, connection,tr);

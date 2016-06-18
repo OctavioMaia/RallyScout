@@ -42,7 +42,7 @@ namespace BackOffice.Presentation
               //  Console.WriteLine(" Comecar 2....");
 
                 this.backoffice = new BackOfficeAPP(path);
-                this.backoffice.gerarJsonDebug(pathG); //into épara debug
+                //this.backoffice.gerarJsonDebug(pathG); //into épara debug
                 InitializeComponent();
             }
             catch(Exception e)

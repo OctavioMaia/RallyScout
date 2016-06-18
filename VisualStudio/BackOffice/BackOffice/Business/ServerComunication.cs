@@ -272,26 +272,28 @@ namespace BackOffice.Business
             {
                 if (a.batedor.email.Equals(toBatodorMail))
                 {
-                    paraBatedor.Add(a);
+                    if (a.done == false) //so sao candidatas a enviar as que nao estao prontas
+                    {
+                        paraBatedor.Add(a);
+                    }
+                    if (a.isPendent()) // se tem atividade pendente nao mando nada
+                    {
+                        BackToJust wrongPass = new BackToJust(-6);
+                        this.writeData(this.jsonFrom(wrongPass));
+                        return;
+                    }
+
                 }
             }
-            if (paraBatedor.Count == 0)
+            if (paraBatedor.Count == 0) //nao tem ativiades para ele
             {
                 BackToJust noActiv = new BackToJust(-1);
                 this.writeData(this.jsonFrom(noActiv));
                 return;
             }
+
             paraBatedor.Sort();
 
-            foreach(Atividade a in paraBatedor)
-            {
-                if (a.isPendent())
-                {
-                    BackToJust wrongPass = new BackToJust(-6);
-                    this.writeData(this.jsonFrom(wrongPass));
-                    return;
-                }
-            }
 
             Atividade escolhidaA = paraBatedor[0] as Atividade; //proxima atividade para aquele batedor
             this.writeData(this.jsonFrom(escolhidaA));
