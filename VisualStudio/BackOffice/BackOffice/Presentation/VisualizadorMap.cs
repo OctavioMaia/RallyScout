@@ -39,13 +39,22 @@ namespace BackOffice.Presentation
             }
         }
 
+        public void limpa()
+        {
+            this.richTextBox1.Text = "";
+            this.richTextBox2.Text = "";
+            this.button1.Enabled = false;
+            this.button2.Enabled = false;
+            this.button3.Enabled = false;
+            this.pictureBox1.Image = null;
+            this.indice = 0;
+        }
+
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
+            limpa();
             if (comboBox1.SelectedItem != null)
             {
-                this.button1.Enabled = true;
-                this.button2.Enabled = true;
-                this.button3.Enabled = true;
                 int id = int.Parse(comboBox1.SelectedItem.ToString());
                 List<Nota> l = ativ.notas;
 
@@ -54,14 +63,40 @@ namespace BackOffice.Presentation
                     if (n.idNota == id)
                     {
                         this.selecionada = n;
-                        this.richTextBox1.Text = this.selecionada.notaTextual;
+
+                        if(this.selecionada.notaTextual != null)
+                        {
+                            this.richTextBox1.Text = this.selecionada.notaTextual;
+                        }
+                        else
+                        {
+                            this.richTextBox1.Text = "Nota textual inexistente!";
+                        }
+                        
+
+                        if(this.selecionada.imagens != null)
+                        {
+                            this.button1.Enabled = true;
+                            this.button2.Enabled = true;
+                        }
+                        else
+                        {
+                            this.button1.Enabled = false;
+                            this.button2.Enabled = false;
+                        }
+
                         if (this.selecionada.notasVoz != null)
                         {
+                            this.button3.Enabled = true;
                             this.richTextBox2.Text = this.selecionada.notasVoz.texto;
 
                         }
+                        else
+                        {
+                            this.button3.Enabled = false;
+                        }
                         GeoCoordinate gc = this.selecionada.localRegisto;
-
+                        //MessageBox.Show(gc.Latitude + " " + gc.Longitude);
                         if (this.anterior != null)
                             removeMarker();
 
@@ -69,8 +104,13 @@ namespace BackOffice.Presentation
                         addMarker(gc); //add marker ao mapa
 
                         this.imagens = this.selecionada.imagens;
-                        if (this.imagens != null && this.imagens.Count!=0)
-                            pictureBox1.Image = imagens[this.indice];
+                        if (this.imagens != null && this.imagens.Count != 0)
+                        {
+                            //pictureBox1.Image = imagens[this.indice];
+                            pictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
+                            pictureBox1.Image = VisualizadorMap.ScaleImage(imagens[this.indice], this.pictureBox1.Width, this.pictureBox1.Height);
+                        }
+                            
                         break;
                     }
                 }
@@ -86,7 +126,10 @@ namespace BackOffice.Presentation
         {
             if (this.imagens != null &&  indice > 0) {
                 indice--;
-                pictureBox1.Image = imagens[this.indice];
+                //pictureBox1.Image = imagens[this.indice];
+                pictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
+                pictureBox1.Image = VisualizadorMap.ScaleImage(imagens[this.indice], this.pictureBox1.Width, this.pictureBox1.Height);
+
             }
             else
             {
@@ -97,10 +140,11 @@ namespace BackOffice.Presentation
 
         private void button2_Click(object sender, EventArgs e)
         {
-            if (this.imagens!=null &&  indice < this.imagens.Count)
+            if (this.imagens!=null &&  indice+1 < this.imagens.Count)
             {
                 indice++;
-                pictureBox1.Image = imagens[this.indice];
+                pictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
+                pictureBox1.Image = VisualizadorMap.ScaleImage(imagens[this.indice], this.pictureBox1.Width, this.pictureBox1.Height);
             }
             else
             {
@@ -121,13 +165,37 @@ namespace BackOffice.Presentation
             }
             else
             {
-                System.Windows.Forms.MessageBox.Show("Ficheiro áudio nulo", "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                System.Windows.Forms.MessageBox.Show("Ficheiro áudio nulo", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void VisualizadorMap_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+
+
+        public static Image ScaleImage(Image image, int maxWidth, int maxHeight)
+        {
+            var ratioX = (double)maxWidth / image.Width;
+            var ratioY = (double)maxHeight / image.Height;
+            var ratio = Math.Min(ratioX, ratioY);
+
+            var newWidth = (int)(image.Width * ratio);
+            var newHeight = (int)(image.Height * ratio);
+
+            var newImage = new Bitmap(newWidth, newHeight);
+
+            using (var graphics = Graphics.FromImage(newImage))
+                graphics.DrawImage(image, 0, 0, newWidth, newHeight);
+
+            return newImage;
         }
     }
 }

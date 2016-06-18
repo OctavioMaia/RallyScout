@@ -142,7 +142,11 @@ namespace BackOffice.Business
             this.inprogress = false;
             this.done = true;
             this.fimReconhecimento = DateTime.Now;
-            this.batedor.updateHorasAndActiv(((fimReconhecimento.Millisecond - inicioReconhecimento.Millisecond) *1.0) / (1000 * 60 * 60.0));
+
+            TimeSpan ts = this.fimReconhecimento - this.inicioReconhecimento;
+
+            Double horas = Math.Round((ts.Hours * 60.0 + ts.Minutes) / 60.0, 3);
+            this.batedor.updateHorasAndActiv(horas);
         }
 
         public void stopReconhecimento(Atividade toUpdateFrom)
@@ -177,14 +181,15 @@ namespace BackOffice.Business
             doc.Add(p);
 
             PdfPTable t = new PdfPTable(2);
-            foreach(Nota n in notas){
+            foreach (Nota n in notas)
+            {
                 if (n.asVoice())
                 {
-                    
+
                     String nota = n.getToPiloto();
                     double startDist = n.getDistanceToBegin(this.percurso);
                     double endDist = n.getDistanceToFinish(this.percurso);
-                    String dist = startDist + "\n\n("+ endDist+")";
+                    String dist = startDist + "\n\n(" + endDist + ")";
                     var c1 = new PdfPCell(new Phrase(dist, distFont));
                     var c2 = new PdfPCell(new Phrase(nota, NotaFont));
                     c1.HorizontalAlignment = Element.ALIGN_CENTER;
@@ -202,8 +207,8 @@ namespace BackOffice.Business
 
         public void generateReportGlobal(string path)
         {
-            float parID = 15f;
-            float marID = 15f;
+           /* float parID = 15f;
+            float marID = 15f;*/
             var NotaFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 18, BaseColor.BLACK);
             var TitleFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 20, BaseColor.BLACK);
             var Huge = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 72, BaseColor.BLACK);
@@ -212,59 +217,59 @@ namespace BackOffice.Business
             PdfWriter wri = PdfWriter.GetInstance(doc, new FileStream(path, FileMode.Create));
             doc.Open();
 
-            Paragraph p = new Paragraph("Relatório Completo da Atividade número " + this.idAtividade+"\n\n", TitleFont);
+            Paragraph p = new Paragraph("Relatório Completo da Atividade número " + this.idAtividade + "\n\n", TitleFont);
             p.Alignment = Element.ALIGN_CENTER;
             doc.Add(p);
-            
+
             ////
             string intro = "\tRelatório Completo da prova " + this.percurso.nomeProva +
-                  " para a Equipa com o nome " + this.nomeEquipa + " (" + this.equipa.email + ").";
+                 " para a Equipa com o nome " + this.nomeEquipa + " (" + this.equipa.email + ").";
             p = new Paragraph(intro, TextoFont);
-            p.FirstLineIndent = parID;
+            /*p.FirstLineIndent = parID;
             p.IndentationLeft = marID;
-            p.IndentationRight = marID;
+            p.IndentationRight = marID;*/
             doc.Add(p);
             ///
             string infBta = "\tO reconhecimento foi efetuado pelo batedor " + this.batedor.nome +
-                  " com o email de contacto " + this.batedor.email +".";
+                  " com o email de contacto " + this.batedor.email + ".";
             p = new Paragraph(infBta, TextoFont);
-            p.FirstLineIndent = parID;
+            /*p.FirstLineIndent = parID;
             p.IndentationLeft = marID;
-            p.IndentationRight = marID;
+            p.IndentationRight = marID;*/
             doc.Add(p);
             ///
             TimeSpan ts = this.fimReconhecimento - this.inicioReconhecimento;
-            Double horas = ts.Hours;
+            Double horas = Math.Round((ts.Hours * 60.0 + ts.Minutes) / 60.0,3);
 
-            string infoRec = "\tA realização deste reconheimento foi iniciada no dia " + this.inicioReconhecimento.ToShortDateString() +
+            string infoRec = "\tA realização deste reconhecimento foi iniciada no dia " + this.inicioReconhecimento.ToShortDateString() +
                 " às " + this.inicioReconhecimento.ToShortTimeString() + ",  sendo finalizado o seu reconhecimento no dia " + this.fimReconhecimento.ToShortDateString() +
-                " às " + this.fimReconhecimento.ToShortTimeString() + ", tendo por isso uma duração de " + horas + " Horas.";
+                " às " + this.fimReconhecimento.ToShortTimeString() + ", tendo por isso uma duração de " + horas + " horas.";
             p = new Paragraph(infoRec, TextoFont);
-            p.FirstLineIndent = parID;
+            /*p.FirstLineIndent = parID;
             p.IndentationLeft = marID;
-            p.IndentationRight = marID;
+            p.IndentationRight = marID;*/
             doc.Add(p);
             ///Veiculos
             doc.NewPage();
-            p = new Paragraph("Informação dos Veiculos\n\n", TitleFont);
+            p = new Paragraph("Informação dos Veículos\n\n", TitleFont);
             p.Alignment = Element.ALIGN_CENTER;
             doc.Add(p);
             ///
-            string veic = "\tPara a prova considerada foram os segintes " + this.veiculos.Count + " veiculos.";
+            string veic = "\tPara a prova considerada foram os seguintes " + this.veiculos.Count + " veículos.";
             p = new Paragraph(infoRec, TextoFont);
-            p.FirstLineIndent = parID;
+            /*p.FirstLineIndent = parID;
             p.IndentationLeft = marID;
-            p.IndentationRight = marID;
+            p.IndentationRight = marID;*/
             doc.Add(p);
             //
             List listaVec = new List(List.ORDERED, 20f);
             listaVec.IndentationLeft = 20f;
-           // listaVec.PreSymbol = string.Format("{0}.", i);
+            // listaVec.PreSymbol = string.Format("{0}.", i);
             foreach (Veiculo v in this.veiculos)
             {
-                listaVec.Add("Chassi: " + v.chassi + " Marca: " + v.marca + " Modelo: " + v.modelo + "\n Caracteristicas ("+v.caracteristicas.Count+")");
+                listaVec.Add("Chassi: " + v.chassi + " Marca: " + v.marca + " Modelo: " + v.modelo + "\n Características (" + v.caracteristicas.Count + ")");
                 List listaVecC = new List(List.ORDERED, 30f);
-                foreach(string c in v.caracteristicas)
+                foreach (string c in v.caracteristicas)
                 {
                     listaVecC.Add(c);
                 }
@@ -281,9 +286,9 @@ namespace BackOffice.Business
             ///
             string notas = "Para a prova considerada foram recolhidas " + this.notas.Count + " notas.";
             p = new Paragraph(notas, TextoFont);
-            p.FirstLineIndent = parID;
+            /*p.FirstLineIndent = parID;
             p.IndentationLeft = marID;
-            p.IndentationRight = marID;
+            p.IndentationRight = marID;*/
             doc.Add(p);
             //
             List listaNote = new List(List.ORDERED, 20f);
@@ -305,21 +310,36 @@ namespace BackOffice.Business
                         nv = voz.texto;
                     }
                 }
-                listaNote.Add("Nota numero "+ n.idNota +" recolhida em " + n.localRegisto.Latitude + " " +n.localRegisto.Latitude+".\n Nota Textual : "+ nt+"\n Nota de Voz: "+ nv);
-                List listaNoteI = new List(List.ORDERED, 30f);
-                foreach (System.Drawing.Image image in n.imagens)
-                {
-                    iTextSharp.text.Image pic = iTextSharp.text.Image.GetInstance(image, System.Drawing.Imaging.ImageFormat.Jpeg); //atençao ao jpeg
-                    pic.ScaleAbsolute(50f, pic.XYRatio * 50f); //pode estar ao contraririo
-                    listaNoteI.Add(pic);
-                }
-                listaVec.Add(listaNote);
+                string notas1 = ("Nota numero " + n.idNota + " \nrecolhida em " + n.localRegisto.Latitude + " " + n.localRegisto.Longitude + ".\n Nota Textual : " + nt + "\n Nota de Voz: " + nv+
+                    "Imagens "  + n.imagens.Count + "\n");
+                listaNote.Add(notas1);
+
+                
             }
             doc.Add(listaNote);
+            //pagina imagens
+            doc.NewPage();
+            p = new Paragraph("Anexo de imagens \n\n", TitleFont);
+            p.Alignment = Element.ALIGN_CENTER;
+            doc.Add(p);
+            int notan = 1;
+            foreach (Nota n in this.notas)
+            {
+                int inum = 1;
+                foreach (System.Drawing.Image image in n.imagens)
+                {
+                    iTextSharp.text.Image pic = iTextSharp.text.Image.GetInstance(image, System.Drawing.Imaging.ImageFormat.Bmp); //é bmp
+
+                    this.addPDFImage(pic, doc, inum, n.imagens.Count,notan);
+                    inum++;
+
+                }
+            }
+
             //pagina final
             doc.NewPage();
             string fim = "FIM";
-            for(int i = 0; i < 3; i++)
+            for (int i = 0; i < 3; i++)
             {
                 fim = "\n" + fim;
             }
@@ -337,7 +357,7 @@ namespace BackOffice.Business
             if (otherActividade != null)
                 return this.idAtividade.CompareTo(otherActividade.idAtividade);
             else
-                throw new ArgumentException("Object is not a Temperature");
+                throw new ArgumentException("Object is not a Atividade");
         }
 
         public Boolean isPendent()
@@ -350,6 +370,37 @@ namespace BackOffice.Business
         }
 
 
+        private void addPDFImage(iTextSharp.text.Image pic, Document document,int num,int tot,int not)
+        {
+            var caption = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 8, BaseColor.BLACK);
+            if (pic.Height > pic.Width)
+            {
+                //Maximum height is 800 pixels.
+                float percentage = 0.0f;
+                percentage = 350 / pic.Height;
+                pic.ScalePercent(percentage * 100);
+            }
+            else
+            {
+                //Maximum width is 600 pixels.
+                float percentage = 0.0f;
+                percentage = 270 / pic.Width;
+                pic.ScalePercent(percentage * 100);
+            }
+
+            pic.Border = iTextSharp.text.Rectangle.BOX;
+            pic.BorderColor = iTextSharp.text.BaseColor.BLACK;
+            pic.BorderWidth = 3f;
+            pic.Alignment = Element.ALIGN_CENTER;
+            Paragraph p = new Paragraph("Imagem número " +  num + " de " + tot +" da nota " +not+"\n", caption);
+            p.Alignment = Element.ALIGN_CENTER;
+            document.Add(pic);
+            document.Add(p);
+
+            p = new Paragraph("\n\n");
+            document.Add(p);
+
+        }
     }
 
 

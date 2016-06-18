@@ -1,5 +1,6 @@
 ﻿using BackOffice.Data.DataBase;
 using BackOffice.Data.Json;
+using BackOffice.Extra;
 using Newtonsoft.Json;
 using Org.BouncyCastle.Utilities.Net;
 using System;
@@ -22,14 +23,12 @@ namespace BackOffice.Business
     {
         public int listenigPort { get; set; }
         public String dbConf { get; set; }
-       // public System.Net.IPAddress listeningIP { get; set; }
         private Boolean on;
         private CancellationTokenSource cancellation { get; set; }
         public ServerComunication(int port, string db)
         {
             this.dbConf = db;
             this.listenigPort = port;
-           // this.listeningIP = Dns.Resolve("localhost").AddressList[0];
             this.cancellation = new CancellationTokenSource();
             this.on = false;
         }
@@ -50,6 +49,7 @@ namespace BackOffice.Business
                 Console.WriteLine(" KO ....");
                 this.on = false;
                 newThread = null;
+                Console.WriteLine(e.Message);
             }
             return newThread;
 
@@ -66,7 +66,7 @@ namespace BackOffice.Business
             TcpListener serverSocket = null;
             try
             {
-                serverSocket = new TcpListener(this.listenigPort);
+                serverSocket = new TcpListener(System.Net.IPAddress.Any,this.listenigPort);
                 serverSocket.Start();
                 Console.WriteLine(" Server Started ....");
 
@@ -74,13 +74,13 @@ namespace BackOffice.Business
                 {
                     Console.WriteLine(" ESpera cliente ");
 
-                    // TcpClient clientSocket = serverSocket.AcceptTcpClient();
                     TcpClient clientSocket = await Task.Run(
                                                    () => serverSocket.AcceptTcpClientAsync(),
                                                this.cancellation.Token);
+                    Socket s = clientSocket.Client;
+                    IPEndPoint ipe = (IPEndPoint)s.RemoteEndPoint;
 
-                    Console.WriteLine(" Novo cliente ");
-                    //System.Diagnostics.Debug.WriteLine("Novo cliente");
+                    Console.WriteLine(" Novo cliente em " + ipe.ToString());
 
 
                     ClinetHandler ch = new ClinetHandler(clientSocket, this.dbConf); //nova thread para cliente
@@ -95,11 +95,7 @@ namespace BackOffice.Business
                 }
                 this.on = false;
                 Console.WriteLine("FIM");
-                //System.Diagnostics.Debug.WriteLine("FIM");
             }
-
-
-
 
         }
     }
@@ -131,47 +127,39 @@ namespace BackOffice.Business
         private void Run()
         {
 
-            //this.writeData("OLA");
             String jsonCheg = this.readData();
-            //Console.WriteLine(" jsonCheg: " + jsonCheg);
-            
-            //this.writeData("REcebi " + jsonCheg);
-
-
 
             try
             {
                 JustToBack content = this.fromString(jsonCheg);
-                //MessageBox.Show("pass");
                 if (content.password != null)//veio a pass quero uma atividade para ele
                 {
-                    //MessageBox.Show("sendANtes");
                     this.sendAtividade(content);
-                    //MessageBox.Show("sendDepois");
                 }
                 else //veio uma atividade completa
                 {
-                    //MessageBox.Show("processaBatidaAntes");
                     this.processaBatida(content);
-                    // MessageBox.Show("processaBatidaDepois");
                 }
             }
             catch (Exception e)
             {
                 BackToJust atOK = new BackToJust(-3);
                 this.writeData(this.jsonFrom(atOK));
-               // MessageBox.Show("estourei");
+                Console.WriteLine(e.Message);
             }
 
-
-
             //fechar as comunicaçoes da tread para terminar
-            
+
+            Socket s = mySocket.Client;
+            IPEndPoint ipe = (IPEndPoint)s.RemoteEndPoint;
+
+            string st =" Saiu cliente  " + ipe.ToString();
+
             this.writerStream.Close();
             this.readStream.Close();
             this.netstream.Close();
             this.mySocket.Close();
-            Console.WriteLine(" Saiu Cliente");
+            Console.WriteLine(st);
 
         }
 
@@ -203,7 +191,7 @@ namespace BackOffice.Business
             {
                 byte[] voice = null;
                 if (no.audio != null) {
-                     voice = Encoding.ASCII.GetBytes(no.audio);
+                    voice = BackOfficeAPP.toBytes64(no.audio);
                     if (voice.Length == 0)
                     {
                         voice = null;
@@ -216,12 +204,9 @@ namespace BackOffice.Business
                 {
                     foreach (String s in no.imagem)
                     {
-                        byte[] ia = Encoding.ASCII.GetBytes(s);
-                        Image i;
-                        using (var ms = new MemoryStream(ia))
-                        {
-                            i = Image.FromStream(ms);
-                        }
+
+                        Image i = BackOfficeAPP.imageFromBitMapRep(s);
+                        
                         li.Add(i);
 
                     }
@@ -274,26 +259,28 @@ namespace BackOffice.Business
             {
                 if (a.batedor.email.Equals(toBatodorMail))
                 {
-                    paraBatedor.Add(a);
+                    if (a.done == false) //so sao candidatas a enviar as que nao estao prontas
+                    {
+                        paraBatedor.Add(a);
+                    }
+                    if (a.isPendent()) // se tem atividade pendente nao mando nada
+                    {
+                        BackToJust wrongPass = new BackToJust(-6);
+                        this.writeData(this.jsonFrom(wrongPass));
+                        return;
+                    }
+
                 }
             }
-            if (paraBatedor.Count == 0)
+            if (paraBatedor.Count == 0) //nao tem ativiades para ele
             {
                 BackToJust noActiv = new BackToJust(-1);
                 this.writeData(this.jsonFrom(noActiv));
                 return;
             }
+
             paraBatedor.Sort();
 
-            foreach(Atividade a in paraBatedor)
-            {
-                if (a.isPendent())
-                {
-                    BackToJust wrongPass = new BackToJust(-6);
-                    this.writeData(this.jsonFrom(wrongPass));
-                    return;
-                }
-            }
 
             Atividade escolhidaA = paraBatedor[0] as Atividade; //proxima atividade para aquele batedor
             this.writeData(this.jsonFrom(escolhidaA));
@@ -335,18 +322,23 @@ namespace BackOffice.Business
 
         private string readData()
         {
-            // return this.readStream.ReadToEnd()
-            return this.readStream.ReadLine();
+
+             return this.readStream.ReadLine(); 
+            //Trocar os comentarios para ler dados ZIP
+            //return Zip.UnzipStringBase64(this.readStream.ReadLine());
+
         }
 
         private void writeData(string data)
         {
             string t = Regex.Replace(data, @"\t|\n|\r", "");
+            //t = Zip.zipStringBase64(t); isto zipa o texto a enviar
             this.writerStream.Write(t);
             this.writerStream.WriteLine();
             this.writerStream.Flush();
         }
 
     }
+    
 }
 

@@ -55,7 +55,7 @@ namespace BackOffice.Data.Json
                 {
                     caract[j] = v.caracteristicas[j];
                 }
-                Car c = new Car(v.chassi, caract);
+                Car c = new Car(v.chassi, v.marca,v.modelo,caract);
                 carros[i] = c;
             }
             
@@ -64,7 +64,6 @@ namespace BackOffice.Data.Json
 
         public BackToJust(int erro)
         {
-            //pode dar merda os nulos ao crar o json
             this.idAtividade = erro;
             this.email = null;
             this.nomeEquipa = null;
@@ -92,9 +91,13 @@ namespace BackOffice.Data.Json
     public class Car
     {
         public string chassi { get; set; }
+        public string marca { get; set; }
+        public string modelo { get; set; }
         public string[] caracteristicas { get; set; }
-        public Car(string chass, string[] caract)
+        public Car(string chass ,string marca, string modelo, string[] caract)
         {
+            this.modelo = modelo;
+            this.marca = marca;
             this.chassi = chass;
             this.caracteristicas = caract;
         }

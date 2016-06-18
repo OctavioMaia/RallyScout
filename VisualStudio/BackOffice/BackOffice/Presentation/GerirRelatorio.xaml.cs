@@ -26,12 +26,14 @@ namespace BackOffice.Presentation
         Atividade current;
         Boolean gerado;
         String path;
+        bool cancelar;
 
         public GerirRelatorio(BackOfficeAPP b, Atividade a)
         {
             this.current = a;
             this.backoffice = b;
             this.path = "";
+            this.cancelar = false;
             InitializeComponent();
         }
 
@@ -53,26 +55,34 @@ namespace BackOffice.Presentation
         {
 
             String pathN = textBoxPath.Text;
-            if(!(this.path.Equals(pathN) && gerado))
+            if (pathN.Length == 0)
             {
-                try
-                {
-                    this.backoffice.gerarRelatorios(path, current.idAtividade);
-                    this.path = pathN;
-                    gerado = true;
-                    System.Windows.Forms.MessageBox.Show("Relatórios gerado com sucesso em " + path, "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                catch (Exception ex)
-                {
-                    System.Windows.Forms.MessageBox.Show(ex.Message.ToString(), "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-            else
-            {
-                System.Windows.Forms.MessageBox.Show("Os Relatórios já foram gerados em " + path, "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-            
+                System.Windows.Forms.MessageBox.Show("Deve Indicar uma localização para gerar os relatórios.", "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
+            }
+            else {
+                if (!(this.path.Equals(pathN) && gerado))
+                {
+                    try
+                    {
+            
+                        this.path = pathN;
+                        this.backoffice.gerarRelatorios(path, current.idAtividade);
+                    
+                        gerado = true;
+                        System.Windows.Forms.MessageBox.Show("Relatórios gerado com sucesso em " + path, "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Windows.Forms.MessageBox.Show(ex.Message.ToString(), "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                else
+                {
+                    System.Windows.Forms.MessageBox.Show("Os Relatórios já foram gerados em " + path, "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+
+            }
            
         }
 
@@ -88,8 +98,8 @@ namespace BackOffice.Presentation
             {
                 if (destino.Length > 0 && assunto.Length > 0 && texto.Length > 0 && path.Length > 0)
                 {
-                    String piloto = System.IO.Path.Combine(path, "copiloto.pdf");
-                    String general = System.IO.Path.Combine(path, "general.pdf");
+                    String piloto = System.IO.Path.Combine(path, "copiloto_AT_"+this.current.idAtividade+".pdf");
+                    String general = System.IO.Path.Combine(path, "general_AT_"+ this.current.idAtividade + ".pdf");
 
                     //System.Windows.MessageBox.Show("piloto path: " + piloto + " general path: " + general);
 
@@ -121,7 +131,16 @@ namespace BackOffice.Presentation
 
         private void buttonRegressar_Click(object sender, RoutedEventArgs e)
         {
-            this.Visibility = Visibility.Hidden;
+            this.cancelar = true;
+            this.Close();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (!this.cancelar)
+            {
+                e.Cancel = true;
+            }
         }
     }
 }

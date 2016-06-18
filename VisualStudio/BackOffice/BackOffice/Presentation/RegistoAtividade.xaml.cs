@@ -27,6 +27,7 @@ namespace BackOffice.Presentation
         List<Veiculo> l { get; set; }
         BackOfficeAPP backoffice;
         Window anterior;
+        bool cancelar;
 
         public RegistoAtividade(BackOfficeAPP b, Window w)
         {
@@ -34,24 +35,39 @@ namespace BackOffice.Presentation
             this.backoffice = b;
             InitializeComponent();
             UpdateComboBox();
+            this.cancelar = false;
         }
 
         private void UpdateComboBox()
         {
-            List<String> l = this.backoffice.getBatedoresMails();
-
-            foreach (String s in l)
+            try
             {
-                comboBox.Items.Add(s);
+                List<String> l = this.backoffice.getBatedoresMails();
+
+                foreach (String s in l)
+                {
+                    comboBox.Items.Add(s);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void buttonAdicionarVeiculo_Click(object sender, RoutedEventArgs e)
         {
-            l = new List<Veiculo>();
-            InserirVeiculo i = new InserirVeiculo(backoffice,l,this);
-            i.Visibility = Visibility.Visible;
-            this.Visibility = Visibility.Hidden;
+            try
+            {
+                l = new List<Veiculo>();
+                InserirVeiculo i = new InserirVeiculo(backoffice, l, this);
+                i.Visibility = Visibility.Visible;
+                this.Visibility = Visibility.Hidden;
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void buttonProcurarFicheiro_Click(object sender, RoutedEventArgs e)
@@ -69,10 +85,11 @@ namespace BackOffice.Presentation
             String emailEquipa = textBoxEmailEquipa.Text;
             string mailBatedor = comboBox.SelectedItem as string;
             try {
-                if (trajeto.Length > 0 && nomeProva.Length > 0 && nomeEquipa.Length > 0 && emailEquipa.Length > 0 && mailBatedor.Length > 0) {
+                if (trajeto.Length > 0 && nomeProva.Length > 0 && nomeEquipa.Length > 0 && emailEquipa.Length > 0 && mailBatedor !=null &&mailBatedor.Length > 0) {
                     if (System.IO.Path.GetExtension(trajeto).Equals(".gpx"))
                     {
                         backoffice.registarAtividade(mailBatedor, trajeto, nomeProva, nomeEquipa, emailEquipa, l);
+                        this.cancelar = true;
                         this.Close();
                         this.anterior.Visibility = Visibility.Visible;
                     }
@@ -93,12 +110,25 @@ namespace BackOffice.Presentation
             {
                 System.Windows.Forms.MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void buttonCancelar_Click(object sender, RoutedEventArgs e)
         {
+            this.cancelar = true;
             this.Close();
             this.anterior.Visibility = Visibility.Visible;
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (!this.cancelar)
+            {
+                e.Cancel = true;
+            }
         }
     }
 }

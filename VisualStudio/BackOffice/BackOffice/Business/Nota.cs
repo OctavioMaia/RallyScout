@@ -9,7 +9,7 @@ using System.Drawing;
 
 namespace BackOffice.Business
 {
-    public class Nota
+    public class Nota : IComparable
     {
         public int idNota { get; set; }
         public string notaTextual { get; set; }
@@ -35,6 +35,18 @@ namespace BackOffice.Business
             }
 
         }
+
+        public int CompareTo(object obj)
+        {
+            if (obj == null) return 1;
+
+            Nota nota = obj as Nota;
+            if (nota != null)
+                return this.idNota.CompareTo(nota.idNota);
+            else
+                throw new ArgumentException("Object is not a Nota");
+        }
+
         public Nota( int idNota , string notaTextual , GeoCoordinate localRegisto ,
          List<Image> imagens, byte[] voice, Voz notasVoz)
         {
@@ -50,6 +62,10 @@ namespace BackOffice.Business
             }
         }
 
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
         public bool asVoice()
         {
             return this.notasVoz != null;

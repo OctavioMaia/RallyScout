@@ -5,14 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BackOffice.Presentation"
         mc:Ignorable="d"
-        Title="Login" Height="219.848" Width="478.354" FontFamily="Arial" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Icon="/BackOffice;component/icon.ico">
+        Title="Login" Height="195.215" Width="478.354" FontFamily="Arial" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Icon="/BackOffice;component/icon.ico" Closing="window_Closing">
     <Grid Margin="0,0,2,0">
         <Label x:Name="labelUsername" Content="Username&#xD;&#xA;" HorizontalAlignment="Left" Margin="10,25,0,0" VerticalAlignment="Top" Height="27" Width="106" FontFamily="Arial" FontSize="18.667" FontWeight="Bold"/>
         <TextBox x:Name="textBoxUsername" HorizontalAlignment="Left" Height="27" Margin="133,25,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="321" FontFamily="Arial" FontSize="16"/>
         <Label x:Name="labelPassword" Content="Password" HorizontalAlignment="Left" Margin="10,69,0,0" VerticalAlignment="Top" Height="27" Width="106" FontFamily="Arial" FontSize="18.667" FontWeight="Bold"/>
         <PasswordBox x:Name="passwordBox" HorizontalAlignment="Left" Height="27" Margin="133,69,0,0" VerticalAlignment="Top" Width="321" FontFamily="Arial" FontSize="16"/>
-        <Button x:Name="buttonLogin" Content="Login" HorizontalAlignment="Left" Height="35" Margin="10,140,0,0" VerticalAlignment="Top" Width="209" FontFamily="Arial" FontSize="18.667" FontWeight="Bold" Click="buttonLogin_Click"/>
-        <Button x:Name="buttonSair" Content="Sair" HorizontalAlignment="Left" Height="35" Margin="244,140,0,0" VerticalAlignment="Top" Width="210" FontFamily="Arial" FontSize="18.667" FontWeight="Bold" Click="buttonSair_Click"/>
+        <Button x:Name="buttonLogin" Content="Login" HorizontalAlignment="Left" Height="35" Margin="10,116,0,0" VerticalAlignment="Top" Width="209" FontFamily="Arial" FontSize="18.667" FontWeight="Bold" Click="buttonLogin_Click"/>
+        <Button x:Name="buttonSair" Content="Sair" HorizontalAlignment="Left" Height="35" Margin="244,116,0,0" VerticalAlignment="Top" Width="210" FontFamily="Arial" FontSize="18.667" FontWeight="Bold" Click="buttonSair_Click"/>
 
     </Grid>
 </Window>

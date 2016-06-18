@@ -34,59 +34,75 @@ namespace BackOffice.Presentation
         {
             string localFolder = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             string path = localFolder + "\\Config\\config.json";
-            string pathG = "C:\\Users\\joaom\\Desktop\\JSON";
-           // try
-           // {
-               /* System.Diagnostics.Debug.WriteLine(" Comecar 0....");
-                Console.Error.WriteLine(" Comecar 1....");*/
-              //  Console.WriteLine(" Comecar 2....");
+           // string pathG = "Z:\\JSON";
+            try
+            {
 
                 this.backoffice = new BackOfficeAPP(path);
-                this.backoffice.gerarJsonDebug(pathG); //into épara debug
+               // this.backoffice.gerarJsonDebug(pathG); //into épara debug
                 InitializeComponent();
-           // }
-           /* catch(Exception e)
+            }
+            catch(Exception e)
             {
                 System.Windows.Forms.MessageBox.Show(e.Message.ToString(), "Error",MessageBoxButtons.OK, MessageBoxIcon.Error);
                 this.Close();
                 
-            }*/
+            }
         }
 
         private void buttonLogin_Click(object sender, RoutedEventArgs e)
         {
+            if (this.mainW == null)
+            {
+                try
+                {
+                    this.mainW = new MainWindow(this.backoffice, this);
 
-            /*String user = textBoxUsername.Text;
-            String pw = passwordBox.Password.ToString();
-             
-            if(user.Equals(backoffice.email) && pw.Equals(backoffice.passMail)) {
-                RegistoAtividade ra = new RegistoAtividade(backoffice);
-                ra.Visibility = Visibility.Visible;
+                }catch(Exception ex)
+                {
+                    System.Windows.Forms.MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            if (this.verificaLogin() == true)
+            {
+                this.Visibility = Visibility.Hidden;
+                this.mainW.Visibility = Visibility.Visible;
+                this.textBoxUsername.Text = "";
             }
             else
             {
-                System.Windows.Forms.MessageBox.Show("Credenciais incorretas!", "Warning",MessageBoxButtons.OK, MessageBoxIcon.Warning);
-
-            }*/
-
-            /* Atividade a = new Atividade(1, "equipateste", "teste", "C:\\Users\\Joao\\Desktop\\Mapas\\map.gpx", new List<Veiculo>(), new Equipa("equipa1","mail1"), new Batedor("mailbatedor","batedor","123"));
-             a.addNota(new Nota(1,"abc", 41.478254,-8.300161,null,null));
-             a.addNota(new Nota(2, "abc", 41.443217,-8.2916261, null, null));
-             a.addNota(new Nota(3, "def", 41.48096,-8.295004,null, null));
-             a.addNota(new Nota(4, "ghi", 41.509005,-8.25150, null, null));*/
-            if (this.mainW == null)
-            {
-                this.mainW = new MainWindow(this.backoffice, this);
+                System.Windows.Forms.MessageBox.Show("Dados de Login errados, por favor verifique.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-             
 
-            //vm.carregaMapa(a);
-            //vm.updateComboBox(a);
-            this.Visibility = Visibility.Hidden;
-            this.mainW.Visibility = Visibility.Visible;
+            this.passwordBox.Password = "";
         }
 
+        private bool verificaLogin()
+        {
+            if(this.textBoxUsername.Text==null || this.textBoxUsername.Text.Length.Equals(0))
+            {
+                return false;
+            }
+
+            if (this.passwordBox.Password == null || this.passwordBox.Password.Length.Equals(0))
+            {
+                return false;
+            }
+
+
+            if(!(this.textBoxUsername.Text.Equals(this.backoffice.email) && this.passwordBox.Password.Equals(this.backoffice.passMail)))
+            {
+                return false;
+            }
+
+            return true;
+        }
         private void buttonSair_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (this.mainW != null)
             {
@@ -96,8 +112,6 @@ namespace BackOffice.Presentation
             {
                 this.backoffice.stopReceive();
             }
-            this.Close();
-           // this.Visibility = Visibility.Hidden;
         }
     }
 }

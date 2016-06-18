@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BackOffice.Presentation"
         mc:Ignorable="d"
-        Title="Consultar Atividade Concluida" Height="486.199" Width="720.423" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" FontFamily="Arial" Icon="/BackOffice;component/icon.ico">
+        Title="Consultar Atividade Concluida" Height="486.199" Width="720.423" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" FontFamily="Arial" Icon="/BackOffice;component/icon.ico" Closing="Window_Closing">
     <Grid Margin="0,0,0.333,6">
         <Label x:Name="label" Content="Atividade" HorizontalAlignment="Left" Height="27" Margin="10,10,0,0" VerticalAlignment="Top" Width="95" FontWeight="Bold" FontSize="14"/>
         <ComboBox x:Name="comboBox" HorizontalAlignment="Left" Height="27" Margin="110,10,0,0" VerticalAlignment="Top" Width="582" SelectionChanged="comboBox_SelectionChanged"/>
@@ -36,7 +36,7 @@
         <TextBox x:Name="textBoxDataFim" HorizontalAlignment="Left" Height="27" Margin="128,190,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="564" IsEnabled="False" VerticalContentAlignment="Center"/>
         <Button x:Name="buttonVerMapa" Content="Visualizar Mapa" HorizontalAlignment="Left" Height="33" Margin="10,405,0,0" VerticalAlignment="Top" Width="226" FontSize="14" FontWeight="Bold" Click="buttonVerMapa_Click"/>
         <Button x:Name="buttonGerarRelatorios" Content="Gestão Relatórios" HorizontalAlignment="Left" Height="33" Margin="247,405,0,0" VerticalAlignment="Top" Width="226" FontSize="14" FontWeight="Bold" Click="buttonGerar_Click" RenderTransformOrigin="0.472,3.611"/>
-        <Button x:Name="buttonRegressar" Content="Regressar" HorizontalAlignment="Left" Height="33" Margin="479,405,0,0" VerticalAlignment="Top" Width="226" FontSize="14" FontWeight="Bold" Click="buttonRegressar_Click" RenderTransformOrigin="0.472,3.611"/>
+        <Button x:Name="buttonRegressar" Content="Regressar" HorizontalAlignment="Left" Height="33" Margin="479,405,0,0" VerticalAlignment="Top" Width="213" FontSize="14" FontWeight="Bold" Click="buttonRegressar_Click" RenderTransformOrigin="0.472,3.611"/>
         <Label x:Name="label_Copy4" Content="Email Equipa" HorizontalAlignment="Left" Height="27" Margin="10,93,0,0" VerticalAlignment="Top" Width="118" FontWeight="Bold" FontSize="14"/>
         <TextBox x:Name="textBoxEmailEquipa" HorizontalAlignment="Left" Height="27" Margin="128,93,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="564" IsEnabled="False" VerticalContentAlignment="Center"/>
 

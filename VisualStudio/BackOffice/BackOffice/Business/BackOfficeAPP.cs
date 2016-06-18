@@ -21,6 +21,8 @@ using System.Windows.Shapes;
 using System.Windows.Controls;
 using System.Text.RegularExpressions;
 using System.Device.Location;
+using System.Linq;
+using BackOffice.Extra;
 
 namespace BackOffice.Business
 {
@@ -42,10 +44,6 @@ namespace BackOffice.Business
         private ServerComunication comunica;
         private Thread comuTrhead;
 
-
-        //é para apagar 
-        public Dictionary<int, Atividade> atividadeFE { get; set; }
-        public Dictionary<int, Atividade> atividadeTERM { get; set; }
 
         public BackOfficeAPP(String confJSON)
         {
@@ -122,12 +120,43 @@ namespace BackOffice.Business
             this.atividades = new AtividadeDAO(this.database);
             this.batedores = new BatedorDAO(this.database);
 
-            //Isto é para apagar
-            this.atividadeFE = new Dictionary<int, Atividade>();
-            this.atividadeTERM = new Dictionary<int, Atividade>();
-            //
         }
 
+
+        public static System.Drawing.Image imageFromBitMapRep(string bipmap)
+        {
+            if (bipmap == null || bipmap.Length == 0) return null;
+            byte[] imageData = Convert.FromBase64String(bipmap);
+
+            Bitmap bmp;
+            using (var ms = new MemoryStream(imageData))
+            {
+                bmp = new Bitmap(ms);
+            }
+            return bmp;
+        }
+
+        public static string bitMapRepStringFromImaga(System.Drawing.Image image)
+        {
+            if (image == null) return null;
+            Bitmap bmp = new Bitmap(image);
+            ImageConverter converter = new ImageConverter();
+            byte[] bytes = (byte[])converter.ConvertTo(bmp, typeof(byte[]));
+            string ret = Convert.ToBase64String(bytes);
+            return ret;
+        }
+
+        public static string fromBytes64(byte[] bytes)
+        {
+            string ret = Convert.ToBase64String(bytes);
+            return ret;
+        }
+
+        public static byte[] toBytes64(string s)
+        {
+            byte[] bytes = Convert.FromBase64String(s);
+            return bytes;
+        }
 
         public void startReceive()
         {
@@ -140,7 +169,7 @@ namespace BackOffice.Business
 
         public void stopReceive()
         {
-            if(this.comuTrhead != null && this.comuTrhead.IsAlive)
+            if(!(this.comuTrhead == null || !this.comuTrhead.IsAlive))
             {
                 this.comunica.Stop();
                 this.comuTrhead.Abort();
@@ -181,13 +210,11 @@ namespace BackOffice.Business
 
         private void guardaNovaAtividade(Atividade a)
         {
-            //Isto é para apagar
-            this.atividadeFE.Add(a.idAtividade, a);
-            //
+
             this.atividades.put(a);
         }
 
-        private int getNextAtividadeID() //pode dar merda
+        private int getNextAtividadeID()
         {
             List<Int32> l = this.atividades.keySet();
             if (l.Count == 0) return 0;
@@ -210,9 +237,6 @@ namespace BackOffice.Business
             Batedor b = this.getBatedor(mailBatedor);
             Atividade a = new Atividade(idAtividade, mailEquipa, nomeprova, mapPath, lv, new Equipa(nomeEquipa, mailEquipa), b);
             this.guardaNovaAtividade(a);
-            //depois apagar
-            //String s = this.jsonFrom(idAtividade);
-            //System.IO.File.WriteAllText("C:\\Users\\Octávio\\Desktop\\novo.json", s);
         }
 
 
@@ -328,66 +352,13 @@ namespace BackOffice.Business
         }
 
 
-        public JustToBack formJson(string json) //atividade parcial atençap 
-        {
-            JustToBack u;
-            using (var sr = new StringReader(json))
-            using (var jr = new JsonTextReader(sr))
-            {
-                var js = new JsonSerializer();
-                u= js.Deserialize<JustToBack>(jr);
-               
-            }
-            return u;
-        }
-
-        public Atividade formJson(JustToBack u) //atençao que isto retorna um atividade parcial
-        {
-            Atividade a = new Atividade(u.idAtividade);
-            foreach (Note no in u.notas)
-            {
-                byte[] voice = Encoding.ASCII.GetBytes(no.audio);
-                if (voice.Length == 0)
-                {
-                    voice = null;
-                }
-                List<System.Drawing.Image> li = new List<System.Drawing.Image>();
-                foreach(String s in no.imagem)
-                {
-                    byte[] ia = Encoding.ASCII.GetBytes(s);
-                    System.Drawing.Image i;
-                    using (var ms = new MemoryStream(ia)) 
-                    {
-                        i= System.Drawing.Image.FromStream(ms);
-                    }
-                    li.Add(i);
-                    
-                }
-                if (li.Count == 0)
-                {
-                    li = null;
-                }
-                Nota n = new Nota(no.idNota, no.notaTextual, no.local.lat,
-                    no.local.log, li, voice);
-            }
-            return a;
-
-        }
-
-        private string jsonFrom(int idAtividade) //retorna string do json par enviar 
-        {
-            Atividade a = this.getAtividade(idAtividade);
-            BackToJust jsonClass = new BackToJust(a);
-            string json = JsonConvert.SerializeObject(jsonClass, Formatting.Indented);
-            return json;
-        }
-
-
         public void gerarRelatorios(string path, int atividade_id)
         {
 
-            String pathPiloto = System.IO.Path.Combine(path, "copiloto.pdf");
-            String pathGlobal = System.IO.Path.Combine(path, "general.pdf");
+            String pathPiloto = System.IO.Path.Combine(path, path, "copiloto_AT_" + atividade_id + ".pdf");
+            String pathGlobal = System.IO.Path.Combine(path, "general_AT_" + atividade_id + ".pdf");
+
+
 
             Atividade a = this.getAtividade(atividade_id);
             if (this.getAtividadesPorTerminarID().Contains(atividade_id))
@@ -396,7 +367,6 @@ namespace BackOffice.Business
             }
             a.generateReportCopiloto(pathPiloto);
             
-            //TODO este metodo ainda nao faz nada
             a.generateReportGlobal(pathGlobal);
             
         }
@@ -436,18 +406,23 @@ namespace BackOffice.Business
         {
             foreach(Atividade a in this.getAtividadesPorTerminar())
             {
-                JustToBack novo = new JustToBack();
-                novo.email = a.batedor.email;
-                novo.idAtividade = a.idAtividade;
-                novo.password = null;
-                novo.notas = this.geraNotes(a.percurso);
-                string json = JsonConvert.SerializeObject(novo, Formatting.Indented);
-                string t = Regex.Replace(json, @"\t|\n|\r", "");
-                string outp = output + "\\novo_" + a.idAtividade + ".json";
-                System.IO.File.WriteAllText(outp,t);
-
+                if (a.inprogress)
+                {
+                    JustToBack novo = new JustToBack();
+                    novo.email = a.batedor.email;
+                    novo.idAtividade = a.idAtividade;
+                    novo.password = null;
+                    novo.notas = this.geraNotes(a.percurso);
+                    string json = JsonConvert.SerializeObject(novo, Formatting.Indented);
+                    string t = Regex.Replace(json, @"\t|\n|\r", "");
+                    string outp = output + "\\novo_" + a.idAtividade + ".json";
+                    string outpZ = output + "\\novo_" + a.idAtividade + "ZIP.json";
+                    System.IO.File.WriteAllText(outp, t);
+                    System.IO.File.WriteAllText(outpZ, Zip.zipStringBase64(t));
+                }
             }
         }
+
         private Note[] geraNotes(Mapa m)
         {
             int totalgera = Math.Min(20, m.cords.Count);
@@ -481,21 +456,81 @@ namespace BackOffice.Business
             return false;
         }
 
+
+        private string[] bytesImagens()
+        {
+            string folderName = "Z:\\JSON\\REC";
+            List<String> imagens = Directory.GetFiles(folderName, "*.bmp*", SearchOption.AllDirectories).ToList();
+            List<String> array = new List<String>();
+            foreach(String s in imagens)
+            {
+               byte[] bytes = File.ReadAllBytes(s);
+                array.Add(BackOfficeAPP.fromBytes64(bytes));
+
+            }
+
+            return array.ToArray();
+        }
+
+        private string bytesAudio()
+        {
+            string folderName = "Z:\\JSON\\REC";
+            List<String> imagens = Directory.GetFiles(folderName, "*.wav*", SearchOption.AllDirectories).ToList();
+            string ret = null;
+            if (imagens.Count > 0)
+            {
+                string s = imagens[0];
+                byte[] bytes = File.ReadAllBytes(s);
+                ret = BackOfficeAPP.fromBytes64(bytes);
+            }
+          
+
+            return ret;
+        }
+
         private Note geraNote(double lat, Double longit,int num)
         {
-            Random rnd = new Random();
+            Random rnd = new Random(Environment.TickCount);
             Note n = new Note();
             n.local = new Cord(lat, longit);
 
+
+            
             n.idNota = num;
             n.notaTextual = null;
             int i = rnd.Next(0, 5);
-            if (i < 10) //esta ssim para gerar sempre
+            if (i < 5) 
             {
-                n.notaTextual = "Nota textual na corenada " + lat + " " + longit+" ";
+                n.notaTextual = "Nota textual na coordenada " + lat + " " + longit+" ";
             }
-            n.audio = null;
-            n.imagem = null;
+          
+            i = rnd.Next(0, 10);
+
+            if (i < 11)
+            {
+
+                n.imagem = bytesImagens();
+            }
+            else
+            {
+
+                n.imagem = null;
+            }
+            
+            
+
+            i = rnd.Next(0, 10);
+            if (i < 11)
+            {
+                
+                n.audio = bytesAudio();
+            }
+            else
+            {
+                
+                n.audio = null;
+            }
+
             return n;
         }
 
