@@ -177,14 +177,15 @@ namespace BackOffice.Business
             doc.Add(p);
 
             PdfPTable t = new PdfPTable(2);
-            foreach(Nota n in notas){
+            foreach (Nota n in notas)
+            {
                 if (n.asVoice())
                 {
-                    
+
                     String nota = n.getToPiloto();
                     double startDist = n.getDistanceToBegin(this.percurso);
                     double endDist = n.getDistanceToFinish(this.percurso);
-                    String dist = startDist + "\n\n("+ endDist+")";
+                    String dist = startDist + "\n\n(" + endDist + ")";
                     var c1 = new PdfPCell(new Phrase(dist, distFont));
                     var c2 = new PdfPCell(new Phrase(nota, NotaFont));
                     c1.HorizontalAlignment = Element.ALIGN_CENTER;
@@ -212,25 +213,25 @@ namespace BackOffice.Business
             PdfWriter wri = PdfWriter.GetInstance(doc, new FileStream(path, FileMode.Create));
             doc.Open();
 
-            Paragraph p = new Paragraph("Relatório Completo da Atividade número " + this.idAtividade+"\n\n", TitleFont);
+            Paragraph p = new Paragraph("Relatório Completo da Atividade número " + this.idAtividade + "\n\n", TitleFont);
             p.Alignment = Element.ALIGN_CENTER;
             doc.Add(p);
-            
+
             ////
             string intro = "\tRelatório Completo da prova " + this.percurso.nomeProva +
-                  " para a Equipa com o nome " + this.nomeEquipa + " (" + this.equipa.email + ").";
+                 " para a Equipa com o nome " + this.nomeEquipa + " (" + this.equipa.email + ").";
             p = new Paragraph(intro, TextoFont);
-            p.FirstLineIndent = parID;
+            /*p.FirstLineIndent = parID;
             p.IndentationLeft = marID;
-            p.IndentationRight = marID;
+            p.IndentationRight = marID;*/
             doc.Add(p);
             ///
             string infBta = "\tO reconhecimento foi efetuado pelo batedor " + this.batedor.nome +
-                  " com o email de contacto " + this.batedor.email +".";
+                  " com o email de contacto " + this.batedor.email + ".";
             p = new Paragraph(infBta, TextoFont);
-            p.FirstLineIndent = parID;
+            /*p.FirstLineIndent = parID;
             p.IndentationLeft = marID;
-            p.IndentationRight = marID;
+            p.IndentationRight = marID;*/
             doc.Add(p);
             ///
             TimeSpan ts = this.fimReconhecimento - this.inicioReconhecimento;
@@ -240,31 +241,31 @@ namespace BackOffice.Business
                 " às " + this.inicioReconhecimento.ToShortTimeString() + ",  sendo finalizado o seu reconhecimento no dia " + this.fimReconhecimento.ToShortDateString() +
                 " às " + this.fimReconhecimento.ToShortTimeString() + ", tendo por isso uma duração de " + horas + " horas.";
             p = new Paragraph(infoRec, TextoFont);
-            p.FirstLineIndent = parID;
+            /*p.FirstLineIndent = parID;
             p.IndentationLeft = marID;
-            p.IndentationRight = marID;
+            p.IndentationRight = marID;*/
             doc.Add(p);
             ///Veiculos
             doc.NewPage();
-            p = new Paragraph("Informação dos Veiculos\n\n", TitleFont);
+            p = new Paragraph("Informação dos Veículos\n\n", TitleFont);
             p.Alignment = Element.ALIGN_CENTER;
             doc.Add(p);
             ///
             string veic = "\tPara a prova considerada foram os seguintes " + this.veiculos.Count + " veículos.";
             p = new Paragraph(infoRec, TextoFont);
-            p.FirstLineIndent = parID;
+            /*p.FirstLineIndent = parID;
             p.IndentationLeft = marID;
-            p.IndentationRight = marID;
+            p.IndentationRight = marID;*/
             doc.Add(p);
             //
             List listaVec = new List(List.ORDERED, 20f);
-            //listaVec.IndentationLeft = 20f;
-           // listaVec.PreSymbol = string.Format("{0}.", i);
+            listaVec.IndentationLeft = 20f;
+            // listaVec.PreSymbol = string.Format("{0}.", i);
             foreach (Veiculo v in this.veiculos)
             {
-                listaVec.Add("Chassi: " + v.chassi + " Marca: " + v.marca + " Modelo: " + v.modelo + "\n Características ("+v.caracteristicas.Count+")");
+                listaVec.Add("Chassi: " + v.chassi + " Marca: " + v.marca + " Modelo: " + v.modelo + "\n Características (" + v.caracteristicas.Count + ")");
                 List listaVecC = new List(List.ORDERED, 30f);
-                foreach(string c in v.caracteristicas)
+                foreach (string c in v.caracteristicas)
                 {
                     listaVecC.Add(c);
                 }
@@ -281,13 +282,13 @@ namespace BackOffice.Business
             ///
             string notas = "Para a prova considerada foram recolhidas " + this.notas.Count + " notas.";
             p = new Paragraph(notas, TextoFont);
-            p.FirstLineIndent = parID;
+            /*p.FirstLineIndent = parID;
             p.IndentationLeft = marID;
-            p.IndentationRight = marID;
+            p.IndentationRight = marID;*/
             doc.Add(p);
             //
-           // List listaNote = new List(List.ORDERED, 20f);
-            //listaNote.IndentationLeft = 20f;
+            List listaNote = new List(List.ORDERED, 20f);
+            listaNote.IndentationLeft = 20f;
             this.notas.Sort();
             foreach (Nota n in this.notas)
             {
@@ -305,26 +306,25 @@ namespace BackOffice.Business
                         nv = voz.texto;
                     }
                 }
-                string notas1 = ("Nota numero "+ n.idNota +" \nrecolhida em " + n.localRegisto.Latitude + " " +n.localRegisto.Longitude+".\n Nota Textual : "+ nt+"\n Nota de Voz: "+ nv);
-                 List listaNoteI = new List(List.ORDERED, 30f);
-                 foreach (System.Drawing.Image image in n.imagens)
-                 {
-                     iTextSharp.text.Image pic = iTextSharp.text.Image.GetInstance(image, System.Drawing.Imaging.ImageFormat.Bmp); //atençao ao jpeg
-                     pic.ScaleAbsolute(50f, pic.XYRatio * 50f); //pode estar ao contraririo
-                     listaNoteI.Add(pic);
-                 }
-                doc.Add(listaNoteI);
-                p = new Paragraph(notas1, TextoFont);
-                p.FirstLineIndent = parID+ marID;
-                p.IndentationLeft = marID+ marID;
-                p.IndentationRight = marID;
-                doc.Add(p);
+                string notas1 = ("Nota numero " + n.idNota + " \nrecolhida em " + n.localRegisto.Latitude + " " + n.localRegisto.Longitude + ".\n Nota Textual : " + nt + "\n Nota de Voz: " + nv);
+                listaNote.Add(notas1);
+                List listaNoteI = new List(List.ORDERED, 30f);
+                listaNoteI.PreSymbol = string.Format("{0}.", 0);
+                foreach (System.Drawing.Image image in n.imagens)
+                {
+                    iTextSharp.text.Image pic = iTextSharp.text.Image.GetInstance(image, System.Drawing.Imaging.ImageFormat.Jpeg); //atençao ao jpeg
+                    //pic.ScaleAbsolute(50f, pic.XYRatio * 50f); //pode estar ao contraririo
+                    //listaNoteI.Add(pic);
+                    listaNoteI.Add("OLa");
+
+                }
+                listaVec.Add(listaNoteI);
             }
-            //doc.Add(listaNote);
+            doc.Add(listaNote);
             //pagina final
             doc.NewPage();
             string fim = "FIM";
-            for(int i = 0; i < 3; i++)
+            for (int i = 0; i < 3; i++)
             {
                 fim = "\n" + fim;
             }

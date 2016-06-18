@@ -274,7 +274,7 @@ namespace BackOffice.Presentation
         public void addMarker(GeoCoordinate gc)
         {
             GMapOverlay markersOverlay = new GMapOverlay("markers");
-            GMarkerGoogle marker = new GMarkerGoogle(new PointLatLng(gc.Longitude, gc.Latitude),GMarkerGoogleType.yellow); //troquei a ordem desta merda
+            GMarkerGoogle marker = new GMarkerGoogle(new PointLatLng(gc.Latitude, gc.Longitude),GMarkerGoogleType.yellow); 
             gmap.Overlays.Add(markersOverlay);
             markersOverlay.Markers.Add(marker);
             this.index=gmap.Overlays.IndexOf(markersOverlay);

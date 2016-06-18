@@ -1,5 +1,6 @@
 ﻿using BackOffice.Data.DataBase;
 using BackOffice.Data.Json;
+using BackOffice.Extra;
 using Newtonsoft.Json;
 using Org.BouncyCastle.Utilities.Net;
 using System;
@@ -332,13 +333,17 @@ namespace BackOffice.Business
 
         private string readData()
         {
-            // return this.readStream.ReadToEnd()
-            return this.readStream.ReadLine();
+
+             return this.readStream.ReadLine(); 
+            //Trocar os comentarios para ler dados ZIP
+            //return Zip.UnzipStringBase64(this.readStream.ReadLine());
+
         }
 
         private void writeData(string data)
         {
             string t = Regex.Replace(data, @"\t|\n|\r", "");
+            //t = Zip.zipStringBase64(t); isto zipa o texto a enviar
             this.writerStream.Write(t);
             this.writerStream.WriteLine();
             this.writerStream.Flush();
