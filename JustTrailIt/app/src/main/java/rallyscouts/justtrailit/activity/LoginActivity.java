@@ -70,7 +70,6 @@ public class LoginActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_login);
 
         this.setTitle("");
-        Log.d("TESTE","merda");
         dbAdapter = new DBAdapter(LoginActivity.this);
         batedores = new BatedorDAO(LoginActivity.this);
 

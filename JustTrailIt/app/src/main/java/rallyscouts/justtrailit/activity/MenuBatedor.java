@@ -63,7 +63,6 @@ public class MenuBatedor extends AppCompatActivity {
 
         this.batedorLogin = batedores.getBatedor((String)getIntent().getExtras().get("email"));
 
-
         textView_AtividadeDisp = (TextView) findViewById(R.id.textView_Atividade);
         button_gerirAtividade = (Button) findViewById(R.id.button_gerirAtividade);
         button_download = (Button) findViewById(R.id.button_DownloadAtividade);
@@ -109,7 +108,6 @@ public class MenuBatedor extends AppCompatActivity {
                 {
                     try {
                         JSONObject request = JsonRC.downloadAtividade(batedorLogin.getEmail(),batedorLogin.getPassword());
-                        Log.i(TAG,request.toString());
 
                         Socket socket = new Socket(ipServer,portServer);
                         BufferedReader br = new BufferedReader( new InputStreamReader(socket.getInputStream()));
@@ -134,10 +132,16 @@ public class MenuBatedor extends AppCompatActivity {
             thread.start();
             try {
                 thread.join();
-                textView_AtividadeDisp.setText("Atividade " + batedorLogin.getAtividade() + " não enviada");
-                this.button_gerirAtividade.setEnabled(true);
-                this.button_download.setEnabled(false);
-                this.button_upload.setEnabled(true);
+                if(batedorLogin.getAtividade()>=0) {
+                    textView_AtividadeDisp.setText("Atividade " + batedorLogin.getAtividade() + " não enviada");
+                    this.button_gerirAtividade.setEnabled(true);
+                    this.button_download.setEnabled(false);
+                    this.button_upload.setEnabled(true);
+                }else{
+                    if(batedorLogin.getAtividade()==-1){
+                        Toast.makeText(getApplicationContext(), "Não existe atividade disponivel" , Toast.LENGTH_LONG).show();
+                    }
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -182,7 +186,6 @@ public class MenuBatedor extends AppCompatActivity {
                             atividades.deleteAtividade(batedorLogin.getAtividade());
                             batedorLogin.setAtividade(-1);
                         }else{
-                            //Toast.makeText(getApplicationContext(), "Não foi enviada corretamente a atividade" , Toast.LENGTH_LONG).show();
                             Log.i(TAG,"Não foi enviada corretamente a atividade");
                         }
 
@@ -199,11 +202,14 @@ public class MenuBatedor extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            this.button_gerirAtividade.setEnabled(false);
-            this.button_download.setEnabled(true);
-            this.button_upload.setEnabled(false);
-            textView_AtividadeDisp.setText("Não existe nenhuma atividade em processamento");
-
+            if(batedorLogin.getAtividade()==-1){
+                this.button_gerirAtividade.setEnabled(false);
+                this.button_download.setEnabled(true);
+                this.button_upload.setEnabled(false);
+                textView_AtividadeDisp.setText("Não existe nenhuma atividade em processamento");
+            }else {
+                Toast.makeText(getApplicationContext(), "Não foi enviada corretamente a atividade" , Toast.LENGTH_LONG).show();
+            }
         }
 
     }
