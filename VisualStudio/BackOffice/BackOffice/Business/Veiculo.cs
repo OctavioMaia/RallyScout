@@ -22,7 +22,10 @@ namespace BackOffice.Business
             this.chassi = chassie;
             this.caracteristicas = carac;  
          }
-
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
         public Veiculo(string mod, string marc, string chassie)
         {
             this.modelo = mod;

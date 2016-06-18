@@ -62,7 +62,10 @@ namespace BackOffice.Business
             }
         }
 
-
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
         public bool asVoice()
         {
             return this.notasVoz != null;
