@@ -23,6 +23,10 @@ namespace BackOffice.Business
 
         }
 
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
         public override string ToString()
         {
             return " (Batedor) Email: " + email + " Nome: " + nome+" pass: " + password + this.ficha.ToString();

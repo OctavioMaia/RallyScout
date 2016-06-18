@@ -49,6 +49,7 @@ namespace BackOffice.Business
                 Console.WriteLine(" KO ....");
                 this.on = false;
                 newThread = null;
+                Console.WriteLine(e.Message);
             }
             return newThread;
 
@@ -65,7 +66,7 @@ namespace BackOffice.Business
             TcpListener serverSocket = null;
             try
             {
-                serverSocket = new TcpListener(this.listenigPort);
+                serverSocket = new TcpListener(System.Net.IPAddress.Any,this.listenigPort);
                 serverSocket.Start();
                 Console.WriteLine(" Server Started ....");
 
@@ -144,6 +145,7 @@ namespace BackOffice.Business
             {
                 BackToJust atOK = new BackToJust(-3);
                 this.writeData(this.jsonFrom(atOK));
+                Console.WriteLine(e.Message);
             }
 
             //fechar as comunicaçoes da tread para terminar

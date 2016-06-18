@@ -16,6 +16,10 @@ namespace BackOffice.Business
             this.email = mail;
 
         }
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
         public override bool Equals(object obj)
         {
             if (obj == null)

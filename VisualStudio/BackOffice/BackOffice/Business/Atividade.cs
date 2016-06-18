@@ -207,8 +207,8 @@ namespace BackOffice.Business
 
         public void generateReportGlobal(string path)
         {
-            float parID = 15f;
-            float marID = 15f;
+           /* float parID = 15f;
+            float marID = 15f;*/
             var NotaFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 18, BaseColor.BLACK);
             var TitleFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 20, BaseColor.BLACK);
             var Huge = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 72, BaseColor.BLACK);
