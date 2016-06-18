@@ -2,7 +2,7 @@
   "email" : "xsolutiondevelopment@gmail.com",
   "password" : "rallyscouts",
   "port" : "6969",
-  "database" : "Data Source = BEASTPC; Initial Catalog = BackOffice; Integrated Security = True; MultipleActiveResultSets = True",
+  "database" : "Data Source = DESKTOP-7USLVCF; Initial Catalog = BackOffice; Integrated Security = True; MultipleActiveResultSets = True",
   "dicionario" : 
     ["Corner","Grade","Left","Right","Flat or fast plus","Flat or fast", "Easy plus","Easy",
       "Easy minus","Medium plus","Medium","Medium minus","Kay plus","Kay","Kay minus","Bad plus",
