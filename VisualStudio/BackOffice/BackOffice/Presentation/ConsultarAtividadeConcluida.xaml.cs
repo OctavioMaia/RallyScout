@@ -24,7 +24,6 @@ namespace BackOffice.Presentation
         BackOfficeAPP backoffice;
         List<Atividade> atividades;
         Atividade selecionada;
-        Boolean gerado;
         Window anterior;
         Boolean cancelar;
 
@@ -32,7 +31,6 @@ namespace BackOffice.Presentation
         {
             this.anterior = w;
             this.backoffice = b;
-            this.gerado = false;
             InitializeComponent();
             this.atividades = this.backoffice.getAtividadesTerminadas();
             this.cancelar = false;

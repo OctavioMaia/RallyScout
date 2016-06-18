@@ -332,11 +332,9 @@ namespace BackOffice.Business
 
                     this.addPDFImage(pic, doc, inum, n.imagens.Count,notan);
                     inum++;
-                    //listaNoteI.Add("OLa");
 
                 }
             }
-            // listaVec.Add(listaNoteI);
 
             //pagina final
             doc.NewPage();

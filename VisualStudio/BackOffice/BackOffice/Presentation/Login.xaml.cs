@@ -34,15 +34,12 @@ namespace BackOffice.Presentation
         {
             string localFolder = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             string path = localFolder + "\\Config\\config.json";
-            string pathG = "Z:\\JSON";
+           // string pathG = "Z:\\JSON";
             try
             {
-               /* System.Diagnostics.Debug.WriteLine(" Comecar 0....");
-                Console.Error.WriteLine(" Comecar 1....");*/
-              //  Console.WriteLine(" Comecar 2....");
 
                 this.backoffice = new BackOfficeAPP(path);
-                //this.backoffice.gerarJsonDebug(pathG); //into épara debug
+               // this.backoffice.gerarJsonDebug(pathG); //into épara debug
                 InitializeComponent();
             }
             catch(Exception e)
@@ -57,12 +54,49 @@ namespace BackOffice.Presentation
         {
             if (this.mainW == null)
             {
-                this.mainW = new MainWindow(this.backoffice, this);
+                try
+                {
+                    this.mainW = new MainWindow(this.backoffice, this);
+
+                }catch(Exception ex)
+                {
+                    System.Windows.Forms.MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
-            this.Visibility = Visibility.Hidden;
-            this.mainW.Visibility = Visibility.Visible;
+            if (this.verificaLogin() == true)
+            {
+                this.Visibility = Visibility.Hidden;
+                this.mainW.Visibility = Visibility.Visible;
+                this.textBoxUsername.Text = "";
+            }
+            else
+            {
+                System.Windows.Forms.MessageBox.Show("Dados de Login errados, por favor verifique.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            this.passwordBox.Password = "";
         }
 
+        private bool verificaLogin()
+        {
+            if(this.textBoxUsername.Text==null || this.textBoxUsername.Text.Length.Equals(0))
+            {
+                return false;
+            }
+
+            if (this.passwordBox.Password == null || this.passwordBox.Password.Length.Equals(0))
+            {
+                return false;
+            }
+
+
+            if(!(this.textBoxUsername.Text.Equals(this.backoffice.email) && this.passwordBox.Password.Equals(this.backoffice.passMail)))
+            {
+                return false;
+            }
+
+            return true;
+        }
         private void buttonSair_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
