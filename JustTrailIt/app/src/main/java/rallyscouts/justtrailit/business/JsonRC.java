@@ -278,15 +278,7 @@ public class JsonRC {
                 //GZIPOutputStream zos = new GZIPOutputStream(rstBao);
                 //zos.write(byteBuffer.array());
             Log.i(TAG,"size: " + byteBuffer.array().length);
-
-            byte[] aux = byteBuffer.array();
-
-            JSONArray imagem = new JSONArray();
-            for(int i=0;i<aux.length;i++){
-                imagem.put((int)aux[i]);
-            }
-
-            imagensJson.put(imagem);
+            imagensJson.put(Base64.encodeToString(byteBuffer.array(),Base64.DEFAULT));
         }
 
         return imagensJson;
