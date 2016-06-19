@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
@@ -97,16 +98,12 @@ public class MenuBatedor extends AppCompatActivity {
      */
     public void downloadAtividade(View v){
 
-
-        Toast.makeText(getApplicationContext(), "IP: " + ipServer + " port: " + portServer , Toast.LENGTH_LONG).show();
-
         if(ipServer!=null && portServer!=-1){
-
-
             AsyncTask taskDownload = new AsyncTask() {
                 @Override
                 protected Object doInBackground(Object[] params) {
                     try {
+
                         JSONObject request = JsonRC.downloadAtividade(batedorLogin.getEmail(),batedorLogin.getPassword());
 
                         Socket socket = new Socket(ipServer,portServer);
@@ -147,6 +144,9 @@ public class MenuBatedor extends AppCompatActivity {
             };
 
             taskDownload.execute();
+        }else{
+            configConnection(findViewById(R.id.button_configConnetion));
+            Toast.makeText(getApplicationContext(), "Precisa de configurar a ligação", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -159,7 +159,11 @@ public class MenuBatedor extends AppCompatActivity {
                 @Override
                 protected Object doInBackground(Object[] params) {
                     JSONObject send = JsonRC.sendAtividade(batedorLogin, notas.getAllNotas(batedorLogin.getAtividade()));
-                    Log.i(TAG, send.toString());
+                    try {
+                        Log.i(TAG, send.toString(4));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
                     try {
                         Socket socket = new Socket(ipServer, portServer);
@@ -182,6 +186,7 @@ public class MenuBatedor extends AppCompatActivity {
                             mapas.deleteMapa(batedorLogin.getAtividade());
                             atividades.deleteAtividade(batedorLogin.getAtividade());
                             batedorLogin.setAtividade(-1);
+                            batedores.updateBatedor(batedorLogin);
                             Log.i(TAG, "Atividade enviada");
                         } else {
                             Log.i(TAG, "Não foi enviada corretamente a atividade");
@@ -210,7 +215,8 @@ public class MenuBatedor extends AppCompatActivity {
 
             taskUpload.execute();
         }else {
-            Toast.makeText(getApplicationContext(), "Comunicação ainda não está a funcionar" + portServer, Toast.LENGTH_LONG).show();
+            configConnection(findViewById(R.id.button_configConnetion));
+            Toast.makeText(getApplicationContext(), "Precisa de configurar a ligação", Toast.LENGTH_LONG).show();
         }
     }
 

@@ -32,7 +32,7 @@ import rallyscouts.justtrailit.business.Nota;
 import rallyscouts.justtrailit.data.MapaDAO;
 import rallyscouts.justtrailit.data.NotaDAO;
 
-public class Notas extends AppCompatActivity implements OnMapReadyCallback,AdapterView.OnItemSelectedListener {
+public class Notas extends AppCompatActivity implements OnMapReadyCallback {
 
     public static final String ID_ATIVIDADE = "idAtividade";
     public static final String TAG = "Notas";
@@ -65,32 +65,43 @@ public class Notas extends AppCompatActivity implements OnMapReadyCallback,Adapt
         // Spinner click listener
 
         // Creating adapter for spinner
-        ArrayAdapter<Integer> dataAdapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_list_item_1, prepareSpinner());
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, prepareSpinner());
 
         // Drop down layout style - list view with radio button
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         // attaching data adapter to spinner
         spinner.setAdapter(dataAdapter);
+        this.mapaCoords = mapas.getMapa(getIntent().getExtras().getInt(ID_ATIVIDADE)).getCoord();
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                //Integer item = (Integer) parentView.getItemAtPosition(position);
+                addMarker( notasShow.get(position).getLocalRegisto(),
+                        notasShow.get(position).getIdNota() +
+                                " -> " + notasShow.get(position).getLocalRegisto().getLatitude() +
+                                ":" + notasShow.get(position).getLocalRegisto().getLongitude()
+                );
+                Toast.makeText(getApplicationContext(), "Selected: " + position, Toast.LENGTH_LONG).show();
+            }
 
-        this.mapaCoords = mapas.getMapa(getIntent().getExtras().getInt("idAtividade")).getCoord();
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
+            }
+
+        });
 
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapNota);
         mapFragment.getMapAsync(this);
     }
 
-    private ArrayList<Integer> prepareSpinner(){
-        ArrayList<Integer> res = new ArrayList<>();
+    private ArrayList<String> prepareSpinner(){
+        ArrayList<String> res = new ArrayList<>();
         if(notasShow!=null){
             for (Nota n : notasShow ) {
-                Log.i(TAG,""+n.getIdNota());
-                res.add(n.getIdNota());
+                res.add(n.getIdNota() + "->" + n.getLocalRegisto().getLatitude() + ":" + n.getLocalRegisto().getLongitude());
             }
-        }
-        if(res.size()==0){
-            Toast.makeText(getApplicationContext(), "Não existem notas", Toast.LENGTH_LONG).show();
-        }else{
-            Toast.makeText(getApplicationContext(), "Numero de notas: " + res.size(), Toast.LENGTH_LONG).show();
         }
         return res;
     }
@@ -122,14 +133,11 @@ public class Notas extends AppCompatActivity implements OnMapReadyCallback,Adapt
         route.visible( true );
         route.geodesic(true);
 
-
-
-        for (Integer ord : mapaCoords.keySet() ) {
+        for(int i = 0;i<mapaCoords.size();i++){
             route.add( new LatLng(
-                    mapaCoords.get( ord ).getLatitude(),
-                    mapaCoords.get( ord ).getLongitude() ));
+                    mapaCoords.get( i ).getLatitude(),
+                    mapaCoords.get( i ).getLongitude() ));
         }
-
         googleMap.addPolyline( route );
     }
 
@@ -147,26 +155,10 @@ public class Notas extends AppCompatActivity implements OnMapReadyCallback,Adapt
     }
 
     public void analisarNota(View v){
-        Spinner spinner = (Spinner) findViewById(R.id.notas_spinner);
-
         Intent analisarNota = new Intent(Notas.this, NotaDetails.class);
-        analisarNota.putExtra(NotaDetails.ID_NOTA,(int)spinner.getSelectedItem());
+
+        analisarNota.putExtra(NotaDetails.ID_NOTA,(int)spinner.getSelectedItemPosition());
         analisarNota.putExtra(NotaDetails.ID_ATIVIDADE,getIntent().getExtras().getInt(ID_ATIVIDADE));
         Notas.this.startActivity(analisarNota);
-
-
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        // On selecting a spinner item
-        Integer item = (Integer) parent.getItemAtPosition(position);
-        addMarker( notasShow.get(item).getLocalRegisto(), ""+notasShow.get(item).getIdNota());
-        Toast.makeText(getApplicationContext(), "Selected: " + item, Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
     }
 }
