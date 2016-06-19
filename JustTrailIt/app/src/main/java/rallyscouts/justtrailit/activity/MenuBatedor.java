@@ -1,6 +1,7 @@
 package rallyscouts.justtrailit.activity;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v4.widget.TextViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
@@ -96,17 +98,12 @@ public class MenuBatedor extends AppCompatActivity {
      */
     public void downloadAtividade(View v){
 
-
-        Toast.makeText(getApplicationContext(), "IP: " + ipServer + " port: " + portServer , Toast.LENGTH_LONG).show();
-
         if(ipServer!=null && portServer!=-1){
-
-            Thread thread = new Thread(new Runnable()
-            {
+            AsyncTask taskDownload = new AsyncTask() {
                 @Override
-                public void run()
-                {
+                protected Object doInBackground(Object[] params) {
                     try {
+
                         JSONObject request = JsonRC.downloadAtividade(batedorLogin.getEmail(),batedorLogin.getPassword());
 
                         Socket socket = new Socket(ipServer,portServer);
@@ -126,47 +123,52 @@ public class MenuBatedor extends AppCompatActivity {
                     } catch (IOException e) {
 
                     }
+                    return null;
                 }
-            });
 
-            thread.start();
-            try {
-                thread.join();
-                if(batedorLogin.getAtividade()>=0) {
-                    textView_AtividadeDisp.setText("Atividade " + batedorLogin.getAtividade() + " não enviada");
-                    this.button_gerirAtividade.setEnabled(true);
-                    this.button_download.setEnabled(false);
-                    this.button_upload.setEnabled(true);
-                }else{
-                    if(batedorLogin.getAtividade()==-1){
-                        Toast.makeText(getApplicationContext(), "Não existe atividade disponivel" , Toast.LENGTH_LONG).show();
+                @Override
+                protected void onPostExecute(Object o) {
+                    super.onPostExecute(o);
+                    if(batedorLogin.getAtividade()>=0) {
+                        textView_AtividadeDisp.setText("Atividade " + batedorLogin.getAtividade() + " não enviada");
+                        button_gerirAtividade.setEnabled(true);
+                        button_download.setEnabled(false);
+                        button_upload.setEnabled(true);
+                    }else{
+                        if(batedorLogin.getAtividade()==-1){
+                            Toast.makeText(getApplicationContext(), "Não existe atividade disponivel" , Toast.LENGTH_LONG).show();
+                        }
                     }
+
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            };
+
+            taskDownload.execute();
+        }else{
+            configConnection(findViewById(R.id.button_configConnetion));
+            Toast.makeText(getApplicationContext(), "Precisa de configurar a ligação", Toast.LENGTH_LONG).show();
         }
     }
 
-    public void uploadAtividade(View v){
+    public void uploadAtividade(View v) {
 
 
-        Toast.makeText(getApplicationContext(), "Comunicação ainda não está a funcionar" + portServer , Toast.LENGTH_LONG).show();
-        if(ipServer!=null && portServer!=-1) {
+        if (ipServer != null && portServer != -1) {
 
-            Thread thread = new Thread(new Runnable() {
+            AsyncTask taskUpload = new AsyncTask() {
                 @Override
-                public void run() {
-
+                protected Object doInBackground(Object[] params) {
                     JSONObject send = JsonRC.sendAtividade(batedorLogin, notas.getAllNotas(batedorLogin.getAtividade()));
-
-                    Log.i(TAG, send.toString());
-                    //Toast.makeText(getApplicationContext(), send.toString() , Toast.LENGTH_LONG).show();
+                    try {
+                        Log.i(TAG, send.toString(4));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
                     try {
                         Socket socket = new Socket(ipServer, portServer);
 
-                        BufferedReader br = new BufferedReader( new InputStreamReader(socket.getInputStream()));
+                        BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
                         bw.write(send.toString());
@@ -174,44 +176,48 @@ public class MenuBatedor extends AppCompatActivity {
                         bw.flush();
 
 
-
                         String jsonACK = br.readLine();
 
                         int ack = JsonRC.reciveACK(jsonACK);
 
-                        if(ack>=0){
+                        if (ack == -2) {
                             notas.deleteAllNotaAtividade(batedorLogin.getAtividade());
                             veiculos.deleteAllVeiculoAtividade(batedorLogin.getAtividade());
                             mapas.deleteMapa(batedorLogin.getAtividade());
                             atividades.deleteAtividade(batedorLogin.getAtividade());
                             batedorLogin.setAtividade(-1);
-                        }else{
-                            Log.i(TAG,"Não foi enviada corretamente a atividade");
+                            batedores.updateBatedor(batedorLogin);
+                            Log.i(TAG, "Atividade enviada");
+                        } else {
+                            Log.i(TAG, "Não foi enviada corretamente a atividade");
                         }
 
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                    return null;
                 }
-            });
 
-            thread.start();
-            try {
-                thread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+                @Override
+                protected void onPostExecute(Object o) {
+                    super.onPostExecute(o);
+                    if (batedorLogin.getAtividade() == -1) {
+                        button_gerirAtividade.setEnabled(false);
+                        button_download.setEnabled(true);
+                        button_upload.setEnabled(false);
+                        textView_AtividadeDisp.setText("Não existe nenhuma atividade em processamento");
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Não foi enviada corretamente a atividade", Toast.LENGTH_LONG).show();
+                    }
 
-            if(batedorLogin.getAtividade()==-1){
-                this.button_gerirAtividade.setEnabled(false);
-                this.button_download.setEnabled(true);
-                this.button_upload.setEnabled(false);
-                textView_AtividadeDisp.setText("Não existe nenhuma atividade em processamento");
-            }else {
-                Toast.makeText(getApplicationContext(), "Não foi enviada corretamente a atividade" , Toast.LENGTH_LONG).show();
-            }
+                }
+            };
+
+            taskUpload.execute();
+        }else {
+            configConnection(findViewById(R.id.button_configConnetion));
+            Toast.makeText(getApplicationContext(), "Precisa de configurar a ligação", Toast.LENGTH_LONG).show();
         }
-
     }
 
     public void configConnection(View v){

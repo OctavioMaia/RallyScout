@@ -2,6 +2,7 @@ package rallyscouts.justtrailit.activity;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.AudioFormat;
 import android.media.AudioManager;
@@ -13,8 +14,12 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -63,8 +68,8 @@ public class NotaDetails extends AppCompatActivity {
         this.nota = notas.getNota(getIntent().getExtras().getInt(ID_NOTA),getIntent().getExtras().getInt(ID_ATIVIDADE));
 
         this.setTitle("Nota: " + this.nota.getIdNota() +
-                " Lat: " + this.nota.getLocalRegisto().getLatitude() +
-                " Lng: " + this.nota.getLocalRegisto().getLongitude()
+                " -> " + this.nota.getLocalRegisto().getLatitude() +
+                " : " + this.nota.getLocalRegisto().getLongitude()
         );
 
         this.notaTextual = (TextView) findViewById(R.id.textView_NotaTextual);
@@ -87,25 +92,14 @@ public class NotaDetails extends AppCompatActivity {
 
         LayoutInflater inflater = (LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        Toast.makeText(getApplicationContext(), "Vou criar " + nota.getImagens().size(), Toast.LENGTH_LONG).show();
-
-        for (Bitmap bitmap : nota.getImagens() ) {
+        for (final Bitmap bitmap : nota.getImagens() ) {
             ImageView iv = (ImageView) inflater.inflate(
                     R.layout.item_image, null);
-            Log.i(TAG,"IMAGEM BYTES"+bitmap.getByteCount());
             iv.setImageBitmap(bitmap);
             iv.setLayoutParams( new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.MATCH_PARENT));
-
             tl.addView(iv);
-            Toast.makeText(getApplicationContext(), "Vou criar o ImageView" , Toast.LENGTH_LONG).show();
-        }
-
-        if( nota.getVoice()!=null){
-            Toast.makeText(getApplicationContext(), "A voz tem "  + nota.getVoice().length, Toast.LENGTH_LONG).show();
-        }else{
-            Toast.makeText(getApplicationContext(), "Não tem voz" , Toast.LENGTH_LONG).show();
         }
 
         if( nota.getVoice()!=null && nota.getVoice().length>0){
@@ -179,8 +173,12 @@ public class NotaDetails extends AppCompatActivity {
             });
 
         }else{
-            LinearLayout linearLayoutSound = (LinearLayout) findViewById(R.id.LinearLayout_Sound);
-            linearLayoutSound.removeAllViews();
+            //LinearLayout linearLayoutSound = (LinearLayout) findViewById(R.id.LinearLayout_Sound);
+            //linearLayoutSound.removeAllViews();
+            this.start.setEnabled(false);
+            this.stop.setEnabled(false);
+            this.pause.setEnabled(false);
+            this.seekbar.setEnabled(false);
         }
     }
 

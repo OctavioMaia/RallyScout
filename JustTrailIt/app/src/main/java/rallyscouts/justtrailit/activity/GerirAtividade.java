@@ -70,7 +70,7 @@ public class GerirAtividade extends AppCompatActivity implements OnMapReadyCallb
         this.atividadeAProcess = atividades.getAtividade(batedorLogin.getAtividade());
         this.mapaLocal = mapas.getMapa(batedorLogin.getAtividade());
 
-        this.setTitle("Gerir Atividade " + this.atividadeAProcess.getIdAtividade());
+        this.setTitle("Gerir Atividade " + this.atividadeAProcess.getIdAtividade() + " " + this.mapaLocal.getNomeProva());
 
         this.equipa = (TextView) findViewById(R.id.id_Equipa);
         this.equipa.setText("Equipa: " + atividadeAProcess.getNomeEquipa());
@@ -212,10 +212,10 @@ public class GerirAtividade extends AppCompatActivity implements OnMapReadyCallb
         route.width( 5 );
         route.visible( true );
 
-        for (Integer ord : coords.keySet() ) {
+        for(int i = 0;i<coords.size();i++){
             route.add( new LatLng(
-                    coords.get( ord ).getLatitude(),
-                    coords.get( ord ).getLongitude() ));
+                    coords.get( i ).getLatitude(),
+                    coords.get( i ).getLongitude() ));
         }
 
         googleMap.addPolyline( route );

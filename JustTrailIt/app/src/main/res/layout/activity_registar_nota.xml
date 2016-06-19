@@ -80,15 +80,6 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Analisar nota"
-        android:id="@+id/buttonAnalisarNota"
-        android:layout_below="@+id/linearLayout2"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:text="Confirmar submissão nota "
         android:id="@+id/button_SubmissaoNota"
         android:onClick="confirmarSubmissao"

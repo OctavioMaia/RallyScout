@@ -181,7 +181,6 @@ public class VeiculoDAO {
 
             resCaracteristicas.moveToFirst();
             while (resCaracteristicas.isAfterLast() == false){
-                Log.i(TAG,"CARCATE: " + resCaracteristicas.getString(resCaracteristicas.getColumnIndex(VEICULO_CARACTERISTICAS_COLUMN_CARACTERISTICA)));
                 caracteristicas.add(resCaracteristicas.getString(resCaracteristicas.getColumnIndex(VEICULO_CARACTERISTICAS_COLUMN_CARACTERISTICA)));
                 resCaracteristicas.moveToNext();
             }

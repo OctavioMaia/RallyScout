@@ -3,6 +3,8 @@ package rallyscouts.justtrailit.activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -28,6 +30,30 @@ public class ConnetionServer extends AppCompatActivity {
         this.ip = (EditText) findViewById(R.id.editText_adress);
         this.port = (EditText) findViewById(R.id.editText_port);
         port.setText("6969");
+
+        /*
+        this.ip.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(keyCode==KeyEvent.KEYCODE_ENTER){
+                    port.setSelection(port.getSelectionStart());
+                    port.requestFocus();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        this.port.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(keyCode==KeyEvent.KEYCODE_ENTER){
+                    saveConfigs(v);
+                    return true;
+                }
+                return false;
+            }
+        });*/
     }
 
     public void saveConfigs(View v){
