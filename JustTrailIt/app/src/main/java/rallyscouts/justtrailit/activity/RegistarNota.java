@@ -138,18 +138,18 @@ public class RegistarNota extends AppCompatActivity {
             {
                 Bitmap camaraImage = (Bitmap) data.getExtras().get("data");
 
-                Log.i(TAG,"tamanho da camera: " + camaraImage.getByteCount());
+                //Log.i(TAG,"tamanho da camera: " + camaraImage.getByteCount());
 
-                Bitmap resizedBitmap = Bitmap.createScaledBitmap(
-                        camaraImage, camaraImage.getWidth()/4, camaraImage.getHeight()/4, false);
+                //Bitmap resizedBitmap = Bitmap.createScaledBitmap(
+                  //      camaraImage, camaraImage.getWidth()/4, camaraImage.getHeight()/4, false);
 
-                Log.i(TAG,"tamanho novo: " + resizedBitmap.getByteCount());
+               // Log.i(TAG,"tamanho novo: " + resizedBitmap.getByteCount());
 
 
-                if (resizedBitmap.getByteCount()>0){
-                    Toast.makeText(getApplicationContext(), "Recebi a imagem com alguma coisa" , Toast.LENGTH_LONG).show();
-                }
-                notaToSave.addImagem(resizedBitmap);
+               // if (resizedBitmap.getByteCount()>0){
+                 //   Toast.makeText(getApplicationContext(), "Recebi a imagem com alguma coisa" , Toast.LENGTH_LONG).show();
+                //}
+                notaToSave.addImagem(camaraImage);
             }
         }
     }
