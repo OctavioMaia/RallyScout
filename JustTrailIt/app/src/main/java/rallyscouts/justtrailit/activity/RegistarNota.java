@@ -22,16 +22,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.ByteBuffer;
 
 import rallyscouts.justtrailit.R;
 import rallyscouts.justtrailit.business.Nota;
@@ -66,7 +57,7 @@ public class RegistarNota extends AppCompatActivity {
 
 
     private boolean isRecording;
-    private static final int sizeMaxAudio =  2097152;
+    private static final int sizeMaxAudio =  2000000;
     private int bytesRead;
     private byte[] bufferAudio = new byte[sizeMaxAudio];
     private Thread recordingThread = null;
@@ -125,7 +116,6 @@ public class RegistarNota extends AppCompatActivity {
         }
     }
 
-
     public void registarImagem(View v) {
         Intent camaraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(camaraIntent,CAMARA_REQUEST);
@@ -148,10 +138,18 @@ public class RegistarNota extends AppCompatActivity {
             {
                 Bitmap camaraImage = (Bitmap) data.getExtras().get("data");
 
-                if (camaraImage.getByteCount()>0){
+                Log.i(TAG,"tamanho da camera: " + camaraImage.getByteCount());
+
+                Bitmap resizedBitmap = Bitmap.createScaledBitmap(
+                        camaraImage, camaraImage.getWidth()/4, camaraImage.getHeight()/4, false);
+
+                Log.i(TAG,"tamanho novo: " + resizedBitmap.getByteCount());
+
+
+                if (resizedBitmap.getByteCount()>0){
                     Toast.makeText(getApplicationContext(), "Recebi a imagem com alguma coisa" , Toast.LENGTH_LONG).show();
                 }
-                notaToSave.addImagem(camaraImage);
+                notaToSave.addImagem(resizedBitmap);
             }
         }
     }
