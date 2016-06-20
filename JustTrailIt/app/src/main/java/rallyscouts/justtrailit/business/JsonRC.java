@@ -10,11 +10,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.GZIPOutputStream;
 
 import rallyscouts.justtrailit.data.AtividadeDAO;
 import rallyscouts.justtrailit.data.BatedorDAO;
@@ -88,6 +91,7 @@ public class JsonRC {
 
         try {
             JSONObject recive = new JSONObject(jsonString);
+            Log.i(TAG,recive.toString(4));
             int idAtividade = recive.getInt(ATIVIDADE);
             Log.i(TAG,"Atividade: " + idAtividade);
             if (idAtividade >= 0) {
@@ -239,7 +243,7 @@ public class JsonRC {
             notaJson.put(NOTA_TEXTUAL,nota.getNotaTextual());
             notaJson.put(LOCAL,createLocal(nota.getLocalRegisto()));
             if(nota.getImagens().size()>0){
-                notaJson.put(IMAGEM, createImagens(nota.getImagens()));
+               notaJson.put(IMAGEM, createImagens(nota.getImagens()));
             }
             if(nota.getVoice()!=null){
                 notaJson.put(AUDIO, Base64.encodeToString(nota.getVoice(),Base64.DEFAULT) );
@@ -270,12 +274,15 @@ public class JsonRC {
         for (Bitmap bitmap : listaImagens ) {
             ByteBuffer byteBuffer = ByteBuffer.allocate(bitmap.getRowBytes() * bitmap.getHeight());
             bitmap.copyPixelsToBuffer(byteBuffer);
+                //ByteArrayOutputStream rstBao = new ByteArrayOutputStream();
+                //GZIPOutputStream zos = new GZIPOutputStream(rstBao);
+                //zos.write(byteBuffer.array());
+            Log.i(TAG,"size: " + byteBuffer.array().length);
             imagensJson.put(Base64.encodeToString(byteBuffer.array(),Base64.DEFAULT));
         }
 
         return imagensJson;
 
     }
-
 
 }
